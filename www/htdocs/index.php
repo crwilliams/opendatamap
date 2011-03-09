@@ -32,8 +32,9 @@ error_reporting(0);
 <div id="map_canvas"></div>
 <img id="geobutton" src='resources/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 <form action="" onsubmit="return false">
-   <input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>' />
-   <img id="clear" src='resources/nt-left.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search" />
+   <input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>'>
+   <img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search">
+   </input>
 <ul id="list"></ul>
 </form>
 <div id="credits"><?php include 'credits.php' ?></div>

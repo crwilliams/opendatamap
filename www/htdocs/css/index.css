@@ -53,10 +53,12 @@ form ul {
 }
 /* for the search box */
 #inputbox {
+   position:relative;
    background:rgba(255,255,255,0);
-   background-image: url(http://www.picol.org/images/icons/files/png/16/search_16.png);
-   background-position: 99% 5px;
-   background-repeat: no-repeat;
+   /*background-image: url(http://www.picol.org/images/icons/files/png/16/search_16.png);
+     background-position: 99% 5px;
+     background-repeat: no-repeat;
+*/
    font-size:12pt;
    height:20px;
    padding-left:0px;
@@ -81,6 +83,13 @@ form ul {
 #list li {
    line-height:1.2em;
 }
+#clear {
+position:absolute;
+right:12px;
+top:12px;
+width:22px;
+}
+
 img.icon { 
    width:20px; 
    padding-right:5px; 

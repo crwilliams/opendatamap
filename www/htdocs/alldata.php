@@ -77,7 +77,25 @@ var infowindows = new Array();
 var clusterMarkers = new Array();
 var clusterInfowindows = new Array();
 
+var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
+var CLEAR_SEARCH_ICON = "resources/nt-left.png";
+
+var reset_search_icon = function() {
+  var val = jQuery("#inputbox").val();
+  if (val.length > 0) {
+    jQuery("#clear").attr("src", CLEAR_SEARCH_ICON);
+  } else {
+    jQuery("#clear").attr("src", DEFAULT_SEARCH_ICON);
+  }
+}
+
+// TODO merge this in with initialize
+jQuery(document).ready(function() {
+			 jQuery("#inputbox").bind("keyUp", reset_search_icon);
+		       });
+
 function initialize() {
+  
 <?php
 $i = 0;
 foreach($allpos as $point) {
@@ -163,12 +181,14 @@ var list = document.getElementById("list");
 var oldString = null;
 
 var xmlhttp = undefined;
+
 var updateFunc = function() {
+     reset_search_icon();
 	if(inputBox.value == oldString)
 		return;
 	oldString = inputBox.value;
 	if(xmlhttp !== undefined)
-		xmlhttp.abort();
+	  xmlhttp.abort();
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","matches.php?q="+inputBox.value,true);
 	xmlhttp.send();
