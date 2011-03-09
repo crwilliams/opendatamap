@@ -1,0 +1,124 @@
+body {
+   font-family: 'Ubuntu', 'Helvetica' arial, serif; 
+
+   height: 100%; margin: 0px; padding: 0px; overflow:hidden;
+}
+a {
+  color:black;
+}
+a:visited {
+  color:black;
+  text-decoration:none;
+}
+a:link:hover {
+  color:blue;
+}
+a:link {
+  color:black;
+  text-decoration:none;
+}
+#spinner {
+   background:rgba(255,255,255,0.8);
+   position:absolute;
+   top: 0px; left: 0px; right: 0px; bottom:0px;
+   z-index:1000;
+   text-align:center;
+}
+#spinner img {
+  margin-top:auto; margin-bottom:auto; margin-left:auto; margin-right:auto;
+  padding-top:50px;
+}
+#map_canvas {
+   position:absolute;
+   top: 0px; left: 0px; right: 0px; bottom:0px;
+}
+#credits {
+   position:absolute;
+   bottom: 13px;
+   left: 320px;
+   right:0px;
+   font-size: 0.8em;
+}
+form {
+   padding:10px;
+   background-color:rgba(255,255,255,0.8);
+   border-radius:3px;
+   border:solid 1px black;
+   position:absolute;
+   top:30px;
+   left:80px; 
+}
+form ul {
+   padding:0px;
+}
+/* for the search box */
+#inputbox {
+   background:rgba(255,255,255,0);
+   background-image: url(http://www.picol.org/images/icons/files/png/16/search_16.png);
+   background-position: 99% 5px;
+   background-repeat: no-repeat;
+   font-size:12pt;
+   height:20px;
+   padding-left:0px;
+   padding-top:5px;
+   padding-bottom:0px;
+   border-top: none;
+   border-bottom:1px solid black;
+   border-left:none;
+   border-right:none;
+   margin-bottom:5px;
+}
+#list {
+   z-index:1000;
+   padding:0px;
+   margin:0px;
+   list-style: none;
+   overflow-y:auto;
+   overflow-x:hidden;
+   max-width:200px;
+   max-height:497px;
+}
+#list li {
+   line-height:1.2em;
+}
+img.icon { 
+   width:20px; 
+   padding-right:5px; 
+   position:relative; 
+   top:7px;
+}
+
+/* is this is for popups... you'd never guess */
+td {
+  border:solid 1px gray;
+  text-align: center;
+} 
+ul.offers li{
+  font-size:80%;
+  display: inline; 
+  border: solid 1px white;
+  padding: 0px;
+  margin-right: 5px;
+  line-height: 2em;
+  background-color: #DDDDB7;
+
+} 
+ul.offers{
+  padding:0; margin:0
+}
+h2 {
+  font-size:100%;
+  margin:0px;
+  margin:0px 8px 0px 0px;
+}
+h3 {
+  font-size:80%;
+  margin:0px;
+  padding:0px 8px 0px 0px;
+}
+.clusteritem {
+  padding:0px 8px 0px 0px;	
+  font-size:10pt;
+  overflow:hidden;
+  padding-right:5px;
+}
