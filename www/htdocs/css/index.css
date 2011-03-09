@@ -136,3 +136,11 @@ h3 {
   overflow:hidden;
   padding-right:5px;
 }
+
+.toggleicons {
+  display:none;
+}
+
+.toggleicons img {
+	width:18px;
+}

@@ -35,6 +35,17 @@ error_reporting(0);
    <input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>'>
    <img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search">
    </input>
+   <div class="toggleicons">
+   <img src="resources/blue.png" title="Services" alt="Services" />
+   <img src="resources/black.png" title="Transport" alt="Transport" />
+   <img src="resources/brown.png" title="Waste" alt="Waste" />
+   <img src="resources/orange.png" title="Education" alt="Education" />
+   <img src="resources/green.png" title="Religion" alt="Religion" />
+   <img src="resources/cyan.png" title="Retail" alt="Retail" />
+   <img src="resources/magenta.png" title="Entertainment" alt="Entertainment" />
+   <img src="resources/violet.png" title="Catering" alt="Catering" />
+   <img src="resources/red.png" title="Health" alt="Health" />
+   </div>
 <ul id="list"></ul>
 </form>
 <div id="credits"><?php include 'credits.php' ?></div>
