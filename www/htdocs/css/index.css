@@ -87,6 +87,11 @@ img.icon {
    position:relative; 
    top:7px;
 }
+#geobutton {
+   position:absolute;
+   top:349px;
+   left:29px;
+}
 
 /* is this is for popups... you'd never guess */
 td {

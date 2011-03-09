@@ -30,9 +30,9 @@ error_reporting(0);
 <body onload="initialize()">
 <div id="spinner"><img src="resources/ajax-loader.gif"></div>
 <div id="map_canvas"></div>
+<img id="geobutton" src='resources/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 <form action="" onsubmit="return false">
    <input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>' />
-   <img id="geobutton" src='resources/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
    <img id="clear" src='http://google-maps-icons.googlecode.com/files/left.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search" />
 <ul id="list"></ul>
 </form>
