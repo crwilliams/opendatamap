@@ -174,6 +174,10 @@ for(var i in markers) {
 	});
 	}
 }
+
+initgeoloc();
+inittoggle();
+initcredits();
 }
 
 var inputBox = document.getElementById("inputbox");
@@ -183,6 +187,7 @@ var oldString = null;
 var xmlhttp = undefined;
 
 var updateFunc = function() {
+	var enabledCategories = getSelectedCategories();
      reset_search_icon();
 	if(inputBox.value == oldString)
 		return;
@@ -190,7 +195,7 @@ var updateFunc = function() {
 	if(xmlhttp !== undefined)
 	  xmlhttp.abort();
 	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET","matches.php?q="+inputBox.value,true);
+	xmlhttp.open("GET","matches.php?q="+inputBox.value+'&ec='+enabledCategories,true);
 	xmlhttp.send();
 	xmlhttp.onreadystatechange=function()
 	{
@@ -263,6 +268,8 @@ var cluster = function() {
     content: '<div class="clusteritem" onclick="infowindows[\''+firstAtPos[markers[i].getPosition().toString()]+'\'].open(map, clusterMarkers[\''+markers[i].getPosition().toString()+'\']); loadWindow(\''+firstAtPos[markers[i].getPosition().toString()]+'\')"><img class="icon" src="'+markers[firstAtPos[markers[i].getPosition().toString()]].getIcon()+'" />'+markers[firstAtPos[markers[i].getPosition().toString()]].getTitle()+'</div>'+
     '<div class="clusteritem" onclick="infowindows[\''+i+'\'].open(map, clusterMarkers[\''+markers[i].getPosition().toString()+'\']); loadWindow(\''+i+'\')"><img class="icon" src="'+markers[i].getIcon()+'" />'+markers[i].getTitle()+'</div>'
 });
+					clusterMarkers[markers[i].getPosition().toString()].setIcon('resources/clustericon.php?i[]='+markers[firstAtPos[markers[i].getPosition().toString()]].getIcon()+'&i[]='+markers[i].getIcon());
+/*
 					if(markers[i].getIcon() == markers[firstAtPos[markers[i].getPosition().toString()]].getIcon())
 					{
 						clusterMarkers[markers[i].getPosition().toString()].setIcon(markers[i].getIcon());
@@ -271,6 +278,7 @@ var cluster = function() {
 					{
 						clusterMarkers[markers[i].getPosition().toString()].setIcon('resources/cluster5.png');
 					}
+*/
 					markers[firstAtPos[markers[i].getPosition().toString()]].setVisible(false);
 				}
 				else
@@ -279,7 +287,7 @@ var cluster = function() {
     '<div class="clusteritem" onclick="infowindows[\''+i+'\'].open(map, clusterMarkers[\''+markers[i].getPosition().toString()+'\']); loadWindow(\''+i+'\')"><img class="icon" src="'+markers[i].getIcon()+'" />'+markers[i].getTitle()+'</div>');
 					if(markers[i].getIcon() != clusterMarkers[markers[i].getPosition().toString()].getIcon())
 					{
-						clusterMarkers[markers[i].getPosition().toString()].setIcon('resources/cluster5.png');
+						clusterMarkers[markers[i].getPosition().toString()].setIcon(clusterMarkers[markers[i].getPosition().toString()].getIcon()+'&i[]='+markers[i].getIcon());
 					}
 				}
 				count2 ++;

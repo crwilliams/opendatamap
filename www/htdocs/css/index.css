@@ -1,20 +1,23 @@
 body {
-   font-family: 'Ubuntu', 'Helvetica' arial, serif; 
+   font-family: 'Ubuntu', 'Helvetica' 'Arial', serif; 
 
    height: 100%; margin: 0px; padding: 0px; overflow:hidden;
 }
 a {
-  color:black;
+  color:#7777CC;
 }
-a:visited {
-  color:black;
+#credits a {
+  /*color:black;*/
+}
+#credits a:visited {
+  /*color:black;*/
   text-decoration:none;
 }
-a:link:hover {
-  color:blue;
+#credits a:link:hover {
+  /*color:blue;*/
 }
-a:link {
-  color:black;
+#credits a:link {
+  /*color:black;*/
   text-decoration:none;
 }
 #spinner {
@@ -34,10 +37,37 @@ a:link {
 }
 #credits {
    position:absolute;
-   bottom: 13px;
-   left: 320px;
+   text-align:right;
+   padding-right:3px;
+   bottom: 0px;
    right:0px;
    font-size: 0.8em;
+   max-width: 33%;
+}
+#credits-small {
+   display:none;
+   position:absolute;
+   bottom: 0px;
+   right:0px;
+   color:#7777CC;
+   font-size: 11px;
+}
+@media handheld
+{
+   #credits-small {
+      display:block;
+   }
+   #credits {
+      display:none;
+   }
+}
+@media only screen and (max-device-width: 640px) {
+   #credits-small {
+      display:block;
+   }
+   #credits {
+      display:none;
+   }
 }
 form {
    padding:10px;
@@ -96,10 +126,13 @@ img.icon {
    position:relative; 
    top:7px;
 }
+
 #geobutton {
-   position:absolute;
+   display:none;
+/*
    top:349px;
    left:29px;
+*/
 }
 
 /* is this is for popups... you'd never guess */
@@ -142,5 +175,17 @@ h3 {
 }
 
 .toggleicons img {
-	width:18px;
+  display:block;
+}
+
+@media only screen and (min-device-width: 641px) {
+   .toggleicons img:hover {
+      position:relative;
+      left:25%;
+   }
+}
+
+.deselected {
+  position:relative;
+  left:50%;
 }

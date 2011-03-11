@@ -5,6 +5,8 @@ include_once "sparqllib.php";
 $q = $_GET['q'];
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
+$cats = explode(',', $_GET['ec']);
+
 $data = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -20,6 +22,7 @@ SELECT DISTINCT ?poslabel ?label ?pos WHERE {
   )
 }
 ");
+if(in_array('Transport', $cats))
 $busdata = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -35,6 +38,8 @@ SELECT DISTINCT ?poslabel ?label ?pos WHERE {
   ) && REGEX( ?label, '^U', 'i') )
 }
 ");
+else
+	$busdata = array();
 
 $pos = array();
 $label = array();
