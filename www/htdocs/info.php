@@ -12,11 +12,12 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
 
-SELECT DISTINCT ?name WHERE {
+SELECT DISTINCT ?name ?icon WHERE {
     <$uri> rdfs:label ?name .
+    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
 }
 ");
-echo "<h2>".$allpos[0]['name']."</h2>";
+echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"resources/blackness.png")."' />".$allpos[0]['name']."</h2>";
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
