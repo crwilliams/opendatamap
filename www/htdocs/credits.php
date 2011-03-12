@@ -30,10 +30,37 @@ foreach($creators as $creator)
 	$creatorlinks[]=  "<a href='".$creator['uri']."'>".$creator['name']."</a>";
 }
 
-echo "Application created by ";
-echo implode(", ", $creatorlinks);
-echo "<br/>using the following datasets: ";
-echo implode(", ", $datasetlinks);
+$suggestionlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/1248'>Christopher Gutteridge</a>";
+$suggestionlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/9455'>David Tarrant</a>";
+
+if($include)
+{
+	echo "Application created by ";
+	echo implode(", ", $creatorlinks);
+	echo "<br/>using the following datasets: ";
+	echo implode(", ", $datasetlinks);
+	echo "<br/><a href='credits.php'>Full Application Credits</a>";
+}
+else
+{
+	echo "The <a href='.'>linked open data map</a> was developed by:";
+	echo "<ul>";
+	foreach($creatorlinks as $creatorlink)
+		echo "<li>$creatorlink</li>";
+	echo "</ul>";
+	echo "It makes use of the following datasets:";
+	echo "<ul>";
+	foreach($datasetlinks as $datasetlink)
+		echo "<li>$datasetlink</li>";
+	echo "</ul>";
+
+	echo "Thanks also to suggestions from:";
+	echo "<ul>";
+	foreach($suggestionlinks as $suggestionlink)
+		echo "<li>$suggestionlink</li>";
+	echo "</ul>";
+	
+}
 ?>
 
 
