@@ -70,6 +70,9 @@ a {
 	#credits {
 		display:none;
 	}
+	#openings {
+		display: none;
+	}
 }
 #search {
 	margin-top:2px;
@@ -189,6 +192,9 @@ h3 {
 @media only screen and (min-device-width: 641px) {
 	.toggleicons img.deselected:hover {
 		opacity:0.5;
+	}
+	#todayopenings {
+		display: none;
 	}
 }
 
