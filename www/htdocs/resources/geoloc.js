@@ -26,6 +26,6 @@ function initgeoloc()
 		var geobutton = document.getElementById('geobutton');
 		geobutton.style.display = 'block';
 		geobutton.index = 1;
-		map.controls[google.maps.ControlPosition.RIGHT_TOP].push(geobutton);
+		map.controls[google.maps.ControlPosition.TOP_RIGHT].push(geobutton);
 	}
 }       
