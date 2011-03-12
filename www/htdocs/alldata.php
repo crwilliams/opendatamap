@@ -178,6 +178,7 @@ for(var i in markers) {
 initgeoloc();
 inittoggle();
 initcredits();
+initsearch();
 }
 
 var inputBox = document.getElementById("inputbox");
@@ -205,6 +206,7 @@ var updateFunc = function() {
 				markers[i].setVisible(false);
 			}
 			eval(xmlhttp.responseText);
+			selectIndex = -1;
 			//alert(matches.length);
 			for(var m in matches) {
 				if(markers[matches[m]] !== undefined)
@@ -212,10 +214,15 @@ var updateFunc = function() {
 			}
 			list.innerHTML = "";
 			var re = new RegExp('('+inputBox.value+')',"gi");
+			limit = 0;
 			for(var m in labelmatches) {
-				var dispStr = new String(labelmatches[m]).replace(re, "<b>$1</b>");
-				//var dispStr = labelmatches[m];
-				list.innerHTML += '<li onclick="inputBox.value = \'^'+labelmatches[m]+'$\'; updateFunc();">'+dispStr+'</li>';
+				var dispStr;
+				if(inputBox.value != "")
+					dispStr = new String(labelmatches[m]).replace(re, "<span style='background-color:#FFFF66'>$1</span>");
+				else
+					dispStr = labelmatches[m];
+				list.innerHTML += '<li id="li'+limit+'" onclick="inputBox.value = \'^'+labelmatches[m]+'$\'; updateFunc();">'+dispStr+'</li>';
+				limit++;
 			}
 			cluster();
 			
@@ -228,7 +235,18 @@ var updateFunc = function() {
 	}
 }
 
+var nav = function(e)
+{
+	if(e.keyCode == 40)
+		return moveDown();
+	else if(e.keyCode == 38)
+		return moveUp();
+	else if(e.keyCode == 13)
+		return select();
+}
+
 inputBox.onkeyup = updateFunc;
+inputBox.onkeydown = nav;
 updateFunc();
 <?php
 if(true || $_SERVER['REMOTE_ADDR'] == "188.222.196.170")
