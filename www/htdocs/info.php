@@ -61,7 +61,8 @@ SELECT DISTINCT * WHERE {
 
 if(count($allpos) > 0)
 {
-	echo "<h3> Opening detail: </h3>";
+	echo "<div id='openings'>";
+	echo "<h3>Opening detail:</h3>";
 	foreach($allpos as $point)
 	{
 		if ($point['start'] != 'T00:00:00')
@@ -90,7 +91,7 @@ if(count($allpos) > 0)
 	}
 
 	$weekday = array('Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
-	echo "<table style='font-size:0.8em'>";
+	echo "<table id='openings' style='font-size:0.8em'>";
 	echo "<tr>";
 	foreach($weekday as $day)
 	{
@@ -130,7 +131,7 @@ if(count($allpos) > 0)
 			continue;
 		}
 		$current = ($from <=  $now )&&( $to >= $now);
-		if (($current)
+		if ($current)
 		{ 
 			echo "<tr class='current'>"; //start of row
 		}
@@ -144,6 +145,10 @@ if(count($allpos) > 0)
 			foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
 			{
 				echo $dot."<br/>";
+				if($day == date('l', $now))
+				{
+					$todayopening[] = "<li>$dot</li>";
+				}
 			}
 			echo "</td>";
 		}
@@ -151,6 +156,20 @@ if(count($allpos) > 0)
 		echo "</tr>";
 	}
 	echo "</table>";
+	echo "</div>";
+
+	if($todayopening != null)
+	{
+		echo "<div id='todayopenings'>";
+		echo "<h3>Today's opening hours:</h3>";
+		echo "<ul style='font-size:0.8em'>";
+		foreach($todayopening as $opening)
+		{
+			echo $opening;
+		}
+		echo "</ul>";
+		echo "</div>";
+	}
 }
 echo "</div>";
 ?>
