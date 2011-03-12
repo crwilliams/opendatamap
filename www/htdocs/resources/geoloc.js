@@ -6,15 +6,17 @@ function geoloc()
        function(position) {        
              if( position.coords.accuracy < 5000 )
              {
-                 window.location = "?lat=" + position.coords.latitude + "&long=" + position.coords.longitude+"&acc=" + position.coords.accuracy;
+		map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
 	     }
              else
 	     {
+                alert('Sorry, geo location wildly inaccurate ('+ position.coords.accuracy+" meters)"); 
 //                document.getElementById('workarea').innerHTML = 'Geo location wildly inaccurate ('+ position.coords.accuracy+" meters)"; 
              }
 //             document.getElementById('geobutton').style.display = 'block';
        },        
        function(e) {
+             alert('Sorry, geo location failed'); 
 //             document.getElementById('workarea').innerHTML = 'Geo location failed'; 
 //             document.getElementById('geobutton').style.display = 'block';
        }
