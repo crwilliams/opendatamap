@@ -17,6 +17,7 @@ SELECT DISTINCT ?name ?icon WHERE {
     OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
 }
 ");
+echo "<div id='content'>";
 echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"resources/blackness.png")."' />".$allpos[0]['name']."</h2>";
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
@@ -139,6 +140,7 @@ foreach($ot as $valid => $otv)
 }
 echo "</table>";
 }
+echo "</div>";
 ?>
 
 
