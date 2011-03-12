@@ -4,13 +4,19 @@ error_reporting(0);
 ?>
 <html>
 <head>
-<title>University of Southampton Open Linked Data Map</title>
+<title>University of Southampton Linked Open Data Map</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="resources/opendatamap.png" />
+<link rel="apple-touch-icon-precomposed" href="resources/opendatamap.png" />
+<link rel="shortcut icon" href="resources/opendatamap.png" />
 <script src="http://www.google.com/jsapi"></script>
 <script type="text/javascript" src="resources/jquery-1.5.min.js"></script>
 <script type="text/javascript" src="resources/geoloc.js"></script>
 <script type="text/javascript" src="resources/toggle.js"></script>
 <script type="text/javascript" src="resources/credits.js"></script>
+<script type="text/javascript" src="resources/search.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/reset.css" type="text/css">
@@ -45,13 +51,13 @@ error_reporting(0);
    <img src="resources/general.png" id="General" title="General" alt="General" onclick="toggle('General'); updateFunc();" />
 -->
 </div>
-<form action="" onsubmit="return false">
-   <input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>'>
+<form id='search' action="" onsubmit="return false">
+   <input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
    <img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search">
    </input>
-<ul id="list"></ul>
+<ul style='display:none' id="list"></ul>
 </form>
-<div id="credits"><?php include 'credits.php' ?></div>
+<div id="credits"><?php $include = true; include 'credits.php' ?></div>
 <div id="credits-small"><a href="credits.php">Application Credits</a></div>
 </body>
 <script type="text/javascript" src="alldata.php?lat=<?php echo $_GET['lat'] ?>&long=<?php echo $_GET['long'] ?>&zoom=<?php echo $_GET['zoom'] ?>">
