@@ -117,6 +117,8 @@ form ul {
 #list li {
    line-height:1.2em;
    border-radius:3px;
+  padding-left:30px;
+  text-indent:-30px;
 }
 #clear {
 position:absolute;
@@ -169,10 +171,18 @@ h3 {
   padding:0px 8px 0px 0px;
 }
 .clusteritem {
-  padding:0px 8px 0px 0px;	
+  padding:0px 8px 0px 0px;
   font-size:10pt;
-  overflow:hidden;
+  /*overflow:hidden;*/
   padding-right:5px;
+  padding-left:32px;
+  text-indent:-30px;
+}
+.clusteritem img {
+/*
+  position:relative;
+  right:20px;
+*/
 }
 
 .toggleicons {
