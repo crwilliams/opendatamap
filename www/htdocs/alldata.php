@@ -113,7 +113,7 @@ markers['<?php echo $point['pos'] ?>'] = new google.maps.Marker({
 
 infowindows['<?php echo $point['pos'] ?>'] = new google.maps.InfoWindow({
     content: '<div id="content">'+
-    '<h2 id="title"><?php echo $point['poslabel'] ?></h2>'+
+    '<h2 id="title"><img style="width:20px;" src="<?php echo $point['icon']!=""?$point['icon']:"resources/blackness.png" ?>" /><?php echo $point['poslabel'] ?></h2>'+
     '<div id="bodyContent">Loading...'+
     '</div>'+
     '</div>'
