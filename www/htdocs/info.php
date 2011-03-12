@@ -94,11 +94,38 @@ foreach($weekday as $day)
 echo "<th>Valid Dates</th>";
 echo "</tr>";
 
-foreach($ot as $valid=>$otv)
+foreach($ot as $valid => $otv)
 {
- echo "<tr>"; 
- foreach($weekday as $day)
+
+ list($from, $to) = explode('-',$valid);
+ $now = mktime();
+ if ($from == '')
+ { $from = $now - 86400;}
+ else {
+        $from = mktime(0,0,0,substr($from,3,2),substr($from,0,2),substr($from,7,4));
+ }
+ if ($to == '')
  {
+   $to = $now+86400;
+ }else {
+       $to = mktime(0,0,0,substr($to,3,2),substr($to,0,2),substr($to,7,4));
+ } 
+
+ if ( $to < $now ){
+     continue;
+ }
+ if ($from > $now + (60*60*24*30))
+ { 
+	continue;
+ }
+ if (($from <=  $now )&&( $to >= $now))
+ { 
+   echo "<tr class='current'>"; //start of row
+ }else {
+          echo "<tr>";
+   }
+ foreach($weekday as $day)
+   {
    echo "<td width=\"350\">";
    foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
    {
