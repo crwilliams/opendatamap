@@ -40,17 +40,15 @@ error_reporting(0);
 		<div id="map_canvas"></div>
 		<img id="geobutton" src='resources/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons">
-<!--
-			<img src="resources/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport'); updateFunc();" />
-			<img src="resources/catering.png" id="Catering" title="Catering" alt="Catering" onclick="toggle('Catering'); updateFunc();" />
-			<img src="resources/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services'); updateFunc();" />
-			<img src="resources/entertainment.png" id="Entertainment" title="Entertainment" alt="Entertainment" onclick="toggle('Entertainment'); updateFunc();" />
-			<img src="resources/health.png" id="Health" title="Health" alt="Health" onclick="toggle('Health'); updateFunc();" />
-			<img src="resources/religion.png" id="Religion" title="Religion" alt="Religion" onclick="toggle('Religion'); updateFunc();" />
+			<img src="resources/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />
+			<img src="resources/catering.png" id="Catering" title="Catering" alt="Catering" onclick="toggle('Catering');" />
+			<img src="resources/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services');" />
+			<img src="resources/entertainment.png" id="Entertainment" title="Entertainment" alt="Entertainment" onclick="toggle('Entertainment');" />
+			<img src="resources/health.png" id="Health" title="Health" alt="Health" onclick="toggle('Health');" />
+			<img src="resources/religion.png" id="Religion" title="Religion" alt="Religion" onclick="toggle('Religion');" />
 			<img src="resources/retail.png" id="Retail" title="Retail" alt="Retail" onclick="toggle('Retail')" />
-			<img src="resources/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education'); updateFunc();" />
-			<img src="resources/general.png" id="General" title="General" alt="General" onclick="toggle('General'); updateFunc();" />
--->
+			<img src="resources/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
+			<img src="resources/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
 		</div>
 		<form id='search' action="" onsubmit="return false">
 			<input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">

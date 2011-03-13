@@ -57,12 +57,14 @@ var oldString = null;
 
 var xmlhttp = undefined;
 
-updateFunc = function() {
+updateFunc = function(force) {
+	if(force === undefined)
+		force = false;
 	var enabledCategories = getSelectedCategories();
      reset_search_icon();
 	var inputBox = document.getElementById("inputbox");
 	var list = document.getElementById("list");
-	if(inputBox.value == oldString)
+	if(!force && inputBox.value == oldString)
 		return;
 	oldString = inputBox.value;
 	if(xmlhttp !== undefined)

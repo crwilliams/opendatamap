@@ -9,6 +9,7 @@ function toggle(category) {
 		document.getElementById(category).className = "";
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
 	}
+	updateFunc(true);
 }
 
 function getSelectedCategories() {
