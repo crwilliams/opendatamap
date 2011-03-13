@@ -6,6 +6,11 @@ function initsearch()
 	map.controls[google.maps.ControlPosition.TOP_RIGHT].push(geobutton);
 }
 
+var setInputBox = function(str)
+{
+	document.getElementById('inputbox').value = str;
+}
+
 var t;
 var selectIndex = -1;
 var limit = 0;
@@ -42,8 +47,8 @@ function moveDown()
 function select()
 {
 	if(selectIndex >= 0)
-		$('#li'+selectIndex).click();
-	$('#inputbox').blur();
+		document.getElementById('li'+selectIndex).onclick();
+	document.getElementById('inputbox').blur();
 }
 
 function removeHighlight()

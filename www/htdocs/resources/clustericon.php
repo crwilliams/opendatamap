@@ -1,9 +1,14 @@
 <?php
 function simagecreatefrompng($url) {
-	if(preg_match("/^https?:\/\//", $url) || !preg_match("/\.\./", $url))
+	if(preg_match("/^https?:\/\//", $url))
 	{
 		return imagecreatefrompng($url);
 	}
+	if(!preg_match("/\.\./", $url))
+	{
+		return imagecreatefrompng("../".$url);
+	}
+	return imagecreatefrompng("blackness.png");
 }
 function positionimg($rimg, $img, $destx, $desty) {
 	$x = imagesx($img);
@@ -18,7 +23,7 @@ if(true || !file_exists($filename))
 	if(array_key_exists('base', $_GET))
 		$rimg = simagecreatefrompng($_GET['base']);
 	else
-		$rimg = simagecreatefrompng('blackness.png');
+		$rimg = simagecreatefrompng('resources/blackness.png');
 	$img1 = simagecreatefrompng($imgs[0]);
 	$i = count($imgs);
 	if($i >= 2)
