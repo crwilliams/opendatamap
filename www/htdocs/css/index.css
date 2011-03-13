@@ -1,5 +1,5 @@
 body {
-	font-family: 'Ubuntu', 'Helvetica' 'Arial', serif; 
+	font-family: 'Ubuntu', 'Helvetica', 'Arial', serif; 
 	height: 100%;
 	margin: 0px;
 	padding: 0px;
@@ -170,8 +170,8 @@ h3 {
 }
 #content {
 	border:none;
-	padding:none;
-	margin:none;
+	padding:0px 0px 0px 0px;
+	margin:0px 0px 0px 0px;
 }
 .clusteritem {
 	padding:0px 8px 0px 0px;

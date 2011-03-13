@@ -1,8 +1,14 @@
 function toggle(category) {
 	if(document.getElementById(category).className == "")
+	{
 		document.getElementById(category).className = "deselected";
+		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 0]);
+	}
 	else
+	{
 		document.getElementById(category).className = "";
+		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
+	}
 }
 
 function getSelectedCategories() {

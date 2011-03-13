@@ -1,5 +1,6 @@
 function geoloc()
 {
+	_gaq.push(['_trackEvent', 'Geolocation', 'Request']);
 	navigator.geolocation.getCurrentPosition(
 		function(position) {        
 			if( position.coords.accuracy < 5000 )
@@ -10,9 +11,11 @@ function geoloc()
 			{
 				alert('Sorry, geo location wildly inaccurate ('+ position.coords.accuracy+" meters)"); 
 			}
+			_gaq.push(['_trackEvent', 'Geolocation', 'Response', null, position.coords.accuracy]);
 		},        
 		function(e) {
 			alert('Sorry, geo location failed'); 
+			_gaq.push(['_trackEvent', 'Geolocation', 'Failed']);
 		}
 	);                                                                  
 }

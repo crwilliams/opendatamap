@@ -22,6 +22,7 @@ jQuery(document).ready(function() {
 });
 
 window.loadWindow = function(j) {
+	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","info.php?uri="+encodeURI(j),true);
 	xmlhttp.send();
@@ -37,18 +38,18 @@ window.loadWindow = function(j) {
 var initmarkerevents = function() {
 	for(var i in markers) {
 		with ({ j: i }) {
-		google.maps.event.addListener(markers[i], 'click', function() {
-			for(var i in markers) {
-				infowindows[i].close();
-			}
-			for(var i in clusterMarkers) {
-				clusterInfowindows[i].close();
-			}
-			infowindows[j].open(map,markers[j]);
+			google.maps.event.addListener(markers[i], 'click', function() {
+				for(var i in markers) {
+					infowindows[i].close();
+				}
+				for(var i in clusterMarkers) {
+					clusterInfowindows[i].close();
+				}
+				infowindows[j].open(map,markers[j]);
 	
-			loadWindow(j);
-		});
-			}
+				loadWindow(j);
+			});
+		}
 	}
 }
 
@@ -68,6 +69,7 @@ updateFunc = function() {
 	  xmlhttp.abort();
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","matches.php?q="+inputBox.value+'&ec='+enabledCategories,true);
+	_gaq.push(['_trackEvent', 'Search', 'Request', inputBox.value]);
 	xmlhttp.send();
 	xmlhttp.onreadystatechange=function()
 	{
@@ -115,6 +117,14 @@ var nav = function(e)
 	else if(e.keyCode == 13)
 		return select();
 }
+
+/*
+var showWindow = function(clusterID, individualID) {
+	infowindows[individualID].open(map, clusterMarkers[clusterID]);
+	loadWindow(individualID);
+	_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', j]);
+}
+*/
 
 var cluster = function() {
 	for(var i in clusterMarkers)
@@ -180,6 +190,7 @@ var cluster = function() {
 				for(var i in clusterMarkers) {
 					clusterInfowindows[i].close();
 				}
+				_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', j]);
 				clusterInfowindows[j].open(map,clusterMarkers[j]);
 			});
 		}
