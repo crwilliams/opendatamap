@@ -35,7 +35,7 @@ SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
   ?pos <http://purl.org/openorg/mapIcon> ?icon .
   FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') 
   )
-}
+} ORDER BY ?poslabel
 ");
 $busdata = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
@@ -51,7 +51,7 @@ SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
   ?pos <http://purl.org/openorg/mapIcon> ?icon .
   FILTER ( ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i')
   ) && REGEX( ?label, '^U', 'i') )
-}
+} ORDER BY ?poslabel
 ");
 
 $pos = array();

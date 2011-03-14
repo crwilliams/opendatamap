@@ -36,7 +36,7 @@ SELECT DISTINCT * WHERE {
 	?o gr:availableAtOrFrom <$uri> .
 	?o gr:includes ?ps .
 	?ps rdfs:label ?label .
-}ORDER BY ?label 
+} ORDER BY ?label 
 ");
 echo "<h3> Offers: </h3>";
 echo "<ul class='offers'>"; 
@@ -59,7 +59,7 @@ SELECT DISTINCT * WHERE {
 	?time gr:hasOpeningHoursDayOfWeek ?day .
 	?time gr:opens ?opens .
 	?time gr:closes ?closes .
-}ORDER BY ?start ?end ?day ?opens ?closes
+} ORDER BY ?start ?end ?day ?opens ?closes
 ");
 
 if(count($allpos) > 0)

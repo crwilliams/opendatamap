@@ -30,7 +30,7 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
   OPTIONAL { ?pos geo:long ?long . }
   OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
   FILTER ( BOUND(?long) && BOUND(?lat) )
-}
+} ORDER BY ?poslabel
 ");
 
 $allbus = sparql_get($endpoint, "
@@ -47,7 +47,7 @@ SELECT DISTINCT ?pos ?poslabel ?lat ?long {
   ?pos geo:lat ?lat .
   ?pos geo:long ?long .
   FILTER ( REGEX( ?code, '^U', 'i') )
-}
+} ORDER BY ?poslabel
 ");
 
 $i = 0;
