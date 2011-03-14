@@ -30,10 +30,12 @@ PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT * WHERE {
-	?s <http://purl.org/goodrelations/v1#availableAtOrFrom> <$uri> .
-	?s rdfs:label ?label .
+	?o gr:availableAtOrFrom <$uri> .
+	?o gr:includes ?ps .
+	?ps rdfs:label ?label .
 }ORDER BY ?label 
 ");
 echo "<h3> Offers: </h3>";
@@ -48,14 +50,15 @@ PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT * WHERE {
-	<$uri> <http://purl.org/goodrelations/v1#hasOpeningHoursSpecification> ?time .
-	?time <http://purl.org/goodrelations/v1#validFrom> ?start .
-	?time <http://purl.org/goodrelations/v1#validThrough> ?end .
-	?time <http://purl.org/goodrelations/v1#hasOpeningHoursDayOfWeek> ?day .
-	?time <http://purl.org/goodrelations/v1#opens> ?opens .
-	?time <http://purl.org/goodrelations/v1#closes> ?closes .
+	<$uri> gr:hasOpeningHoursSpecification ?time .
+	?time gr:validFrom ?start .
+	?time gr:validThrough ?end .
+	?time gr:hasOpeningHoursDayOfWeek ?day .
+	?time gr:opens ?opens .
+	?time gr:closes ?closes .
 }ORDER BY ?start ?end ?day ?opens ?closes
 ");
 

@@ -24,12 +24,14 @@ PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
-  ?offering a <http://purl.org/openorg/GenericOffering> .
-  ?offering <http://purl.org/goodrelations/v1#availableAtOrFrom> ?pos .
+  ?offering a gr:Offering .
+  ?offering gr:availableAtOrFrom ?pos .
+  ?offering gr:includes ?ps .
   ?pos rdfs:label ?poslabel .
-  ?offering rdfs:label ?label .
+  ?ps rdfs:label ?label .
   ?pos <http://purl.org/openorg/mapIcon> ?icon .
   FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') 
   )
