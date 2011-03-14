@@ -17,7 +17,7 @@ function positionimg($rimg, $img, $destx, $desty) {
 }
 $hash = md5($_SERVER['QUERY_STRING']);
 $filename = 'cache/'.$hash.'.png';
-if(true || !file_exists($filename))
+if(!file_exists($filename))
 {
 	$imgs = $_GET['i'];
 	if(array_key_exists('base', $_GET))
