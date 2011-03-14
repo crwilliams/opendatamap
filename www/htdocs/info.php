@@ -39,7 +39,7 @@ SELECT DISTINCT * WHERE {
 echo "<h3> Offers: </h3>";
 echo "<ul class='offers'>"; 
 foreach($allpos as $point) {
-	echo "<li onclick=\"inputBox.value = '^".$point['label']."$'; updateFunc();\">".$point['label']."</li>";
+	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
 }
 echo "</ul>";
 
