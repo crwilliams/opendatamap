@@ -20,7 +20,7 @@ var updateFunc;
 var nav;
 
 var initmarkers = function(cont) {
-  console.log('initmarkers');
+  // console.log('initmarkers');
   jQuery.get('alldata.php', function(data,textstatus,xhr) {
 	       // do party!!!!
 	       // clear em out, babes. 
