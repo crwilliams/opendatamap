@@ -5,7 +5,7 @@ $q = $_GET['q'];
 if(isset($_GET['lat']) && $_GET['lat'] != "")
 	$lat = $_GET['lat'];
 else
-	$lat = 50.93463;
+	$lat = 50.9355;
 if(isset($_GET['long']) && $_GET['long'] != "")
 	$long = $_GET['long'];
 else
@@ -13,7 +13,7 @@ else
 if(isset($_GET['zoom']) && $_GET['zoom'] != "")
 	$zoom = $_GET['zoom'];
 else
-	$zoom = 15;
+	$zoom = 17;
 ?>
 var map;
 var updateFunc;
