@@ -63,8 +63,8 @@ var initialize = function() {
 
 	var bldgLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/buildings.php', kmlOptions);
 	bldgLayer.setMap(map);
-	var siteLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/sites.php', kmlOptions);
-	siteLayer.setMap(map);
+//	var siteLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/sites.php', kmlOptions);
+//	siteLayer.setMap(map);
 
 	initmarkers(function() {
 		      	initmarkerevents();
