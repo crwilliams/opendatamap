@@ -1,4 +1,3 @@
-var initmarkers = function() {
 <?php
 error_reporting(0);
 include_once "sparqllib.php";
@@ -50,51 +49,20 @@ SELECT DISTINCT ?pos ?poslabel ?lat ?long {
 } ORDER BY ?poslabel
 ");
 
+echo "[";
 $i = 0;
 foreach($allpos as $point) {
-$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
-$a = $point['poslabel'];
-?>
+	$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
+	if($point['icon'] == "")
+		$point['icon'] = "resources/blackness.png";
 
-markers['<?php echo $point['pos'] ?>'] = new google.maps.Marker({
-    position: new google.maps.LatLng(<?php echo $point['lat'] ?>, <?php echo $point['long'] ?>), 
-    title: '<?php echo $point['poslabel'] ?>',
-    map: map,
-    icon: '<?php echo $point['icon']!=""?$point['icon']:"resources/blackness.png" ?>',
-    visible: false
-});
-
-infowindows['<?php echo $point['pos'] ?>'] = new google.maps.InfoWindow({
-    content: '<div id="content">'+
-    '<h2 id="title"><img style="width:20px;" src="<?php echo $point['icon']!=""?$point['icon']:"resources/blackness.png" ?>" /><?php echo $point['poslabel'] ?></h2>'+
-    '<div id="bodyContent">Loading...'+
-    '</div>'+
-    '</div>'
-});
-
-<?php
-$i++;
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.str_replace("\\", "\\\\", $point['poslabel']).'","'.$point['icon'].'"],';
+	//if($i++ > 114)
+	//	break;
 }
 
 foreach($allbus as $point) {
-?>
-markers['<?php echo $point['pos'] ?>'] = new google.maps.Marker({
-    position: new google.maps.LatLng(<?php echo $point['lat'] ?>, <?php echo $point['long'] ?>), 
-    title: '<?php echo $point['poslabel'] ?>',
-    map: map,
-    icon: 'http://google-maps-icons.googlecode.com/files/bus.png',
-    visible: false
-});
-
-infowindows['<?php echo $point['pos'] ?>'] = new google.maps.InfoWindow({
-    content: '<div id="content">'+
-    '<h2 id="title"><img style="width:20px;" src="http://google-maps-icons.googlecode.com/files/bus.png" /><?php echo $point['poslabel'] ?></h2>'+
-    '<div id="bodyContent">Loading...'+
-    '</div>'+
-    '</div>'
-});
-<?php
-$i++;
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://google-maps-icons.googlecode.com/files/bus.png"],';
 }
+echo "[]]";
 ?>
-}

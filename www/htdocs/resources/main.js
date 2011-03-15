@@ -16,11 +16,14 @@ var reset_search_icon = function() {
 	}
 }
 
+
+
 // TODO merge this in with initialize
 jQuery(document).ready(function() {
-	 jQuery("#inputbox").bind("keyUp", reset_search_icon);
+		      jQuery("#inputbox").bind("keyUp", reset_search_icon);
 });
 
+// Colin sez: "someone's clicked on something, you need to load the real data into it"
 window.loadWindow = function(j) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
 	var xmlhttp = new XMLHttpRequest();
@@ -77,20 +80,44 @@ updateFunc = function(force) {
 	{
 		if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		{
-			for(var i in markers) {
-				markers[i].setVisible(false);
+		        
+			
+			var response_data = JSON.parse(xmlhttp.responseText);
+			// console.log('got ', xmlhttp.responseText, response_data);
+			var matches = [], labelmatches = [];
+			// NOOO DONT DO THIS: eval(xmlhttp.responseText);
+			if (response_data !== undefined) {
+			    matches = response_data[0];
+			    labelmatches = response_data[1];
 			}
-			eval(xmlhttp.responseText);
+
+			var matchesd = {};
+			matches.map(function(x) { if (x !== undefined) { matchesd[x] = true; } });
+
+			// old way
+			//for(var i in markers) {
+			//    markers[i].setVisible(false);
+			//}
+			for (var uri in markers) {
+			    markers[uri].setVisible(matchesd[uri] !== undefined);
+			}			
+			
 			selectIndex = -1;
 			//alert(matches.length);
-			for(var m in matches) {
-				if(markers[matches[m]] !== undefined)
-					markers[matches[m]].setVisible(true);
-			}
+			// old way
+// 			for(var m in matches) {
+// 			    // if it's colins' special last box continue
+// 			    if (m === undefined) { continue; }
+// 			    if(markers[matches[m]] !== undefined) {				
+// 				markers[matches[m]].setVisible(true);
+// 			    }
+// 			}
 			list.innerHTML = "";
 			var re = new RegExp('('+inputBox.value+')',"gi");
 			limit = 0;
 			for(var m in labelmatches) {
+			    // if it's colins' special last box continue
+			    if (m === undefined) continue;
 				var dispStr;
 				if(inputBox.value != "")
 					dispStr = new String(labelmatches[m]).replace(re, "<span style='background-color:#FFFF66'>$1</span>");

@@ -19,6 +19,35 @@ var map;
 var updateFunc;
 var nav;
 
+var initmarkers = function(cont) {
+  console.log('initmarkers');
+  jQuery.get('alldata.php', function(data,textstatus,xhr) {
+	       // do party!!!!
+	       // clear em out, babes. 
+	       window.markers = {};
+	       window.infowindows = {};
+	       // refill ...
+	       data.map(function(markpt) {
+			  if (markpt.length == 0) return;
+			  var pos = markpt[0];
+			  var lat = markpt[1];
+			  var lon = markpt[2];
+			  var poslabel = markpt[3];
+			  var icon = markpt[4];
+			  markers[pos] = new google.maps.Marker({
+					  position: new google.maps.LatLng(lat, lon), 
+					      title: poslabel,
+					      map: window.map,
+					      icon: icon,
+					      visible: false
+					      });
+			  infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title"><img style="width:20px;" src="'+icon+'" />'+poslabel+'</h2><div id="bodyContent">Loading...</div></div>'});
+			});
+	       // console.log('markers:', markers, 'info ', infowindows);
+	       cont();
+	     },'json');
+};
+
 var initialize = function() {
 	var myLatlng = new google.maps.LatLng(<?php echo $lat; ?>, <?php echo $long; ?>);
 	var myOptions = {
@@ -28,15 +57,16 @@ var initialize = function() {
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 	
-	initmarkers();
-	initmarkerevents();
-	initgeoloc();
-	inittoggle();
-	initcredits();
-	initsearch();
-
-	var inputBox = document.getElementById("inputbox");
-	inputBox.onkeyup = updateFunc;
-	inputBox.onkeydown = nav;
-	updateFunc();
+	initmarkers(function() {
+		      	initmarkerevents();
+			initgeoloc();
+			inittoggle();
+			initcredits();
+			initsearch();
+			
+			var inputBox = document.getElementById("inputbox");
+			inputBox.onkeyup = updateFunc;
+			inputBox.onkeydown = nav;
+			updateFunc();
+		    });
 }

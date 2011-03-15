@@ -59,6 +59,5 @@ error_reporting(0);
 		<div id="credits"><?php $include = true; include 'credits.php' ?></div>
 		<div id="credits-small"><a href="credits.php">Application Credits</a></div>
 	</body>
-	<script type="text/javascript" src="alldata.php">
-	</script>
+	<!--<script type="text/javascript" src="alldata.php"></script>-->
 </html>
