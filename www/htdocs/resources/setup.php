@@ -56,7 +56,16 @@ var initialize = function() {
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-	
+
+	var kmlOptions = {
+		preserveViewport: true
+	}
+
+	var bldgLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/buildings.php', kmlOptions);
+	bldgLayer.setMap(map);
+	var siteLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/sites.php', kmlOptions);
+	siteLayer.setMap(map);
+
 	initmarkers(function() {
 		      	initmarkerevents();
 			initgeoloc();

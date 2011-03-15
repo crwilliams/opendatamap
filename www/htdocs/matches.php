@@ -1,7 +1,6 @@
 <?php
 error_reporting(0);
 include_once "sparqllib.php";
-include_once "json_encode.php";
 
 $q = $_GET['q'];
 $endpoint = "http://sparql.data.southampton.ac.uk";
