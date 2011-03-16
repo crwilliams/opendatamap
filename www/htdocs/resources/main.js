@@ -128,7 +128,14 @@ updateFunc = function(force) {
 
 				if(labelmatches[m][2] !== undefined)
 				{
-					list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
+					if(labelmatches[m][3] !== undefined)
+					{
+						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><img src="'+labelmatches[m][3]+'" style="width:15px" />'+dispStr+'</li>';
+					}
+					else
+					{
+						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
+					}
 				}
 				else
 				{
