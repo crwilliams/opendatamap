@@ -10,14 +10,14 @@ SELECT DISTINCT ?name ?uri {
   ?app <http://xmlns.com/foaf/0.1/homepage> <$uri> .
   ?app <http://purl.org/dc/terms/requires> ?uri .
   ?uri <http://purl.org/dc/terms/title> ?name .
-}
+} ORDER BY ?name
 ");
 $creators = sparql_get($endpoint, "
 SELECT DISTINCT ?name ?uri {
   ?app <http://xmlns.com/foaf/0.1/homepage> <$uri> .
   ?app <http://purl.org/dc/terms/creator> ?uri .
   ?uri <http://xmlns.com/foaf/0.1/name> ?name .
-}
+} ORDER BY ?name
 ");
 
 foreach($datasets as $dataset)

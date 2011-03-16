@@ -1,6 +1,8 @@
 var mcOptions = {gridSize: 50, maxZoom: 15};
 var markers = new Array();
 var infowindows = new Array();
+var polygons = new Array();
+var polygoninfowindows = new Array();
 var clusterMarkers = new Array();
 var clusterInfowindows = new Array();
 
@@ -38,16 +40,23 @@ window.loadWindow = function(j) {
 	}
 }
 
+var closeAll = function() {
+	for(var i in markers) {
+		infowindows[i].close();
+	}
+	for(var i in clusterMarkers) {
+		clusterInfowindows[i].close();
+	}
+	for(var i in polygons) {
+		polygoninfowindows[i].close();
+	}
+}
+
 var initmarkerevents = function() {
 	for(var i in markers) {
 		with ({ j: i }) {
 			google.maps.event.addListener(markers[i], 'click', function() {
-				for(var i in markers) {
-					infowindows[i].close();
-				}
-				for(var i in clusterMarkers) {
-					clusterInfowindows[i].close();
-				}
+				closeAll();
 				infowindows[j].open(map,markers[j]);
 	
 				loadWindow(j);
@@ -61,7 +70,7 @@ var oldString = null;
 var xmlhttp = undefined;
 
 updateFunc = function(force) {
-	if(force === undefined)
+	if(force !== true)
 		force = false;
 	var enabledCategories = getSelectedCategories();
      reset_search_icon();
@@ -85,7 +94,6 @@ updateFunc = function(force) {
 			var response_data = JSON.parse(xmlhttp.responseText);
 			// console.log('got ', xmlhttp.responseText, response_data);
 			var matches = [], labelmatches = [];
-			// NOOO DONT DO THIS: eval(xmlhttp.responseText);
 			if (response_data !== undefined) {
 			    matches = response_data[0];
 			    labelmatches = response_data[1];
@@ -94,36 +102,38 @@ updateFunc = function(force) {
 			var matchesd = {};
 			matches.map(function(x) { if (x !== undefined) { matchesd[x] = true; } });
 
-			// old way
-			//for(var i in markers) {
-			//    markers[i].setVisible(false);
-			//}
 			for (var uri in markers) {
 			    markers[uri].setVisible(matchesd[uri] !== undefined);
 			}			
 			
 			selectIndex = -1;
-			//alert(matches.length);
-			// old way
-// 			for(var m in matches) {
-// 			    // if it's colins' special last box continue
-// 			    if (m === undefined) { continue; }
-// 			    if(markers[matches[m]] !== undefined) {				
-// 				markers[matches[m]].setVisible(true);
-// 			    }
-// 			}
 			list.innerHTML = "";
-			var re = new RegExp('('+inputBox.value+')',"gi");
+
+			var re = new RegExp('('+$.trim(inputBox.value)+')',"gi");
 			limit = 0;
 			for(var m in labelmatches) {
 			    // if it's colins' special last box continue
 			    if (m === undefined) continue;
 				var dispStr;
+				if (labelmatches[m][0] === undefined) {
+					try {  console.log('warning colin, labelmatches for ',m,' was undefined'); } catch(e) { }
+					continue;	
+				}
+
 				if(inputBox.value != "")
-					dispStr = new String(labelmatches[m]).replace(re, "<span style='background-color:#FFFF66'>$1</span>");
+					dispStr = new String(labelmatches[m][0]).replace(re, "<span style='background-color:#FFFF66'>$1</span>");
 				else
-					dispStr = labelmatches[m];
-				list.innerHTML += '<li id="li'+limit+'" onclick="setInputBox(\'^'+labelmatches[m]+'$\'); updateFunc();">'+dispStr+'</li>';
+					dispStr = labelmatches[m][0];
+
+
+				if(labelmatches[m][2] !== undefined)
+				{
+					list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
+				}
+				else
+				{
+					list.innerHTML += '<li id="li'+limit+'" onclick="setInputBox(\'^'+labelmatches[m][0]+'$\'); updateFunc();">'+dispStr+'</li>';
+				} 
 				limit++;
 			}
 			cluster();
@@ -145,6 +155,27 @@ var nav = function(e)
 		return moveUp();
 	else if(e.keyCode == 13)
 		return select();
+}
+
+var zoomTo = function(uri)
+{
+	var bounds = new google.maps.LatLngBounds();
+	if(polygons[uri] !== undefined)
+	{
+		_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
+		for(var i = 0; i<polygons[uri].length; i++)
+		{
+        		polygons[uri][i].getPath().forEach(function(el, i) {
+				bounds.extend(el);
+			});
+		}
+		map.fitBounds(bounds);
+	}
+	else if(markers[uri] !== undefined)
+	{
+		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
+		map.panTo(markers[uri].getPosition());
+	}
 }
 
 /*
@@ -213,12 +244,7 @@ var cluster = function() {
 	for(var i in clusterMarkers) {
 		with ({ j: i }) {
 			google.maps.event.addListener(clusterMarkers[i], 'click', function() {
-				for(var i in markers) {
-					infowindows[i].close();
-				}
-				for(var i in clusterMarkers) {
-					clusterInfowindows[i].close();
-				}
+				closeAll();
 				_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', j]);
 				clusterInfowindows[j].open(map,clusterMarkers[j]);
 			});

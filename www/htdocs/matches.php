@@ -2,7 +2,7 @@
 error_reporting(0);
 include_once "sparqllib.php";
 
-$q = $_GET['q'];
+$q = trim($_GET['q']);
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
 $cats = explode(',', $_GET['ec']);
@@ -53,6 +53,25 @@ SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
   ) && REGEX( ?label, '^U', 'i') )
 } ORDER BY ?poslabel
 ");
+$qbd = trim(str_replace(array('building', 'buildin', 'buildi', 'build', 'buil', 'bui', 'bu', 'b'), '', strtolower($q)));
+$buildingdata = sparql_get($endpoint, "
+SELECT DISTINCT ?url ?name ?number WHERE {
+  ?url a <http://vocab.deri.ie/rooms#Building> .
+  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
+  ?url <http://purl.org/dc/terms/spatial> ?outline .
+  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
+} ORDER BY ?number
+");
+$sitedata = sparql_get($endpoint, "
+SELECT DISTINCT ?url ?name WHERE {
+  ?url a <http://www.w3.org/ns/org#Site> .
+  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?url <http://purl.org/dc/terms/spatial> ?outline .
+  FILTER ( REGEX( ?name, '$q', 'i') )
+} ORDER BY ?name
+");
+
 
 $pos = array();
 $label = array();
@@ -61,9 +80,16 @@ foreach($data as $point) {
 		continue;
 	$pos[$point['pos']] ++;
 	if(preg_match('/'.$q.'/i', $point['label']))
+	{
 		$label[$point['label']] ++;
+		$type[$point['label']] = "offering";
+	}
 	if(preg_match('/'.$q.'/i', $point['poslabel']))
-		$label[$point['poslabel']] ++;
+	{
+		$label[$point['poslabel']] += 10;
+		$type[$point['poslabel']] = "point-of-service";
+		$url[$point['poslabel']] = $point['pos'];
+	}
 }
 foreach($busdata as $point) {
 	if(!in_cat($iconcats, $point['icon'], $cats))
@@ -71,8 +97,34 @@ foreach($busdata as $point) {
 	$pos[$point['pos']] ++;
 	if(preg_match('/'.$q.'/i', $point['label']))
 		$label[$point['label']] ++;
+		$type[$point['label']] = "bus-route";
 	if(preg_match('/'.$q.'/i', $point['poslabel']))
-		$label[$point['poslabel']] ++;
+	{
+		$label[$point['poslabel']] += 10;
+		$type[$point['poslabel']] = "bus-stop";
+		$url[$point['poslabel']] = $point['pos'];
+	}
+}
+foreach($buildingdata as $point) {
+	$pos[$point['url']] += 100;
+	if(preg_match('/'.$q.'/i', $point['name']))
+	{
+		$label[$point['name']] += 100;
+		$type[$point['name']] = "building";
+		$url[$point['name']] = $point['url'];
+	}
+	if(preg_match('/'.$qbd.'/i', $point['number']))
+	{
+		$label['Building '.$point['number']] += 100;
+		$type['Building '.$point['number']] = "building";
+		$url['Building '.$point['number']] = $point['url'];
+	}
+}
+foreach($sitedata as $point) {
+	$pos[$point['url']] += 1000;
+	$label[$point['name']] += 1000;
+	$type[$point['name']] = "site";
+	$url[$point['name']] = $point['url'];
 }
 arsort($label);
 $limit = 100;
@@ -85,7 +137,12 @@ foreach (array_keys($pos) as $x)
 echo '[]],';
 echo '[';
 foreach (array_keys($label) as $x)
-	echo '"'.$x.'",';
+{
+	echo '["'.$x.'","'.$type[$x];
+	if($type[$x] == 'building' || $type[$x] == 'site' || $type[$x] == 'bus-stop' || $type[$x] == 'point-of-service')
+		echo '","'.$url[$x];
+	echo '"],';
+}
 echo '[]]';
 echo ']';
 ?>

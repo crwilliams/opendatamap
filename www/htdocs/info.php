@@ -54,8 +54,8 @@ PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT * WHERE {
 	<$uri> gr:hasOpeningHoursSpecification ?time .
-	?time gr:validFrom ?start .
-	?time gr:validThrough ?end .
+	OPTIONAL { ?time gr:validFrom ?start . }
+	OPTIONAL { ?time gr:validThrough ?end . }
 	?time gr:hasOpeningHoursDayOfWeek ?day .
 	?time gr:opens ?opens .
 	?time gr:closes ?closes .
@@ -68,7 +68,7 @@ if(count($allpos) > 0)
 	echo "<h3>Opening detail:</h3>";
 	foreach($allpos as $point)
 	{
-		if ($point['start'] != 'T00:00:00')
+		if ($point['start'] != '')
 		{
 			$start = strtotime($point['start']);
 			$start = date('d/m/Y',$start);
@@ -77,7 +77,7 @@ if(count($allpos) > 0)
 		{
 			$start = '';
 		}
-		if ($point['end'] != 'T23:59:59')
+		if ($point['end'] != '')
 		{
 			$end = strtotime($point['end']);
 			$end = date('d/m/Y',$end);
@@ -147,6 +147,8 @@ if(count($allpos) > 0)
 			echo "<td width=\"350\">";
 			foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
 			{
+				if($dot == '00:00-00:00')
+					$dot = '24 hour';
 				echo $dot."<br/>";
 				if($day == date('l', $now))
 				{
