@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once "sparqllib.php";
+include_once "inc/sparqllib.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 $uri = "http://opendatamap.ecs.soton.ac.uk";

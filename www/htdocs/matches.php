@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once "sparqllib.php";
+include_once "inc/sparqllib.php";
 
 $q = trim($_GET['q']);
 $endpoint = "http://sparql.data.southampton.ac.uk";
@@ -59,7 +59,6 @@ SELECT DISTINCT ?url ?name ?number WHERE {
   ?url a <http://vocab.deri.ie/rooms#Building> .
   ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
   ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
-  ?url <http://purl.org/dc/terms/spatial> ?outline .
   FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
 } ORDER BY ?number
 ");

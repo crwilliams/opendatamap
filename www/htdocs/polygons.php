@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once "sparqllib.php";
+include_once "inc/sparqllib.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
@@ -12,9 +12,11 @@ SELECT DISTINCT ?url ?name ?outline WHERE {
 } 
 ");
 $buildings = sparql_get($endpoint, "
-SELECT DISTINCT ?url ?name ?outline ?hfeature ?lfeature ?number WHERE {
+SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
   ?url a <http://vocab.deri.ie/rooms#Building> .
-  ?url <http://purl.org/dc/terms/spatial> ?outline .
+  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
+  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
   ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
   OPTIONAL { ?url <http://purl.org/openorg/hasFeature> ?hfeature . 
            ?hfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
@@ -46,14 +48,21 @@ foreach($buildings as $x) {
 	echo '["'.$x['number'].': '.$x['name'].'"],';
 	echo '[-5],';
 	echo '[';
-	$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $x['outline']));
-	foreach($x['outline'] as $p)
+	if($x['outline'] != "")
 	{
-		echo '[';
-		echo str_replace(' ', ',', $p);
-		echo '],';
+		$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $x['outline']));
+		foreach($x['outline'] as $p)
+		{
+			echo '[';
+			echo str_replace(' ', ',', $p);
+			echo '],';
+		}
+		echo '[]]';
 	}
-	echo '[]]';
+	else
+	{
+		echo '['.$x['long'].','.$x['lat'].']]';
+	}
 	echo '],';
 }
 echo '[]]';

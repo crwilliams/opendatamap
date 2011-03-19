@@ -169,14 +169,22 @@ var zoomTo = function(uri)
 	var bounds = new google.maps.LatLngBounds();
 	if(polygons[uri] !== undefined)
 	{
-		_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
-		for(var i = 0; i<polygons[uri].length; i++)
+		if(polygons[uri].length !== undefined)
 		{
-        		polygons[uri][i].getPath().forEach(function(el, i) {
-				bounds.extend(el);
-			});
+			_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
+			for(var i = 0; i<polygons[uri].length; i++)
+			{
+        			polygons[uri][i].getPath().forEach(function(el, i) {
+					bounds.extend(el);
+				});
+			}
+			map.fitBounds(bounds);
 		}
-		map.fitBounds(bounds);
+		else
+		{
+			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
+			map.panTo(polygons[uri].getPosition());
+		}
 	}
 	else if(markers[uri] !== undefined)
 	{

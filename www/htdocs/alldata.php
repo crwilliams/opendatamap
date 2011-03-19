@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once "sparqllib.php";
+include_once "inc/sparqllib.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
@@ -13,7 +13,7 @@ PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
   ?offering a gr:Offering .
-  ?offering <http://purl.org/goodrelations/v1#availableAtOrFrom> ?pos .
+  ?offering gr:availableAtOrFrom ?pos .
   ?pos rdfs:label ?poslabel .
   OPTIONAL { ?pos spacerel:within ?b .
              ?b geo:lat ?lat . 
