@@ -18,7 +18,7 @@ SELECT DISTINCT ?name ?icon WHERE {
 }
 ");
 echo "<div id='content'>";
-echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"resources/blackness.png")."' />".$allpos[0]['name']."</h2>";
+echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"img/blackness.png")."' />".$allpos[0]['name']."</h2>";
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
@@ -35,13 +35,14 @@ PREFIX gr: <http://purl.org/goodrelations/v1#>
 SELECT DISTINCT * WHERE {
 	?o gr:availableAtOrFrom <$uri> .
 	?o gr:includes ?ps .
+	?ps a gr:ProductOrServicesSomeInstancesPlaceholder .
 	?ps rdfs:label ?label .
 } ORDER BY ?label 
 ");
 echo "<h3> Offers: </h3>";
 echo "<ul class='offers'>"; 
 foreach($allpos as $point) {
-	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
+	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label'].$point['type']."</li>";
 }
 echo "</ul>";
 

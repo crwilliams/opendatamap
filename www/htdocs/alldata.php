@@ -54,7 +54,7 @@ $i = 0;
 foreach($allpos as $point) {
 	$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
 	if($point['icon'] == "")
-		$point['icon'] = "resources/blackness.png";
+		$point['icon'] = "img/blackness.png";
 
 	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.str_replace("\\", "\\\\", $point['poslabel']).'","'.$point['icon'].'"],';
 	//if($i++ > 114)

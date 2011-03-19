@@ -7,7 +7,7 @@ var clusterMarkers = new Array();
 var clusterInfowindows = new Array();
 
 var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
-var CLEAR_SEARCH_ICON = "resources/nt-left.png";
+var CLEAR_SEARCH_ICON = "img/nt-left.png";
 
 var reset_search_icon = function() {
 	var val = jQuery("#inputbox").val();

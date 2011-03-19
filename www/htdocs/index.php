@@ -8,18 +8,18 @@ error_reporting(0);
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-		<link rel="apple-touch-icon" href="resources/opendatamap.png" />
-		<link rel="apple-touch-icon-precomposed" href="resources/opendatamap.png" />
-		<link rel="shortcut icon" href="resources/opendatamap.png" />
+		<link rel="apple-touch-icon" href="img/opendatamap.png" />
+		<link rel="apple-touch-icon-precomposed" href="img/opendatamap.png" />
+		<link rel="shortcut icon" href="img/opendatamap.png" />
 		<script src="http://www.google.com/jsapi"></script>
-		<script type="text/javascript" src="resources/jquery-1.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="resources/setup.php?lat=<?php echo $_GET['lat'] ?>&long=<?php echo $_GET['long'] ?>&zoom=<?php echo $_GET['zoom'] ?>"></script>
-		<script type="text/javascript" src="resources/main.js"></script>
-		<script type="text/javascript" src="resources/geoloc.js"></script>
-		<script type="text/javascript" src="resources/toggle.js"></script>
-		<script type="text/javascript" src="resources/credits.js"></script>
-		<script type="text/javascript" src="resources/search.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/geoloc.js"></script>
+		<script type="text/javascript" src="js/toggle.js"></script>
+		<script type="text/javascript" src="js/credits.js"></script>
+		<script type="text/javascript" src="js/search.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
@@ -36,19 +36,19 @@ error_reporting(0);
 		</script>
 	</head>
 	<body onload="initialize()">
-		<div id="spinner"><img src="resources/ajax-loader.gif"></div>
+		<div id="spinner"><img src="img/ajax-loader.gif"></div>
 		<div id="map_canvas"></div>
-		<img id="geobutton" src='resources/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
+		<img id="geobutton" src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons">
-			<img src="resources/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />
-			<img src="resources/catering.png" id="Catering" title="Catering" alt="Catering" onclick="toggle('Catering');" />
-			<img src="resources/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services');" />
-			<img src="resources/entertainment.png" id="Entertainment" title="Entertainment" alt="Entertainment" onclick="toggle('Entertainment');" />
-			<img src="resources/health.png" id="Health" title="Health" alt="Health" onclick="toggle('Health');" />
-			<img src="resources/religion.png" id="Religion" title="Religion" alt="Religion" onclick="toggle('Religion');" />
-			<img src="resources/retail.png" id="Retail" title="Retail" alt="Retail" onclick="toggle('Retail')" />
-			<img src="resources/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
-			<img src="resources/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
+			<img src="img/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />
+			<img src="img/catering.png" id="Catering" title="Catering" alt="Catering" onclick="toggle('Catering');" />
+			<img src="img/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services');" />
+			<img src="img/entertainment.png" id="Entertainment" title="Entertainment" alt="Entertainment" onclick="toggle('Entertainment');" />
+			<img src="img/health.png" id="Health" title="Health" alt="Health" onclick="toggle('Health');" />
+			<img src="img/religion.png" id="Religion" title="Religion" alt="Religion" onclick="toggle('Religion');" />
+			<img src="img/retail.png" id="Retail" title="Retail" alt="Retail" onclick="toggle('Retail')" />
+			<img src="img/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
+			<img src="img/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
 		</div>
 		<form id='search' action="" onsubmit="return false">
 			<input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">

@@ -23,7 +23,7 @@ if(!file_exists($filename))
 	if(array_key_exists('base', $_GET))
 		$rimg = simagecreatefrompng($_GET['base']);
 	else
-		$rimg = simagecreatefrompng('resources/blackness.png');
+		$rimg = simagecreatefrompng('img/blackness.png');
 	$img1 = simagecreatefrompng($imgs[0]);
 	$i = count($imgs);
 	if($i >= 2)

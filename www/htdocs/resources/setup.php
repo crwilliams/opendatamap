@@ -51,6 +51,11 @@ var initmarkers = function(cont) {
 		// clear em out, babes. 
 		window.polygons = {};
 		window.polygoninfowindows = {};
+		var buildingIcon = new google.maps.MarkerImage('img/building.png',
+			new google.maps.Size(20, 20),
+			new google.maps.Point(0, 0),
+			new google.maps.Point(10, 10)
+		);
 		// refill ...
 		data.map(function(markpt) {
 			if (markpt.length == 0) return;
@@ -70,7 +75,7 @@ var initmarkers = function(cont) {
 				polygons[pos] = new google.maps.Marker({
 					position: new google.maps.LatLng(points[i][1], points[i][0]),
 					title: new String(poslabel).replace("'", "&apos;"),
-					icon: 'http://google-maps-icons.googlecode.com/files/black00.png',
+					icon: buildingIcon,
 					map: window.map,
 					visible: true
 				});
