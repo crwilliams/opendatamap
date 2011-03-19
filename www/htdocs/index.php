@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <?php
 error_reporting(0);
+
+$q = $_GET['q'];
+if(isset($_GET['lat']) && $_GET['lat'] != "")
+	$lat = $_GET['lat'];
+else
+	$lat = 50.9355;
+if(isset($_GET['long']) && $_GET['long'] != "")
+	$long = $_GET['long'];
+else
+	$long = -1.39595;
+if(isset($_GET['zoom']) && $_GET['zoom'] != "")
+	$zoom = $_GET['zoom'];
+else
+	$zoom = 17;
 ?>
 <html>
 	<head>
@@ -14,7 +28,7 @@ error_reporting(0);
 		<script src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="resources/setup.php?lat=<?php echo $_GET['lat'] ?>&long=<?php echo $_GET['long'] ?>&zoom=<?php echo $_GET['zoom'] ?>"></script>
+		<script type="text/javascript" src="js/setup.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/geoloc.js"></script>
 		<script type="text/javascript" src="js/toggle.js"></script>
@@ -35,9 +49,22 @@ error_reporting(0);
 		})();
 		</script>
 	</head>
-	<body onload="initialize()">
+	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom ?>)">
 		<div id="spinner"><img src="img/ajax-loader.gif"></div>
-		<div id="map_canvas"></div>
+<?php/*
+		<div style="width:210px; height:100%;">
+			<ul style='height:40px;'>
+				<li><img id="layersbutton" src='img/geoloc.png' onclick="geoloc()" alt="Toggle layers" title="Toggle layers" />Toggle layers</li>
+				<li><img id="searchbutton" src='img/geoloc.png' onclick="geoloc()" alt="Search" title="Search" />Search</li>
+			</ul>
+			<div id='scroll-container' style='position:absolute; top:40px; left:0px; bottom:0px; width:200px; overflow: scroll; margin-left:5px; padding:0px'>
+				<div id='content' style=''>
+					A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />
+				</div>
+			</div>
+		</div>
+*/?>
+		<div id="map_canvas" style=''></div>
 		<img id="geobutton" src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons">
 			<img src="img/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />

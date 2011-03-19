@@ -179,17 +179,20 @@ var zoomTo = function(uri)
 				});
 			}
 			map.fitBounds(bounds);
+			google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
 		}
 		else
 		{
 			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
 			map.panTo(polygons[uri].getPosition());
+			google.maps.event.trigger(polygons[uri], 'click');
 		}
 	}
 	else if(markers[uri] !== undefined)
 	{
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
 		map.panTo(markers[uri].getPosition());
+		google.maps.event.trigger(markers[uri], 'click');
 	}
 }
 
