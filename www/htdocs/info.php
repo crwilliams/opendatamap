@@ -19,6 +19,7 @@ SELECT DISTINCT ?name ?icon WHERE {
 ");
 echo "<div id='content'>";
 echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"img/blackness.png")."' />".$allpos[0]['name']."</h2>";
+
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
@@ -45,6 +46,13 @@ foreach($allpos as $point) {
 	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label'].$point['type']."</li>";
 }
 echo "</ul>";
+
+if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/PARKING-(.*)/', $uri, $matches))
+{
+	echo "<iframe style='border:none' src='parking.php?uri=".$_GET['uri']."' />";
+	die();
+}
+
 
 $allpos = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>

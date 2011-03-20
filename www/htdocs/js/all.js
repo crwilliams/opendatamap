@@ -434,13 +434,6 @@ var initialize = function(lat, long, zoom, uri) {
 
 	var styledMapType = new google.maps.StyledMapType([
   {
-    featureType: "road.arterial",
-    elementType: "all",
-    stylers: [
-      { hue: "#11ff00" },
-      { lightness: -42 }
-    ]
-  },{
     featureType: "poi",
     elementType: "all",
     stylers: [
