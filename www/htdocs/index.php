@@ -80,7 +80,7 @@ $uri = $_GET['uri'];
 			</input>
 			<ul style='display:none' id="list"></ul>
 		</form>
-		<img id="search-small" src='img/search.png' onclick="window.location='m'" alt="Search" title="Search" />
+		<div id="search-small"><img src='img/search.png' onclick="window.location='m'" alt="Search" title="Search" /></div>
 		<div id="credits"><?php $include = true; include 'credits.php' ?></div>
 		<div id="credits-small"><a href="credits.php">Application Credits</a></div>
 	</body>

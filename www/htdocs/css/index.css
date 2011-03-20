@@ -97,6 +97,9 @@ a {
 	border:solid 1px black;
 	display: block;
 }
+#search-small {
+	display:none;
+}
 form ul {
 	padding:0px;
 }
