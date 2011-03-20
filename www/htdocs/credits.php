@@ -1,5 +1,5 @@
 <?php
-if(substr($_SERVER['REQUEST_URI'], -4, 4) == '.php')
+if(!$include && substr($_SERVER['REQUEST_URI'], -4, 4) == '.php')
 	header('Location: credits');
 error_reporting(0);
 include_once "inc/sparqllib.php";

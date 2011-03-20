@@ -62,12 +62,27 @@ a {
 	#credits {
 		display:none;
 	}
+	#search-small {
+		display:block;
+	}
+	#search {
+		display:none;
+	}
+	#openings {
+		display: none;
+	}
 }
 @media only screen and (max-device-width: 640px) {
 	#credits-small {
 		display:block;
 	}
 	#credits {
+		display:none;
+	}
+	#search-small {
+		display:block;
+	}
+	#search {
 		display:none;
 	}
 	#openings {

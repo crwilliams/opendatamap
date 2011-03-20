@@ -256,6 +256,8 @@ var cluster = function() {
 var initsearch = function() {
 	$('#search').index = 2;
 	addControl('search', google.maps.ControlPosition.TOP_RIGHT);
+	$('#search-small').index = 2;
+	addControl('search-small', google.maps.ControlPosition.TOP_RIGHT);
 }
 
 var setInputBox = function(str) {
