@@ -28,12 +28,7 @@ else
 		<script src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="js/setup.js"></script>
-		<script type="text/javascript" src="js/main.js"></script>
-		<script type="text/javascript" src="js/geoloc.js"></script>
-		<script type="text/javascript" src="js/toggle.js"></script>
-		<script type="text/javascript" src="js/credits.js"></script>
-		<script type="text/javascript" src="js/search.js"></script>
+		<script type="text/javascript" src="js/all.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
@@ -59,7 +54,6 @@ else
 			</ul>
 			<div id='scroll-container' style='position:absolute; top:40px; left:0px; bottom:0px; width:200px; overflow: scroll; margin-left:5px; padding:0px'>
 				<div id='content' style=''>
-					A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />A<br />
 				</div>
 			</div>
 		</div>

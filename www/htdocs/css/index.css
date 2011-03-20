@@ -80,7 +80,7 @@ a {
 	background-color:rgba(255,255,255,0.8);
 	border-radius:3px;
 	border:solid 1px black;
-	display: none;
+	display: block;
 }
 form ul {
 	padding:0px;
@@ -130,7 +130,7 @@ img.icon {
 }
 
 #geobutton {
-	display:none;
+	display:block;
 }
 
 td {
@@ -182,7 +182,7 @@ h3 {
 }
 
 .toggleicons {
-	display:none;
+	display:block;
 }
 
 .toggleicons img {
