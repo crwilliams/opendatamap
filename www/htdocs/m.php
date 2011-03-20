@@ -21,7 +21,6 @@ include 'inc/options.php';
 		<script type="text/javascript" src="js/m.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
-		<link rel="stylesheet" href="css/index.css" type="text/css">
 		<script type="text/javascript">
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-20609696-4']);
