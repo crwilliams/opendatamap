@@ -1,0 +1,28 @@
+body {
+	font-family: 'Ubuntu', 'Helvetica', 'Arial', serif; 
+	margin:5px;
+}
+a {
+	color:#7777CC;
+}
+#credits a {
+	/*color:black;*/
+}
+#credits a:visited {
+	/*color:black;*/
+	text-decoration:none;
+}
+#credits a:link:hover {
+	/*color:blue;*/
+}
+#credits a:link {
+	/*color:black;*/
+	text-decoration:none;
+}
+#credits {
+	position:absolute;
+	text-align:right;
+	bottom: 25px;
+	right:25px;
+	font-size: 0.75em;
+}
