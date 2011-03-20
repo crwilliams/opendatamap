@@ -20,9 +20,7 @@ a {
 	text-decoration:none;
 }
 #credits {
-	position:absolute;
 	text-align:right;
-	bottom: 25px;
-	right:25px;
+	margin:15px;
 	font-size: 0.75em;
 }
