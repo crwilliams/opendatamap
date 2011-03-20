@@ -426,8 +426,35 @@ var initialize = function(lat, long, zoom, uri) {
 	map = new google.maps.Map(document.getElementById('map_canvas'), {
 		zoom: zoom,
 		center: new google.maps.LatLng(lat, long),
-		mapTypeId: google.maps.MapTypeId.ROADMAP
+		mapTypeControlOptions: {
+			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE]
+		},
+		mapTypeId: 'Map2'
 	});
+
+	var styledMapType = new google.maps.StyledMapType([
+  {
+    featureType: "road.arterial",
+    elementType: "all",
+    stylers: [
+      { hue: "#11ff00" },
+      { lightness: -42 }
+    ]
+  },{
+    featureType: "poi",
+    elementType: "all",
+    stylers: [
+      { visibility: "off" }
+    ]
+  },{
+    featureType: "transit.station.bus",
+    elementType: "all",
+    stylers: [
+      { visibility: "off" }
+    ]
+  }
+], {name: 'Map'});
+	map.mapTypes.set('Map2', styledMapType);
 
 	initmarkers(function() {
 		initmarkerevents();
