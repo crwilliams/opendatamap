@@ -74,9 +74,9 @@ $uri = $_GET['uri'];
 			<img src="img/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
 			<img src="img/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
 		</div>
-		<form id='search' action="" onsubmit="return false">
+		<form id='search' action="" onsubmit='return false'>
 			<input id="inputbox" style='width:200px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
-				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search">
+				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search" />
 			</input>
 			<ul style='display:none' id="list"></ul>
 		</form>
