@@ -420,7 +420,7 @@ var initmarkers = function(cont) {
 	},'json');
 };
 
-var initialize = function(lat, long, zoom) {
+var initialize = function(lat, long, zoom, uri) {
 	map = new google.maps.Map(document.getElementById('map_canvas'), {
 		zoom: zoom,
 		center: new google.maps.LatLng(lat, long),
@@ -437,7 +437,9 @@ var initialize = function(lat, long, zoom) {
 		$('#inputbox').keypress(keypress);
 		$('#inputbox').keyup(updateFunc);
 		updateFunc();
+		if(uri != '') zoomTo(uri);
 	});
+
 }
 
 var toggle = function(category) {

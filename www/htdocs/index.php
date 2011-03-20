@@ -15,6 +15,7 @@ if(isset($_GET['zoom']) && $_GET['zoom'] != "")
 	$zoom = $_GET['zoom'];
 else
 	$zoom = 17;
+$uri = $_GET['uri'];
 ?>
 <html>
 	<head>
@@ -22,6 +23,8 @@ else
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="keywords" content="University of Southampton,map,Southampton,amenity,bus stop,building,site,campus" />
+		<meta name="description" content="Map of the University of Southampton, generated from Linked Open Data" />
 		<link rel="apple-touch-icon" href="img/opendatamap.png" />
 		<link rel="apple-touch-icon-precomposed" href="img/opendatamap.png" />
 		<link rel="shortcut icon" href="img/opendatamap.png" />
@@ -44,7 +47,7 @@ else
 		})();
 		</script>
 	</head>
-	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom ?>)">
+	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."'" ?>)">
 		<div id="spinner"><img src="img/ajax-loader.gif"></div>
 <?php/*
 		<div style="width:210px; height:100%;">
@@ -72,7 +75,7 @@ else
 			<img src="img/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
 		</div>
 		<form id='search' action="" onsubmit="return false">
-			<input id="inputbox" style='width:200px' value='<?php echo $_GET['q'] ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
+			<input id="inputbox" style='width:200px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
 				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search">
 			</input>
 			<ul style='display:none' id="list"></ul>
