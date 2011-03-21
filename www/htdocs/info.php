@@ -33,7 +33,7 @@ PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
 PREFIX gr: <http://purl.org/goodrelations/v1#>
 
-SELECT DISTINCT * WHERE {
+SELECT DISTINCT ?label WHERE {
 	?o gr:availableAtOrFrom <$uri> .
 	?o gr:includes ?ps .
 	?ps a gr:ProductOrServicesSomeInstancesPlaceholder .
@@ -43,7 +43,27 @@ SELECT DISTINCT * WHERE {
 echo "<h3> Offers: </h3>";
 echo "<ul class='offers'>"; 
 foreach($allpos as $point) {
-	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label'].$point['type']."</li>";
+	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
+}
+if(count($allpos) == 0)
+{
+	$allpos = sparql_get($endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX gr: <http://purl.org/goodrelations/v1#>
+	
+	SELECT DISTINCT ?label WHERE {
+		?o gr:availableAtOrFrom <$uri> .
+		?o gr:includes ?ps .
+		?ps a gr:ProductOrService .
+		?ps rdfs:label ?label .
+	} ORDER BY ?label 
+	");
+	foreach($allpos as $point) {
+		echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
+	}
 }
 echo "</ul>";
 
