@@ -61,22 +61,34 @@ else
 </head>
 <body>
 <?php
-	echo "The <a href='.'>linked open data map</a> was developed by:";
+	echo "<p>The <a href='.'>linked open data map</a> was developed by:";
 	echo "<ul>";
 	foreach($creatorlinks as $creatorlink)
 		echo "<li>$creatorlink</li>";
 	echo "</ul>";
-	echo "It makes use of the following datasets:";
+	echo "</p>";
+	echo "<p>It makes use of the following datasets, provided by the <a href='http://id.southampton.ac.uk/'>University of Southampton</a>'s <a href='http://data.southampton.ac.uk'>Open Data Service</a>:";
 	echo "<ul>";
 	foreach($datasetlinks as $datasetlink)
 		echo "<li>$datasetlink</li>";
 	echo "</ul>";
-
-	echo "Thanks also to suggestions from:";
+	echo "</p>";
+	echo "<p>It uses icons from the excellent <a href='http://code.google.com/p/google-maps-icons/'>Map Icons Collection</a>:";
+	echo "<ul>";
+	echo "<li><a href='http://code.google.com/p/google-maps-icons/'><img src='http://google-maps-icons.googlecode.com/files/banner88x31.gif' /></a></li>";
+	echo "</ul>";
+	echo "</p>";
+	echo "<p>It uses the <a href='http://graphite.ecs.soton.ac.uk/sparqllib'>SPARQL RDF Library for PHP</a>, developed by:";
+	echo "<ul>";
+	echo "<li><a href='http://id.ecs.soton.ac.uk/person/1248'>Christopher Gutteridge</a></li>";
+	echo "</ul>";
+	echo "</p>";
+	echo "<p>Thanks also to suggestions from:";
 	echo "<ul>";
 	foreach($suggestionlinks as $suggestionlink)
 		echo "<li>$suggestionlink</li>";
 	echo "</ul>";
+	echo "</p>";
 ?>
 </body>
 </html>

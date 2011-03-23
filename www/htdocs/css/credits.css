@@ -3,5 +3,9 @@ body {
 }
 
 ul {
-	padding:20px;
+	padding-left:20px;
+}
+
+p {
+	padding-bottom:10px;
 }
