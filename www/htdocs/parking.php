@@ -3,7 +3,7 @@ $uri = urldecode($_GET['uri']);
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/PARKING-([0-9]{4})/', $uri, $matches))
 {
 	echo "<style>table{width:100%; margin:3px} td{background-color:black; color:yellow; margin:3px; padding:3px}</style>";
-	$data = file_get_contents("http://parking.dor.ky/api/C0".$matches[1]."");
+	$data = file_get_contents("http://dor.ky/api/parking/Southampton/C0".$matches[1]."");
 	$data = ltrim($data, "{");
 	$data = rtrim($data, "}");
 	$data = explode(",", $data);
@@ -20,5 +20,6 @@ if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/PARKING-([0-
 	echo '<tr><td>Used</td><td>'.$d['used'].'</td></tr>';
 	echo '</table>';
 	echo 'updated at '.date('H:i:s d/m/y', $d['updated']);
+	echo '<br/><small>This information is provided by <a href="http://dor.ky/code/apis/parking">Scott Wilcox&apos;s Parking Data API</a></small>';
 }
 ?>
