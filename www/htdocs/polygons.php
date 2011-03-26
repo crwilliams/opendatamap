@@ -30,7 +30,7 @@ foreach($sites as $x) {
 	echo '[';
 	echo '["'.$x['url'].'"],';
 	echo '["'.$x['name'].'"],';
-	echo '[-10],';
+	echo '-10,';
 	echo '[';
 	$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $x['outline']));
 	foreach($x['outline'] as $p)
@@ -46,7 +46,7 @@ foreach($buildings as $x) {
 	echo '[';
 	echo '["'.$x['url'].'"],';
 	echo '["'.$x['number'].': '.$x['name'].'"],';
-	echo '[-5],';
+	echo '-5,';
 	echo '[';
 	if($x['outline'] != "")
 	{
