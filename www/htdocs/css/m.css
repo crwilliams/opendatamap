@@ -24,3 +24,9 @@ a {
 	margin:15px;
 	font-size: 0.75em;
 }
+
+td,th {
+	padding: 5px;
+	vertical-align:middle;
+	text-align:center;
+}
