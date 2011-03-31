@@ -36,8 +36,9 @@ foreach($creators as $creator)
 }
 */
 $creatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23977'>Colin R. Williams</a>";
-$creatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/24273'>electronic Max</a>";
-$creatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23796'>Jarutas Pattanaphanchai</a>";
+$addcreatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/24273'>electronic Max</a>";
+$addcreatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23796'>Jarutas Pattanaphanchai</a>";
+$addcreatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23470'>Harry Rose</a>";
 
 $suggestionlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/1248'>Christopher Gutteridge</a>";
 $suggestionlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/9455'>David Tarrant</a>";
@@ -46,9 +47,11 @@ if($include)
 {
 	echo "Application created by ";
 	echo implode(", ", $creatorlinks);
+	echo " and <a href='credits' title='Full Application Credits'>others</a>";
+	//echo ", ".implode(", ", $addcreatorlinks);
 	echo "<br/>using the following datasets: ";
 	echo implode(", ", $datasetlinks);
-	echo "<br/><a href='credits'>Full Application Credits</a>";
+	//echo "<br/><a href='credits'>Full Application Credits</a>";
 }
 else
 {
@@ -64,6 +67,13 @@ else
 	echo "<p>The <a href='.'>linked open data map</a> was developed by:";
 	echo "<ul>";
 	foreach($creatorlinks as $creatorlink)
+		echo "<li>$creatorlink</li>";
+	echo "</ul>";
+	echo "</p>";
+	echo "<p>";
+	echo "with the assistance of:";
+	echo "<ul>";
+	foreach($addcreatorlinks as $creatorlink)
 		echo "<li>$creatorlink</li>";
 	echo "</ul>";
 	echo "</p>";

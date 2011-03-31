@@ -40,11 +40,6 @@ SELECT DISTINCT ?label WHERE {
 	?ps rdfs:label ?label .
 } ORDER BY ?label 
 ");
-echo "<h3> Offers: </h3>";
-echo "<ul class='offers'>"; 
-foreach($allpos as $point) {
-	echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
-}
 if(count($allpos) == 0)
 {
 	$allpos = sparql_get($endpoint, "
@@ -61,11 +56,16 @@ if(count($allpos) == 0)
 		?ps rdfs:label ?label .
 	} ORDER BY ?label 
 	");
+}
+if(count($allpos) > 0)
+{
+	echo "<h3> Offers: </h3>";
+	echo "<ul class='offers'>"; 
 	foreach($allpos as $point) {
 		echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
 	}
+	echo "</ul>";
 }
-echo "</ul>";
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/PARKING-(.*)/', $uri, $matches))
 {
