@@ -12,9 +12,11 @@ PREFIX org: <http://www.w3.org/ns/org#>
 PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
-  ?offering a gr:Offering .
-  ?offering gr:availableAtOrFrom ?pos .
+  ?pos a gr:LocationOfSalesOrServiceProvisioning .
   ?pos rdfs:label ?poslabel .
+  OPTIONAL { ?offering a gr:Offering .
+             ?offering gr:availableAtOrFrom ?pos .
+           }
   OPTIONAL { ?pos spacerel:within ?b .
              ?b geo:lat ?lat . 
              ?b geo:long ?long .
@@ -25,8 +27,9 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
              ?s geo:long ?long .
              ?s a org:Site .
            }
-  OPTIONAL { ?pos geo:lat ?lat . }
-  OPTIONAL { ?pos geo:long ?long . }
+  OPTIONAL { ?pos geo:lat ?lat .
+             ?pos geo:long ?long .
+           }
   OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
   FILTER ( BOUND(?long) && BOUND(?lat) )
 } ORDER BY ?poslabel

@@ -21,6 +21,14 @@ function in_cat($iconcats, $icon, $cats)
 	return in_array($iconcats[$icon], $cats);
 }
 
+if($q == '')
+{
+	$filter = "";
+}
+else
+{
+	$filter = "FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
+}
 $data = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -29,14 +37,16 @@ PREFIX org: <http://www.w3.org/ns/org#>
 PREFIX gr: <http://purl.org/goodrelations/v1#>
 
 SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
-  ?offering a gr:Offering .
-  ?offering gr:availableAtOrFrom ?pos .
-  ?offering gr:includes ?ps .
+  ?pos a gr:LocationOfSalesOrServiceProvisioning .
+  OPTIONAL {
+    ?offering gr:availableAtOrFrom ?pos .
+    ?offering a gr:Offering .
+    ?offering gr:includes ?ps .
+    ?ps rdfs:label ?label .
+  }
   ?pos rdfs:label ?poslabel .
-  ?ps rdfs:label ?label .
   ?pos <http://purl.org/openorg/mapIcon> ?icon .
-  FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') 
-  )
+  $filter
 } ORDER BY ?poslabel
 ");
 $busdata = sparql_get($endpoint, "
