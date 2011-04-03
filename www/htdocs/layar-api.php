@@ -151,7 +151,10 @@ foreach(array_merge((array)$pois2, (array)$pois1) as $poi)
 	$latdiff = ($poi['lat'] - $lat) * 111.24824;
 	$londiff = ($poi['lon'] - $lon) * 70.19765;
 	$poi['distance'] = sqrt(($latdiff*$latdiff) + ($londiff*$londiff));
-	$pois[] = $poi;
+	if(isset($pois[$poi['id']])) {
+	} else {
+		$pois[$poi['id']] = $poi;
+	}
 }
 
 usort($pois, 'sortpoints');
