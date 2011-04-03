@@ -1,25 +1,12 @@
 <?php
 error_reporting(0);
 include_once "inc/sparqllib.php";
+include_once "inc/categories.php";
 
 $q = trim($_GET['q']);
-$endpoint = "http://sparql.data.southampton.ac.uk";
-
 $cats = explode(',', $_GET['ec']);
 
-$file = fopen('catlist.csv', 'r');
-while($row = fgetcsv($file))
-{
-	$iconcats[$row[0]] = $row[1];
-}
-fclose($file);
-
-function in_cat($iconcats, $icon, $cats)
-{
-	if($icon == 'img/blackness.png')
-		return true;
-	return in_array($iconcats[$icon], $cats);
-}
+$endpoint = "http://sparql.data.southampton.ac.uk";
 
 if($q == '')
 {
