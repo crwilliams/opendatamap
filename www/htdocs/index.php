@@ -23,8 +23,8 @@ $uri = $_GET['uri'];
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-		<meta name="keywords" content="University of Southampton,map,Southampton,amenity,bus stop,building,site,campus" />
-		<meta name="description" content="Map of the University of Southampton, generated from Linked Open Data" />
+		<meta name="keywords" content="University of Southampton,map,Southampton,amenity,bus stop,building,site,campus,interactive" />
+		<meta name="description" content="Interactive Map of the University of Southampton, generated from Linked Open Data" />
 		<link rel="apple-touch-icon" href="img/opendatamap.png" />
 		<link rel="apple-touch-icon-precomposed" href="img/opendatamap.png" />
 		<link rel="shortcut icon" href="img/opendatamap.png" />
