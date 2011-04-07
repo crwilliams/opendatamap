@@ -66,7 +66,7 @@ global $endpoint;
 global $iconcats;
 
 $cats = explode(',', $value['CHECKBOXLIST']);
-$q = $value['SEARCHBOX'];
+$q = trim($value['SEARCHBOX']);
 
 if($q == '')
 {
