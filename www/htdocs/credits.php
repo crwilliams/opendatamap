@@ -93,6 +93,7 @@ else
 	echo "<li><a href='http://id.ecs.soton.ac.uk/person/1248'>Christopher Gutteridge</a></li>";
 	echo "</ul>";
 	echo "</p>";
+	echo "<p>The same information is available via the <a href='http://m.layar.com/open/universityofsouthampton'>University of Southampton layer</a>, which has been developed for the <a href='http://www.layar.com'>layar</a> application, available on Android, iPhone and Nokia Ovi.</p>";
 	echo "<p>Thanks also to suggestions from:";
 	echo "<ul>";
 	foreach($suggestionlinks as $suggestionlink)
