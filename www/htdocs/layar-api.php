@@ -146,8 +146,42 @@ SELECT DISTINCT ?id ?title ?lat ?lon ?icon ?www ?phone ?email ?bname ?sname ?pag
 } ORDER BY (((?lat - $lat)*(?lat - $lat)*2.1) + ((?lon - $lon)*(?lon - $lon)))
 ");
 
-foreach(array_merge((array)$pois2, (array)$pois1) as $poi)
+//SELECT DISTINCT ?name ?outline ?hfeature ?lfeature ?number WHERE {
+$qbd = trim(str_replace(array('building', 'buildin', 'buildi', 'build', 'buil', 'bui', 'bu', 'b'), '', strtolower($q)));
+$pois3 = sparql_get($endpoint, "
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+PREFIX org: <http://www.w3.org/ns/org#>
+
+SELECT DISTINCT ?id ?title ?lat ?lon ?number ?sname WHERE {
+  ?id a <http://vocab.deri.ie/rooms#Building> .
+  ?id rdfs:label ?title .
+  OPTIONAL { ?id <http://www.w3.org/2004/02/skos/core#notation> ?number . }
+  OPTIONAL { ?id spacerel:within ?s .
+             ?s a org:Site .
+             ?s rdfs:label ?sname .
+           }
+  ?id geo:lat ?lat .
+  ?id geo:long ?lon .
+  FILTER ( REGEX( ?title, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
+} ORDER BY (((?lat - $lat)*(?lat - $lat)*2.1) + ((?lon - $lon)*(?lon - $lon)))
+");
+
+foreach(array_merge((array)$pois3, (array)$pois2, (array)$pois1) as $poi)
 {
+	if(!isset($poi['icon']) && isset($poi['number']))
+	{
+		if(preg_match('/^[1-9][0-9]?$/', $poi['number']))
+			$poi['icon'] = "http://google-maps-icons.googlecode.com/files/black".str_pad($poi['number'], 2, 0, STR_PAD_LEFT).".png";
+		else
+			$poi['icon'] = "http://google-maps-icons.googlecode.com/files/blackblank.png";
+	}
+	if(!isset($poi['bname']) && isset($poi['number']))
+	{
+		$poi['bname'] = "Building ".$poi['number'];
+	}
+
 	$latdiff = ($poi['lat'] - $lat) * 111.24824;
 	$londiff = ($poi['lon'] - $lon) * 70.19765;
 	$poi['distance'] = sqrt(($latdiff*$latdiff) + ($londiff*$londiff));
