@@ -5,6 +5,12 @@ body {
 	padding: 0px;
 	overflow:hidden;
 }
+.odl {
+	display:block;
+	width:100%;
+	font-size: 0.8em;
+	text-align:right;
+}
 a {
 	color:#7777CC;
 }

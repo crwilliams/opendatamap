@@ -326,7 +326,7 @@ var initmarkers = function(cont) {
 				icon: icon,
 				visible: false
 			});
-			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title"><img style="width:20px;" src="'+icon+'" />'+poslabel+'</h2><div id="bodyContent">Loading...</div></div>'});
+			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title"><img style="width:20px;" src="'+icon+'" />'+poslabel+'</h2><a class="odl" href="'+pos+'">Visit page</a><div id="bodyContent">Loading...</div></div>'});
 		});
 		cont();
 	},'json');
@@ -455,6 +455,8 @@ var initialize = function(lat, long, zoom, uri) {
 		inittoggle();
 		initcredits();
 		initsearch();
+//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
+//georssLayer.setMap(map);
 		
 		$('#inputbox').keypress(keypress);
 		$('#inputbox').keyup(updateFunc);

@@ -18,7 +18,7 @@ SELECT DISTINCT ?name ?icon WHERE {
 }
 ");
 echo "<div id='content'>";
-echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"img/blackness.png")."' />".$allpos[0]['name']."</h2>";
+echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"img/blackness.png")."' />".$allpos[0]['name']."</h2><a class='odl' href='$uri'>Visit page</a>";
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
