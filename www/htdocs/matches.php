@@ -11,10 +11,12 @@ $endpoint = "http://sparql.data.southampton.ac.uk";
 if($q == '')
 {
 	$filter = "";
+	$addfilter = "";
 }
 else
 {
 	$filter = "FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
+	$addfilter = " && ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
 }
 $data = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
@@ -50,6 +52,21 @@ SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
   ?pos <http://purl.org/openorg/mapIcon> ?icon .
   FILTER ( ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i')
   ) && REGEX( ?label, '^U', 'i') )
+} ORDER BY ?poslabel
+");
+$clsdata = sparql_get($endpoint, "
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
+  ?pos <http://purl.org/openorg/hasFeature> ?f .
+  ?f a ?ft .
+  ?ft rdfs:label ?label .
+  ?pos skos:notation ?poslabel .
+  FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') $addfilter)
 } ORDER BY ?poslabel
 ");
 $qbd = trim(str_replace(array('building', 'buildin', 'buildi', 'build', 'buil', 'bui', 'bu', 'b'), '', strtolower($q)));
@@ -103,6 +120,23 @@ foreach($busdata as $point) {
 		$type[$point['poslabel']] = "bus-stop";
 		$url[$point['poslabel']] = $point['pos'];
 		$icon[$point['poslabel']] = $point['icon'];
+	}
+}
+foreach($clsdata as $point) {
+	//if(!in_cat($iconcats, $point['icon'], $cats))
+	//	continue;
+	$pos[$point['pos']] ++;
+	if(preg_match('/'.$q.'/i', $point['label']))
+	{
+		$label[$point['label']] ++;
+		$type[$point['label']] = "offering";
+	}
+	if(preg_match('/'.$q.'/i', $point['poslabel']))
+	{
+		$label[$point['poslabel']] += 10;
+		$type[$point['poslabel']] = "workstation";
+		$url[$point['poslabel']] = $point['pos'];
+		$icon[$point['poslabel']] = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png';
 	}
 }
 foreach($buildingdata as $point) {

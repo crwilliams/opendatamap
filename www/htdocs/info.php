@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+//error_reporting(0);
 include_once "inc/sparqllib.php";
 
 $uri = urldecode($_GET['uri']);
@@ -18,7 +18,21 @@ SELECT DISTINCT ?name ?icon WHERE {
 }
 ");
 echo "<div id='content'>";
-echo "<h2><img style='width:20px' src='".($allpos[0]['icon']!=""?$allpos[0]['icon']:"img/blackness.png")."' />".$allpos[0]['name']."</h2><a class='odl' href='$uri'>Visit page</a>";
+if(!isset($allpos[0]['icon']))
+{
+	if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
+	{
+		$icon = "http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png";
+		$computer = "false";
+	}
+	else
+	{
+		$icon = $allpos[0]['icon'];
+		$computer = "true";
+	}
+}
+//$icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/", $icon);
+echo "<h2><img style='width:20px' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name']."</h2><a class='odl' href='$uri'>Visit page</a>";
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
@@ -26,6 +40,22 @@ if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $match
 	die();
 }
 
+if($computer)
+$allpos = sparql_get($endpoint, "
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX gr: <http://purl.org/goodrelations/v1#>
+	
+SELECT DISTINCT ?label WHERE {
+	<$uri> <http://purl.org/openorg/hasFeature> ?f .
+	?f a ?ft .
+	?ft rdfs:label ?label .
+	FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
+} ORDER BY ?label
+");
+else
 $allpos = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -174,14 +204,17 @@ if(count($allpos) > 0)
 		foreach($weekday as $day)
 		{
 			echo "<td width=\"350\">";
-			foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
+			if(array_key_exists('http://purl.org/goodrelations/v1#'.$day, $otv))
 			{
-				if($dot == '00:00-00:00')
-					$dot = '24 hour';
-				echo $dot."<br/>";
-				if($day == date('l', $now))
+				foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
 				{
-					$todayopening[] = "<li>$dot</li>";
+					if($dot == '00:00-00:00')
+						$dot = '24 hour';
+					echo $dot."<br/>";
+					if($day == date('l', $now))
+					{
+						$todayopening[] = "<li>$dot</li>";
+					}
 				}
 			}
 			echo "</td>";

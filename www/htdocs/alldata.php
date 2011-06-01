@@ -14,9 +14,6 @@ PREFIX gr: <http://purl.org/goodrelations/v1#>
 SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
   ?pos a gr:LocationOfSalesOrServiceProvisioning .
   ?pos rdfs:label ?poslabel .
-  OPTIONAL { ?offering a gr:Offering .
-             ?offering gr:availableAtOrFrom ?pos .
-           }
   OPTIONAL { ?pos spacerel:within ?b .
              ?b geo:lat ?lat . 
              ?b geo:long ?long .
@@ -32,6 +29,37 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
            }
   OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
   FILTER ( BOUND(?long) && BOUND(?lat) )
+} ORDER BY ?poslabel
+");
+
+$allcls = sparql_get($endpoint, "
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+PREFIX org: <http://www.w3.org/ns/org#>
+PREFIX gr: <http://purl.org/goodrelations/v1#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT ?pos ?lat ?long ?poslabel WHERE {
+  ?pos <http://purl.org/openorg/hasFeature> ?f .
+  ?f a ?ft .
+  ?ft rdfs:label ?ftl .
+  ?pos skos:notation ?poslabel .
+  OPTIONAL { ?pos spacerel:within ?b .
+             ?b geo:lat ?lat . 
+             ?b geo:long ?long .
+             ?b a <http://vocab.deri.ie/rooms#Building> .
+           }
+  OPTIONAL { ?pos spacerel:within ?s .
+             ?s geo:lat ?lat . 
+             ?s geo:long ?long .
+             ?s a org:Site .
+           }
+  OPTIONAL { ?pos geo:lat ?lat .
+             ?pos geo:long ?long .
+           }
+  OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
+  FILTER ( BOUND(?long) && BOUND(?lat) && REGEX(?ftl, '^WORKSTATION -') )
 } ORDER BY ?poslabel
 ");
 
@@ -56,6 +84,7 @@ echo "[";
 $i = 0;
 foreach($allpos as $point) {
 	$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
+	//$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/", $point['icon']);
 	if($point['icon'] == "")
 		$point['icon'] = "img/blackness.png";
 
@@ -65,7 +94,11 @@ foreach($allpos as $point) {
 }
 
 foreach($allbus as $point) {
-	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://google-maps-icons.googlecode.com/files/bus.png"],';
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/bus.png"],';
+}
+
+foreach($allcls as $point) {
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png"],';
 }
 echo "[]]";
 ?>
