@@ -18,19 +18,21 @@ SELECT DISTINCT ?name ?icon WHERE {
 }
 ");
 echo "<div id='content'>";
+$computer = "false";
 if(!isset($allpos[0]['icon']))
 {
 	if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 	{
 		$icon = "http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png";
-		$computer = "false";
+		$computer = "true";
 	}
 	else
 	{
-		$icon = $allpos[0]['icon'];
-		$computer = "true";
+		$icon = "";
 	}
 }
+else
+	$icon = $allpos[0]['icon'];
 //$icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/", $icon);
 echo "<h2><img style='width:20px' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name']."</h2><a class='odl' href='$uri'>Visit page</a>";
 
