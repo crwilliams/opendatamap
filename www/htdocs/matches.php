@@ -123,7 +123,7 @@ foreach($busdata as $point) {
 	}
 }
 foreach($clsdata as $point) {
-	$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png';
+	$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png';
 	if(!in_cat($iconcats, $point['icon'], $cats))
 		continue;
 	$pos[$point['pos']] ++;

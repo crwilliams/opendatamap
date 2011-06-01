@@ -84,7 +84,7 @@ echo "[";
 $i = 0;
 foreach($allpos as $point) {
 	$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
-	//$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/", $point['icon']);
+	$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
 	if($point['icon'] == "")
 		$point['icon'] = "img/blackness.png";
 
@@ -94,11 +94,11 @@ foreach($allpos as $point) {
 }
 
 foreach($allbus as $point) {
-	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/bus.png"],';
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/img/icon/bus.png"],';
 }
 
 foreach($allcls as $point) {
-	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png"],';
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png"],';
 }
 echo "[]]";
 ?>
