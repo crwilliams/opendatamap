@@ -20,52 +20,29 @@ $filename = 'cache/'.$hash.'.png';
 if(!file_exists($filename))
 {
 	$imgs = $_GET['i'];
+	/*
 	if(array_key_exists('base', $_GET))
 		$rimg = simagecreatefrompng($_GET['base']);
 	else
 		$rimg = simagecreatefrompng('img/blackness.png');
-	$img1 = simagecreatefrompng($imgs[0]);
-	$i = count($imgs);
-	if($i >= 2)
+	*/
+	$offsetx = 3;
+	$offsety = 3;
+	$count = min(5, count($imgs));
+	$oimg = imagecreatetruecolor(32 + $offsetx*count($imgs), 37-$offsety + $offsety*$count);
+	imagealphablending($oimg,false);
+	imagefilledrectangle($oimg, 0, 0, imagesx($oimg), imagesy($oimg), imagecolorallocatealpha($oimg, 255, 255, 255, 127));
+	imagealphablending($oimg, true);
+	for($i=0; $i<$count; $i++)
 	{
-		$img2 = simagecreatefrompng($imgs[1]);
+		$img = simagecreatefrompng($imgs[$i]);
+		//if($i != $count-1)
+		//	imagecopymerge($oimg, $img, ($count - $i - 1) * $offsetx, $i * $offsety, 0, 0, 32, 32, max(100 - ($count - $i - 1) * 20, 0));
+		//else
+			imagecopy($oimg, $img, ($count - $i - 1) * $offsetx, $i * $offsety, 0, 0, 32, 37);
 	}
-	if($i >= 3)
-	{
-		$img3 = simagecreatefrompng($imgs[2]);
-	}
-	if($i >= 4)
-	{
-		$img4 = simagecreatefrompng($imgs[3]);
-	}
-	if($i >= 4)
-	{
-		positionimg($rimg, $img1, 6, 6);
-		positionimg($rimg, $img2, 16, 6);
-		positionimg($rimg, $img3, 6, 16);
-		positionimg($rimg, $img4, 16, 16);
-	}
-	if($i == 3)
-	{
-		positionimg($rimg, $img1, 6, 6);
-		positionimg($rimg, $img2, 16, 6);
-		positionimg($rimg, $img3, 11, 16);
-	}
-	if($i == 2)
-	{
-		positionimg($rimg, $img1, 6, 6);
-		positionimg($rimg, $img2, 16, 16);
-	}
-	if($i == 1)
-	{
-		imagesavealpha($img1,true);
-		imagepng($img1, $filename);
-	}
-	else
-	{
-		imagesavealpha($rimg,true);
-		imagepng($rimg, $filename);
-	}
+	imagesavealpha($oimg,true);
+	imagepng($oimg, $filename);
 }
 header('Content-type: image/png');
 fpassthru(fopen($filename, 'r'));
