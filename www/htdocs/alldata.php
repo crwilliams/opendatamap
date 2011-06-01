@@ -85,6 +85,7 @@ $i = 0;
 foreach($allpos as $point) {
 	$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
 	$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
+	$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
 	if($point['icon'] == "")
 		$point['icon'] = "img/blackness.png";
 

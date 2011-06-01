@@ -1,5 +1,5 @@
 <?php
-//error_reporting(0);
+error_reporting(0);
 include_once "inc/sparqllib.php";
 
 $uri = urldecode($_GET['uri']);
@@ -34,6 +34,7 @@ if(!isset($allpos[0]['icon']))
 else
 	$icon = $allpos[0]['icon'];
 $icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $icon);
+$icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $icon);
 echo "<h2><img style='width:20px' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name']."</h2><a class='odl' href='$uri'>Visit page</a>";
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))

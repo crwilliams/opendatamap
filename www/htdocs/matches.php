@@ -91,6 +91,8 @@ SELECT DISTINCT ?url ?name WHERE {
 $pos = array();
 $label = array();
 foreach($data as $point) {
+	$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
+	$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
 	if(!in_cat($iconcats, $point['icon'], $cats))
 		continue;
 	$pos[$point['pos']] ++;
