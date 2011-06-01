@@ -123,8 +123,9 @@ foreach($busdata as $point) {
 	}
 }
 foreach($clsdata as $point) {
-	//if(!in_cat($iconcats, $point['icon'], $cats))
-	//	continue;
+	$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png';
+	if(!in_cat($iconcats, $point['icon'], $cats))
+		continue;
 	$pos[$point['pos']] ++;
 	if(preg_match('/'.$q.'/i', $point['label']))
 	{
@@ -136,7 +137,7 @@ foreach($clsdata as $point) {
 		$label[$point['poslabel']] += 10;
 		$type[$point['poslabel']] = "workstation";
 		$url[$point['poslabel']] = $point['pos'];
-		$icon[$point['poslabel']] = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/computer.png';
+		$icon[$point['poslabel']] = $point['icon'];
 	}
 }
 foreach($buildingdata as $point) {
