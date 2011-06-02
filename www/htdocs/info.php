@@ -18,7 +18,7 @@ SELECT DISTINCT ?name ?icon WHERE {
 }
 ");
 echo "<div id='content'>";
-$computer = "false";
+$computer = false;
 if(!isset($allpos[0]['icon']))
 {
 	if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
@@ -35,16 +35,34 @@ else
 	$icon = $allpos[0]['icon'];
 $icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $icon);
 $icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $icon);
-echo "<h2><img style='width:20px' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name']."</h2><a class='odl' href='$uri'>Visit page</a>";
+echo "<h2><img style='width:20px; padding-right:5px;' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name']."</h2>";
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
+	echo "<a class='odl' href='$uri'>Visit page</a>";
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
 	die();
 }
 
+$page = sparql_get($endpoint, "
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	
+SELECT DISTINCT ?page WHERE {
+	<$uri> foaf:page ?page .
+} ORDER BY ?page
+");
+
+//if(count($page) > 0)
+if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri))
+{
+	//print_r($page[0]);
+	//echo "<a class='odl' href='".$page[0]['page']."'>Visit page</a>";
+	echo "<a class='odl' href='".$uri."'>Visit page</a>";
+}
+
 if($computer)
-$allpos = sparql_get($endpoint, "
+{
+	$allpos = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -57,9 +75,11 @@ SELECT DISTINCT ?label WHERE {
 	?ft rdfs:label ?label .
 	FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
 } ORDER BY ?label
-");
+	");
+}
 else
-$allpos = sparql_get($endpoint, "
+{
+	$allpos = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -72,7 +92,9 @@ SELECT DISTINCT ?label WHERE {
 	?ps a gr:ProductOrServicesSomeInstancesPlaceholder .
 	?ps rdfs:label ?label .
 } ORDER BY ?label 
-");
+	");
+}
+
 if(count($allpos) == 0)
 {
 	$allpos = sparql_get($endpoint, "
@@ -92,10 +114,10 @@ if(count($allpos) == 0)
 }
 if(count($allpos) > 0)
 {
-	echo "<h3> Offers: </h3>";
+	echo "<h3> Offers: (click to filter) </h3>";
 	echo "<ul class='offers'>"; 
 	foreach($allpos as $point) {
-		echo "<li onclick=\"setInputBox('^".$point['label']."$'); updateFunc();\">".$point['label']."</li>";
+		echo "<li onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."$'); updateFunc();\">".$point['label']."</li>";
 	}
 	echo "</ul>";
 }
