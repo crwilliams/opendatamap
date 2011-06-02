@@ -33,7 +33,8 @@ foreach($datasets as $dataset)
 	if($dataset['l'] != "")
 	{
 		$ln = $licencenames[$dataset['l']];
-		$datasetlink .= " (available under the <a href='".$dataset['l']."'>$ln</a>)";
+		if(!$include)
+			$datasetlink .= " (available under the <a href='".$dataset['l']."'>$ln</a>)";
 	}
 	$datasetlinks[] = $datasetlink;
 }
