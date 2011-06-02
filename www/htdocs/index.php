@@ -64,15 +64,15 @@ $uri = $_GET['uri'];
 		<div id="map_canvas" style=''></div>
 		<img id="geobutton" src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons">
-			<img src="img/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />
-			<img src="img/catering.png" id="Catering" title="Catering and Accommodation" alt="Catering and Accommodation" onclick="toggle('Catering');" />
-			<img src="img/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services');" />
-			<img src="img/entertainment.png" id="Entertainment" title="Culture and Entertainment" alt="Culture and Entertainment" onclick="toggle('Entertainment');" />
-			<img src="img/health.png" id="Health" title="Sports, Health and Beauty" alt="Sports, Health and Beauty" onclick="toggle('Health');" />
-			<img src="img/religion.png" id="Religion" title="Tourism and Religion" alt="Tourism and Religion" onclick="toggle('Religion');" />
-			<img src="img/retail.png" id="Retail" title="Retail" alt="Retail" onclick="toggle('Retail')" />
-			<img src="img/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
-			<img src="img/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
+			<img class="deselected" src="img/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />
+			<img class="deselected" src="img/catering.png" id="Catering" title="Catering and Accommodation" alt="Catering and Accommodation" onclick="toggle('Catering');" />
+			<img class="deselected" src="img/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services');" />
+			<img class="deselected" src="img/entertainment.png" id="Entertainment" title="Culture and Entertainment" alt="Culture and Entertainment" onclick="toggle('Entertainment');" />
+			<img class="deselected" src="img/health.png" id="Health" title="Sports, Health and Beauty" alt="Sports, Health and Beauty" onclick="toggle('Health');" />
+			<img class="deselected" src="img/religion.png" id="Religion" title="Tourism and Religion" alt="Tourism and Religion" onclick="toggle('Religion');" />
+			<img class="deselected" src="img/retail.png" id="Retail" title="Retail" alt="Retail" onclick="toggle('Retail')" />
+			<img class="deselected" src="img/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
+			<img class="deselected" src="img/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
 		</div>
 		<form id='search' action="" onsubmit='return false'>
 			<input id="inputbox" style='width:200px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">

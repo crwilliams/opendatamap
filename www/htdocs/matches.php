@@ -4,7 +4,14 @@ include_once "inc/sparqllib.php";
 include_once "inc/categories.php";
 
 $q = trim($_GET['q']);
-$cats = explode(',', $_GET['ec']);
+if($_GET['ec'] == "")
+{
+	$cats = array('Transport','Catering','Services','Entertainment', 'Health', 'Religion', 'Retail', 'Education', 'General');
+}
+else
+{
+	$cats = explode(',', $_GET['ec']);
+}
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
