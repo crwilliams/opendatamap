@@ -35,11 +35,11 @@ else
 	$icon = $allpos[0]['icon'];
 $icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $icon);
 $icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $icon);
-echo "<h2><img style='width:20px; padding-right:5px;' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name']."</h2>";
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
-	echo "<a class='odl' href='$uri'>Visit page</a>";
+	echo "<h2><img style='width:20px; padding-right:5px;' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
+	echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
 	die();
 }
@@ -53,12 +53,14 @@ SELECT DISTINCT ?page WHERE {
 ");
 
 //if(count($page) > 0)
+echo "<h2><img style='width:20px; padding-right:5px;' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri))
 {
 	//print_r($page[0]);
 	//echo "<a class='odl' href='".$page[0]['page']."'>Visit page</a>";
 	echo "<a class='odl' href='".$uri."'>Visit page</a>";
 }
+echo "</h2>";
 
 if($computer)
 {
@@ -148,8 +150,8 @@ SELECT DISTINCT * WHERE {
 
 if(count($allpos) > 0)
 {
-	echo "<div id='openings'>";
-	echo "<h3>Opening detail:</h3>";
+	//echo "<div id='openings'>";
+	//echo "<h3>Opening detail:</h3>";
 	foreach($allpos as $point)
 	{
 		if ($point['start'] != '')
@@ -178,15 +180,15 @@ if(count($allpos) > 0)
 	}
 
 	$weekday = array('Monday', 'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
-	echo "<table id='openings' style='font-size:0.8em'>";
-	echo "<tr>";
+	//echo "<table id='openings' style='font-size:0.8em'>";
+	//echo "<tr>";
 	foreach($weekday as $day)
 	{
 		$short_day = substr($day, 0,3); 
-		echo "<th>".$short_day."</th>";
+		//echo "<th>".$short_day."</th>";
 	}
-	echo "<th>Valid Dates</th>";
-	echo "</tr>";
+	//echo "<th>Valid Dates</th>";
+	//echo "</tr>";
 
 	foreach($ot as $valid => $otv)
 	{
@@ -220,41 +222,41 @@ if(count($allpos) > 0)
 		$current = ($from <=  $now )&&( $to >= $now);
 		if ($current)
 		{ 
-			echo "<tr class='current'>"; //start of row
+			//echo "<tr class='current'>"; //start of row
+			foreach($weekday as $day)
+			{
+				//echo "<td width=\"350\">";
+				if(array_key_exists('http://purl.org/goodrelations/v1#'.$day, $otv))
+				{
+					foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
+					{
+						if($dot == '00:00-00:00')
+							$dot = '24 hour';
+						//echo $dot."<br/>";
+						if($day == date('l', $now))
+						{
+							$todayopening[] = "<li>$dot</li>";
+						}
+					}
+				}
+				//echo "</td>";
+			}
 		}
 		else
 		{
-			echo "<tr>";
+			//echo "<tr>";
 		}
-		foreach($weekday as $day)
-		{
-			echo "<td width=\"350\">";
-			if(array_key_exists('http://purl.org/goodrelations/v1#'.$day, $otv))
-			{
-				foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
-				{
-					if($dot == '00:00-00:00')
-						$dot = '24 hour';
-					echo $dot."<br/>";
-					if($day == date('l', $now))
-					{
-						$todayopening[] = "<li>$dot</li>";
-					}
-				}
-			}
-			echo "</td>";
-		}
-		echo "<td>".$valid."</td>";
-		echo "</tr>";
+		//echo "<td>".$valid."</td>";
+		//echo "</tr>";
 	}
-	echo "</table>";
-	echo "</div>";
+	//echo "</table>";
+	//echo "</div>";
 
 	if($todayopening != null)
 	{
 		echo "<div id='todayopenings'>";
 		echo "<h3>Today's opening hours:</h3>";
-		echo "<ul style='font-size:0.8em'>";
+		echo "<ul style='padding-top:8px;'>";
 		foreach($todayopening as $opening)
 		{
 			echo $opening;

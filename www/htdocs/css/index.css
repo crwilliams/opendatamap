@@ -6,10 +6,15 @@ body {
 	overflow:hidden;
 }
 .odl {
+	font-size: 0.8em;
+	padding-left:5px;
+/*
 	display:block;
 	width:100%;
-	font-size: 0.8em;
-	text-align:right;
+	text-align:left;
+	margin-left:30px;
+	padding-bottom:5px;
+*/
 }
 a {
 	color:#7777CC;
@@ -190,7 +195,7 @@ h2 img {
 h3 {
 	font-size:80%;
 	margin:0px;
-	padding:0px 8px 0px 0px;
+	padding:16px 8px 8px 0px;
 }
 /*
 #content {
@@ -219,9 +224,11 @@ h3 {
 	.toggleicons img.deselected:hover {
 		opacity:0.5;
 	}
+/*
 	#todayopenings {
 		display: none;
 	}
+*/
 }
 
 .deselected {
