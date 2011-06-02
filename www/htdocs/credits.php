@@ -8,10 +8,11 @@ $endpoint = "http://sparql.data.southampton.ac.uk";
 $uri = "http://opendatamap.ecs.soton.ac.uk";
 
 $datasets = sparql_get($endpoint, "
-SELECT DISTINCT ?name ?uri {
+SELECT DISTINCT ?name ?uri ?l {
   ?app <http://xmlns.com/foaf/0.1/homepage> <$uri> .
   ?app <http://purl.org/dc/terms/requires> ?uri .
   ?uri <http://purl.org/dc/terms/title> ?name .
+  OPTIONAL { ?uri <http://purl.org/dc/terms/license> ?l . }
 } ORDER BY ?name
 ");
 /*
@@ -24,9 +25,17 @@ SELECT DISTINCT ?name ?uri {
 ");
 */
 
+$licencenames['http://reference.data.gov.uk/id/open-government-licence'] = "Open Government Licence";
+
 foreach($datasets as $dataset)
 {
-	$datasetlinks[]=  "<a href='".$dataset['uri']."'>".$dataset['name']."</a>";
+	$datasetlink =  "<a href='".$dataset['uri']."'>".$dataset['name']."</a>";
+	if($dataset['l'] != "")
+	{
+		$ln = $licencenames[$dataset['l']];
+		$datasetlink .= " (available under the <a href='".$dataset['l']."'>$ln</a>)";
+	}
+	$datasetlinks[] = $datasetlink;
 }
 
 /*
@@ -83,10 +92,11 @@ else
 		echo "<li>$datasetlink</li>";
 	echo "</ul>";
 	echo "</p>";
-	echo "<p>It uses icons from the excellent <a href='http://code.google.com/p/google-maps-icons/'>Map Icons Collection</a>:";
+	echo "<p>It uses icons based on the excellent <a href='http://code.google.com/p/google-maps-icons/'>Map Icons Collection</a>:";
 	echo "<ul>";
 	echo "<li><a href='http://code.google.com/p/google-maps-icons/'><img src='http://google-maps-icons.googlecode.com/files/banner88x31.gif' /></a></li>";
 	echo "</ul>";
+	echo "The icons are available under the <a href='http://creativecommons.org/licenses/by-sa/3.0/'>Creative Commons - Attribution-ShareAlike 3.0 Unported - CC BY-SA 3.0</a> licence.  Therefore our modified icons are also available under the same licence.  A full listing of our <a href='iconset'>modified icons</a> is available.";
 	echo "</p>";
 	echo "<p>It uses the <a href='http://graphite.ecs.soton.ac.uk/sparqllib'>SPARQL RDF Library for PHP</a>, developed by:";
 	echo "<ul>";
