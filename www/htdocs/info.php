@@ -38,7 +38,7 @@ $icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http:
 
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
-	echo "<h2><img style='width:20px; padding-right:5px;' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
+	echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
 	echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
 	die();
@@ -53,7 +53,7 @@ SELECT DISTINCT ?page WHERE {
 ");
 
 //if(count($page) > 0)
-echo "<h2><img style='width:20px; padding-right:5px;' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
+echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri))
 {
 	//print_r($page[0]);

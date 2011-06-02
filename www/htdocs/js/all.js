@@ -326,7 +326,7 @@ var initmarkers = function(cont) {
 				icon: icon,
 				visible: false
 			});
-			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title"><img style="width:20px;" src="'+icon+'" />'+poslabel+'</h2><a class="odl" href="'+pos+'">Visit page</a><div id="bodyContent">Loading...</div></div>'});
+			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title"><img class="icon" style="width:20px;" src="'+icon+'" />'+poslabel+'</h2><a class="odl" href="'+pos+'">Visit page</a><div id="bodyContent">Loading...</div></div>'});
 		});
 		cont();
 	},'json');
