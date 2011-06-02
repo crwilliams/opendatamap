@@ -1,7 +1,8 @@
 <?
 error_reporting(E_ERROR);
-include_once "inc/sparqllib.php";
-include_once "inc/categories.php";
+$pathtoroot = "../";
+include_once $pathtoroot."inc/sparqllib.php";
+include_once $pathtoroot."inc/categories.php";
 
 
 $endpoint = "http://sparql.data.southampton.ac.uk";

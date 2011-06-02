@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <?php
+$pathtoroot = "../";
 error_reporting(0);
 if(!$include && substr($_SERVER['REQUEST_URI'], -4, 4) == '.php')
-	header('Location: m');
-include 'inc/options.php';
+	header('Location: bus-route-finder');
+include $pathtoroot.'inc/options.php';
 ?>
 <html>
 	<head>
-		<title>University of Southampton Linked Open Data Map</title>
+		<title>Find a bus route between campuses</title>
 		<!--<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />-->
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -36,38 +37,29 @@ include 'inc/options.php';
 		</script>
 	</head>
 	<body>
-		<form onsubmit='window.location.href="/?"+$("#loc").get(0).value+"&q="+$("#q").get(0).value; return false;'>
+		<form onsubmit='window.location.href="?from="+$("#from").get(0).value+"&to="+$("#to").get(0).value; return false;'>
 			<div style='border:solid 3px gray; margin:10px; padding:10px;'>
-			I'm looking for...<br/>
-			<select id='generic' onchange='selectGenericOffering(this.options[selectedIndex].value)'>
-				<?php getGenericOfferings(); ?>
+			I'd like to travel from...<br/>
+			<select name='from' id='from' onchange='selectSite(this.options[selectedIndex].value)'>
+				<?php getPlaces($_GET['from']); ?>
 			</select><br/>
-			or...<br/>
-			<select id='specific' onchange='selectSpecificOffering(this.options[selectedIndex].value)'>
-				<?php getSpecificOfferings(); ?>
-			</select>
+			to...<br/>
+			<select name='to' id='to' onchange='selectSite(this.options[selectedIndex].value)'>
+				<?php getPlaces($_GET['to']); ?>
+			</select><br/>
 			</div>
-			<div style='border:solid 3px gray; margin:10px; padding:10px;'>
-			near...<br/>
-			<select name='site' id='site' onchange='selectSite(this.options[selectedIndex].value)'>
-				<?php getSites(); ?>
-			</select><br/>
-			or...<br/>
-			<select id='building-number' onchange='selectBuilding(this.options[selectedIndex].value)'>
-				<?php getBuildingsNumber(); ?>
-			</select>
-			<select id='building-name' onchange='selectBuilding(this.options[selectedIndex].value)'>
-				<?php getBuildingsName(); ?>
-			</select><br/>
-			or...<br/>
-			<input type='button' value='Near my current location' onclick='geoloc()' /><span id='geoinfo'></span>
-			</div>
-			<input id='loc' type='hidden' value='' />
-			<input id='q' type='hidden' value='' />
 			<div style='border:solid 3px gray; margin:10px; padding:10px;'>
 				<input type='submit' value='Show me' />
 			</div>
 		<form>
-		<div id="credits"><?php $include = true; include 'credits.php' ?></div>
+		<div style='border:solid 3px gray; margin:10px; padding:10px;'>
+<?php
+if(isset($_GET['from']) && isset($_GET['to']))
+{
+	getRoutes($_GET['from'], $_GET['to']);
+}
+?>
+		</div>
+		<div id="credits"><?php $include = true; include '../credits.php' ?></div>
 	</body>
 </html>

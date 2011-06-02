@@ -1,9 +1,9 @@
 RewriteEngine on
 RewriteRule ^bus-stop/(.*)\. http://data.southampton.ac.uk/bus-stop/$1.html?view=ajax [P]
-RewriteRule ^credits/?$ credits.php
-RewriteRule ^m/?$ m.php
-RewriteRule ^layar-api/?$ layar-api.php
-RewriteRule ^bus-route-finder/?$ bus-route-finder.php
+RewriteRule ^credits$ credits.php
+RewriteRule ^m/?$ extras/m.php
+RewriteRule ^layar-api/?$ extras/layar-api.php
+RewriteRule ^bus-route-finder/?$ extras/bus-route-finder.php
 RewriteRule ^resources/jquery-1.5.min.js$ /js/jquery-1.5.min.js
 
 <IfModule mod_deflate.c>

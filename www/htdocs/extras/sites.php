@@ -1,6 +1,14 @@
 <?php
+/**
+ *
+ * This file generates a set of polygons to display as sites.
+ * Its output should be a KML document, which can be rendered by google maps.
+ *
+ */
+
 error_reporting(0);
-include_once "inc/sparqllib.php";
+$pathtoroot = "../";
+include_once $pathtoroot."inc/sparqllib.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 

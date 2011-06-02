@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-require_once "inc/sparqllib.php";
+require_once $pathtoroot."inc/sparqllib.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
