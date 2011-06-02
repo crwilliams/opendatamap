@@ -1,0 +1,9 @@
+These files form the source code of opendatamap.
+The latest version of this source code is available from http://opendatamap.ecs.soton.ac.uk/source .
+They are licenced under the Creative Commons Attribution-ShareAlike 3.0 Unported licence (CC BY-SA 3.0): http://creativecommons.org/licenses/by-sa/3.0 
+The attribution should be to 'opendatamap', with a link provided to: http://opendatamap.ecs.soton.ac.uk/source
+
+The source code includes the opendatamap iconset: http://opendatamap.ecs.soton.ac.uk/iconset
+	which is based on the Map Icons Collection: http://code.google.com/p/google-maps-icons/
+
+It also includes Christopher Gutteridge's sparqllib.php: http://graphite.ecs.soton.ac.uk/sparqllib/
