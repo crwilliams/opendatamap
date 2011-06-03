@@ -74,7 +74,8 @@ var closeAll = function() {
 		infowindows[i].close();
 	}
 	for(var i in clusterMarkers) {
-		clusterInfowindows[i].close();
+		if(typeof(clusterInfowindows[i]) == "object")
+			clusterInfowindows[i].close();
 	}
 	for(var i in polygons) {
 		polygoninfowindows[i].close();
@@ -134,7 +135,7 @@ var updateFunc = function(force) {
 				if (m === undefined) continue;
 				var dispStr;
 				if (labelmatches[m][0] === undefined) {
-					try {  console.log('warning colin, labelmatches for ',m,' was undefined'); } catch(e) { }
+					//try {  console.log('warning colin, labelmatches for ',m,' was undefined'); } catch(e) { }
 					continue;	
 				}
 				
@@ -196,7 +197,8 @@ var zoomTo = function(uri) {
 
 var cluster = function() {
 	for(var i in clusterMarkers) {
-		clusterMarkers[i].setMap(null);
+		if(typeof(clusterMarkers[i]) == "object")
+			clusterMarkers[i].setMap(null);
 	}
 	clusterMarkers = new Array();
 	clusterInfowindows = new Array();

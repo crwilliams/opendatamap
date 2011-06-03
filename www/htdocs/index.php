@@ -29,6 +29,7 @@ $uri = $_GET['uri'];
 		<link rel="apple-touch-icon-precomposed" href="img/opendatamap.png" />
 		<link rel="shortcut icon" href="img/opendatamap.png" />
 		<script src="http://www.google.com/jsapi"></script>
+		<script type="text/javascript" src="js/fixie.js"></script>
 		<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="js/all.js"></script>
