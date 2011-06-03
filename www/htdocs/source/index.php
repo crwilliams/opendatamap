@@ -6,6 +6,7 @@
 	<title>opendatamap source</title>
 </head>
 <body>
+<? include_once '../googleanalytics.php'; ?>
 <h1>opendatamap source</h1>
 <p>
 	The source code to the University of Southampton's <a href='http://opendatamap.ecs.soton.ac.uk'>linked open data map</a> is available for use under the <a href='http://creativecommons.org/licenses/by-sa/3.0' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap</em>, with a link provided to this page (<a href='http://opendatamap.ecs.soton.ac.uk/source'>http://opendatamap.ecs.soton.ac.uk/source</a>).

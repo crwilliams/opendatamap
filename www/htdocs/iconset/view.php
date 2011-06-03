@@ -6,6 +6,7 @@
 	<title>opendatamap iconset | listing</title>
 </head>
 <body>
+<? include_once '../googleanalytics.php'; ?>
 <h1>opendatamap iconset</h1>
 <h2>Listing</h2>
 <p>Below is a listing of all icons in the <a href='.'>opendatamap iconset</a>.</p>

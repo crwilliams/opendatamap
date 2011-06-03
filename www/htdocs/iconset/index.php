@@ -6,6 +6,7 @@
 	<title>opendatamap iconset</title>
 </head>
 <body>
+<? include_once '../googleanalytics.php'; ?>
 <h1>opendatamap iconset</h1>
 <p>
 	The opendatamap iconset was developed for the University of Southampton <a href='http://opendatamap.ecs.soton.ac.uk'>linked open data map</a>.  It is based on the <a href='http://code.google.com/p/google-maps-icons/'>Map Icons Collection</a>.  Our iconset is available under the <a href='http://creativecommons.org/licenses/by-sa/3.0/' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap iconset</em>, with a link provided to this page (<a href='http://opendatamap.ecs.soton.ac.uk/iconset'>http://opendatamap.ecs.soton.ac.uk/iconset</a>).

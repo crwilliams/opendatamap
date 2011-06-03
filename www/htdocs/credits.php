@@ -74,6 +74,7 @@ else
 	<title>opendatamap | credits</title>
 </head>
 <body>
+<? include_once 'googleanalytics.php'; ?>
 <h1>opendatamap</h1>
 <h2>credits</h2>
 <h3>Development</h3>
