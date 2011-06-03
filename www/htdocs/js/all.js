@@ -151,7 +151,7 @@ var updateFunc = function(force) {
 						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
 					}
 				} else {
-					list.innerHTML += '<li id="li'+limit+'" onclick="setInputBox(\'^'+labelmatches[m][0]+'$\'); updateFunc();">'+dispStr+'</li>';
+					list.innerHTML += '<li id="li'+limit+'" onclick="setInputBox(\'^'+labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)')+'$\'); updateFunc();">'+dispStr+'</li>';
 				} 
 				limit++;
 			}

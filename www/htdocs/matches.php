@@ -4,6 +4,7 @@ include_once "inc/sparqllib.php";
 include_once "inc/categories.php";
 
 $q = trim($_GET['q']);
+$q = str_replace("\\", "\\\\\\\\\\\\\\", $q);
 if($_GET['ec'] == "")
 {
 	$cats = array('Transport','Catering','Services','Entertainment', 'Health', 'Religion', 'Retail', 'Education', 'General');
