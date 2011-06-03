@@ -25,12 +25,13 @@ $uri = $_GET['uri'];
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 		<meta name="keywords" content="University of Southampton,map,Southampton,amenity,bus stop,building,site,campus,interactive" />
 		<meta name="description" content="Interactive Map of the University of Southampton, generated from Linked Open Data" />
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 		<link rel="apple-touch-icon" href="img/opendatamap.png" />
 		<link rel="apple-touch-icon-precomposed" href="img/opendatamap.png" />
 		<link rel="shortcut icon" href="img/opendatamap.png" />
 		<script src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/fixie.js"></script>
-		<script type="text/javascript" src="js/jquery-1.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="js/all.js"></script>
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
