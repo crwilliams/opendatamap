@@ -98,6 +98,35 @@ SELECT DISTINCT ?url ?name WHERE {
 
 $pos = array();
 $label = array();
+
+$postcodedata = array();
+$postcodefile = "resources/postcodetypes";
+$file = fopen($postcodefile, 'r');
+while($line = fgets($file))
+{
+	$postcodedata[] = trim($line);
+}
+fclose($file);
+
+$fullq = strtoupper($_GET['q']);
+$fullqs = explode(' ', $fullq);
+
+if(count($fullqs) == 1 || (count($fullqs) == 2 && preg_match('/^([0-9]([A-Z][A-Z]?)?)?$/', $fullqs[1])))
+{
+	if(in_array($fullqs[0], $postcodedata))
+	{
+		$postcode = $fullq.substr($fullqs[0]." ...", strlen($fullq));
+		$label[$postcode] = 99;
+		$type[$postcode] = "postcode";
+	}
+	if(strpos($fullq, ' ') === false && in_array($fullqs[0].'?', $postcodedata))
+	{
+		$postcode = $fullq.substr($fullqs[0].". ...", strlen($fullq));
+		$label[$postcode] = 100;
+		$type[$postcode] = "postcode";
+	}
+}
+
 foreach($data as $point) {
 	if(!in_cat($iconcats, $point['icon'], $cats))
 		continue;
@@ -192,14 +221,57 @@ echo '[]],';
 echo '[';
 foreach (array_keys($label) as $x)
 {
-	echo '["'.$x.'","'.$type[$x];
-	if($type[$x] == 'building' || $type[$x] == 'site' || $type[$x] == 'bus-stop' || $type[$x] == 'point-of-service')
+	if($type[$x] == 'postcode' && preg_match('/[A-Z]([A-Z][0-9][0-9]?)|([0-9][A-Z]) [0-9][A-Z][A-Z]/', $x))
 	{
-		echo '","'.$url[$x];
+		$postcodedata = sparql_get("http://api.talis.com/stores/ordnance-survey/services/sparql", "
+SELECT ?lat ?long ?wlabel ?dlabel WHERE {
+	?p <http://www.w3.org/2000/01/rdf-schema#label> '$x' .
+	?p <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+	?p <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
+	?p <http://data.ordnancesurvey.co.uk/ontology/postcode/ward> ?w .
+	?w <http://www.w3.org/2004/02/skos/core#prefLabel> ?wlabel .
+	?p <http://data.ordnancesurvey.co.uk/ontology/postcode/district> ?d .
+	?d <http://www.w3.org/2004/02/skos/core#prefLabel> ?dlabel .
+		}");
+		if(count($postcodedata) == 1)
+		{
+			$postcodedata = $postcodedata[0];
+			echo '["'.$x.' '.$postcodedata['wlabel'].', '.$postcodedata['dlabel'].'","'.$type[$x];
+				echo '","postcode:'.$x.','.$postcodedata['lat'].','.$postcodedata['long'].'"';
+		}
+		else
+		{
+			echo '["'.$x.'","'.$type[$x];
+				echo '",null';
+		}
 		if(isset($icon[$x]))
-			echo '","'.$icon[$x];
+			echo ',"'.$icon[$x].'"';
+		echo '],';
 	}
-	echo '"],';
+	else
+	{
+		echo '["'.$x.'","'.$type[$x];
+		if($type[$x] == 'building' || $type[$x] == 'site' || $type[$x] == 'bus-stop' || $type[$x] == 'point-of-service' || $type[$x] == 'workstation')
+		{
+			echo '","'.$url[$x];
+			if(isset($icon[$x]))
+				echo '","'.$icon[$x];
+		}
+		else if($type[$x] == 'postcode')
+		{
+			if(preg_match('/[A-Z]([A-Z][0-9][0-9]?)|([0-9][A-Z]) [0-9][A-Z][A-Z]/', $x))
+			{
+				echo '","'.$rdfurl.'#'.$lat.','.$long.'"';
+			}
+			else
+			{
+				echo '",null';
+			}
+			if(isset($icon[$x]))
+			echo ',"'.$icon[$x];
+		}
+		echo '"],';
+	}
 }
 echo '[]]';
 echo ']';

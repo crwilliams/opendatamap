@@ -173,7 +173,13 @@ var keypress = function(e) {
 
 var zoomTo = function(uri) {
 	var bounds = new google.maps.LatLngBounds();
-	if(polygons[uri] !== undefined) {
+	if(uri.substring(0,9) == 'postcode:') {
+		var pdata = uri.substring(9).split(',');
+		var latlng = new google.maps.LatLng(pdata[1], pdata[2]);
+		_gaq.push(['_trackEvent', 'JumpTo', 'Postcode', pdata[0]]);
+		map.panTo(latlng);
+	}
+	else if(polygons[uri] !== undefined) {
 		if(polygons[uri].length !== undefined) {
 			_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
 			for(var i = 0; i<polygons[uri].length; i++) {
