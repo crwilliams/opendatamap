@@ -2,6 +2,8 @@ var map;
 var mcOptions = {gridSize: 50, maxZoom: 15};
 var markers = new Array();
 var infowindows = new Array();
+var pmarkers = new Array();
+var pinfowindows = new Array();
 var polygons = new Array();
 var polygoninfowindows = new Array();
 var clusterMarkers = new Array();
@@ -171,11 +173,23 @@ var keypress = function(e) {
 	else if(e.keyCode == 13) return select();
 }
 
+var removepmarker = function(pc) {
+	pmarkers[pc].setMap(null);
+}
+
 var zoomTo = function(uri) {
 	var bounds = new google.maps.LatLngBounds();
 	if(uri.substring(0,9) == 'postcode:') {
 		var pdata = uri.substring(9).split(',');
 		var latlng = new google.maps.LatLng(pdata[1], pdata[2]);
+		pmarkers[pdata[0]] = new google.maps.Marker({position:latlng, map:map, title:pdata[0], icon:'http://opendatamap.ecs.soton.ac.uk/img/icon/tickmark1.png'});
+		pinfowindows[pdata[0]] = new google.maps.InfoWindow({content:'<div id="content"><h2 id="title">'+pdata[0]+'</h2><a class="odl" href="'+pdata[3]+'">Visit page</a><br /><a class="odl" href="javascript:removepmarker(\''+pdata[0]+'\')">Remove this marker</a></div>'});
+		with({pc: pdata[0]})
+		{
+			google.maps.event.addListener(pmarkers[pc], 'click', function() {
+				pinfowindows[pc].open(map,pmarkers[pc]);
+			});
+		}
 		_gaq.push(['_trackEvent', 'JumpTo', 'Postcode', pdata[0]]);
 		map.panTo(latlng);
 	}

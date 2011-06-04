@@ -224,7 +224,7 @@ foreach (array_keys($label) as $x)
 	if($type[$x] == 'postcode' && preg_match('/[A-Z]([A-Z][0-9][0-9]?)|([0-9][A-Z]) [0-9][A-Z][A-Z]/', $x))
 	{
 		$postcodedata = sparql_get("http://api.talis.com/stores/ordnance-survey/services/sparql", "
-SELECT ?lat ?long ?wlabel ?dlabel WHERE {
+SELECT ?p ?lat ?long ?wlabel ?dlabel WHERE {
 	?p <http://www.w3.org/2000/01/rdf-schema#label> '$x' .
 	?p <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
 	?p <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
@@ -237,7 +237,7 @@ SELECT ?lat ?long ?wlabel ?dlabel WHERE {
 		{
 			$postcodedata = $postcodedata[0];
 			echo '["'.$x.' '.$postcodedata['wlabel'].', '.$postcodedata['dlabel'].'","'.$type[$x];
-				echo '","postcode:'.$x.','.$postcodedata['lat'].','.$postcodedata['long'].'"';
+				echo '","postcode:'.$x.','.$postcodedata['lat'].','.$postcodedata['long'].','.$postcodedata['p'].'"';
 		}
 		else
 		{
