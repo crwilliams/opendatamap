@@ -182,7 +182,7 @@ var zoomTo = function(uri) {
 	if(uri.substring(0,9) == 'postcode:') {
 		var pdata = uri.substring(9).split(',');
 		var latlng = new google.maps.LatLng(pdata[1], pdata[2]);
-		pmarkers[pdata[0]] = new google.maps.Marker({position:latlng, map:map, title:pdata[0], icon:'http://opendatamap.ecs.soton.ac.uk/img/icon/tickmark1.png'});
+		pmarkers[pdata[0]] = new google.maps.Marker({position:latlng, map:map, title:pdata[0], icon:'http://opendatamap.ecs.soton.ac.uk/resources/postcodeicon.php?pc='+pdata[0]});
 		pinfowindows[pdata[0]] = new google.maps.InfoWindow({content:'<div id="content"><h2 id="title">'+pdata[0]+'</h2><a class="odl" href="'+pdata[3]+'">Visit page</a><br /><a class="odl" href="javascript:removepmarker(\''+pdata[0]+'\')">Remove this marker</a></div>'});
 		with({pc: pdata[0]})
 		{
