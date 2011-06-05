@@ -158,6 +158,12 @@ img.icon {
 	top:7px;
 }
 
+li img.icon {
+	position:relative; 
+	top:3px;
+	left:1px;
+}
+
 #geobutton {
 	display:block;
 }

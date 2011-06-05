@@ -148,7 +148,7 @@ var updateFunc = function(force) {
 				}
 				if(labelmatches[m][2] !== undefined) {
 					if(labelmatches[m][3] !== undefined) {
-						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><img src="'+labelmatches[m][3]+'" style="width:15px" />'+dispStr+'</li>';
+						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><img class="icon" src="'+labelmatches[m][3]+'" style="width:15px" />'+dispStr+'</li>';
 					} else {
 						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
 					}
@@ -171,6 +171,7 @@ var keypress = function(e) {
 	if(e.keyCode == 40) return moveDown();
 	else if(e.keyCode == 38) return moveUp();
 	else if(e.keyCode == 13) return select();
+	else if(e.keyCode == 27) return blursearch();
 }
 
 var removepmarker = function(pc) {
@@ -312,6 +313,11 @@ var moveDown = function() {
 
 var select = function() {
 	if(selectIndex >= 0) $('#li'+selectIndex).get(0).onclick();
+	blursearch();
+}
+
+var blursearch = function() {
+	removeHighlight();
 	$('#inputbox').blur();
 }
 
@@ -480,7 +486,7 @@ var initialize = function(lat, long, zoom, uri) {
 //var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
 //georssLayer.setMap(map);
 		
-		$('#inputbox').keypress(keypress);
+		$('#inputbox').keydown(keypress);
 		$('#inputbox').keyup(updateFunc);
 		updateFunc();
 		if(uri != '') zoomTo(uri);
