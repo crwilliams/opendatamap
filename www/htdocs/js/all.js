@@ -410,7 +410,7 @@ var initmarkers = function(cont) {
 					visible: true
 				}));
 			}
-			polygoninfowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title">'+poslabel+'</h2></div>'});
+			polygoninfowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title">'+poslabel+'</h2><a class="odl" href="'+pos+'">Visit page</a></div>'});
 			
 			var listener;
 			var position;
