@@ -69,7 +69,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
 
-SELECT DISTINCT ?pos ?poslabel ?lat ?long {
+SELECT ?pos ?poslabel ?lat ?long (GROUP_CONCAT(?code) as ?codes) {
   ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
   ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> ?pos .
   ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
@@ -77,7 +77,7 @@ SELECT DISTINCT ?pos ?poslabel ?lat ?long {
   ?pos geo:lat ?lat .
   ?pos geo:long ?long .
   FILTER ( REGEX( ?code, '^U', 'i') )
-} ORDER BY ?poslabel
+} GROUP BY ?pos ?poslabel ?lat ?long ORDER BY ?poslabel
 ");
 
 echo "[";
@@ -95,7 +95,11 @@ foreach($allpos as $point) {
 }
 
 foreach($allbus as $point) {
-	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/img/icon/bus.png"],';
+	$codes = explode(' ', $point['codes']);
+	sort($codes);
+	$codes = array_unique($codes);
+	$codes = implode('/', $codes);
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/dev/colin/resources/busicon.php?r='.$codes.'"],';
 }
 
 foreach($allcls as $point) {

@@ -243,16 +243,18 @@ function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
 	foreach($data as $point) {
 		if(!visibleCategory($point['icon']))
 			continue;
+		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/dev/colin/resources/busicon.php", $point['icon']);
 		$pos[$point['pos']] ++;
 		if(preg_match('/'.$q.'/i', $point['label']))
 			$label[$point['label']] ++;
 			$type[$point['label']] = "bus-route";
 		if(preg_match('/'.$q.'/i', $point['poslabel']))
 		{
+			$routes[$point['poslabel']][] = $point['label'];
 			$label[$point['poslabel']] += 10;
 			$type[$point['poslabel']] = "bus-stop";
 			$url[$point['poslabel']] = $point['pos'];
-			$icon[$point['poslabel']] = $point['icon'];
+			$icon[$point['poslabel']] = $point['icon'].'?r='.implode('/', $routes[$point['poslabel']]);
 		}
 	}
 }
