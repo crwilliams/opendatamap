@@ -186,20 +186,26 @@ foreach($buildingdata as $point) {
 		$label[$point['name']] += 100;
 		$type[$point['name']] = "building";
 		$url[$point['name']] = $point['url'];
+		$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+		/*
 		if($point['number'] === substr($point['number'], 0, 2))
 			$icon[$point['name']] = 'http://google-maps-icons.googlecode.com/files/black'.str_pad($point['number'], 2, 0, STR_PAD_LEFT).'.png';
 		else
 			$icon[$point['name']] = 'http://google-maps-icons.googlecode.com/files/black00.png';
+		*/
 	}
 	if(preg_match('/'.$qbd.'/i', $point['number']))
 	{
 		$label['Building '.$point['number']] += 100;
 		$type['Building '.$point['number']] = "building";
 		$url['Building '.$point['number']] = $point['url'];
+		$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+		/*
 		if($point['number'] === substr($point['number'], 0, 2))
 			$icon['Building '.$point['number']] = 'http://google-maps-icons.googlecode.com/files/black'.str_pad($point['number'], 2, 0, STR_PAD_LEFT).'.png';
 		else
 			$icon['Building '.$point['number']] = 'http://google-maps-icons.googlecode.com/files/black00.png';
+		*/
 	}
 }
 foreach($sitedata as $point) {
@@ -207,7 +213,8 @@ foreach($sitedata as $point) {
 	$label[$point['name']] += 1000;
 	$type[$point['name']] = "site";
 	$url[$point['name']] = $point['url'];
-	$icon[$point['name']] = 'http://google-maps-icons.googlecode.com/files/black'.strtoupper(substr($point['name'], 0, 1)).'.png';
+	$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
+	//$icon[$point['name']] = 'http://google-maps-icons.googlecode.com/files/black'.strtoupper(substr($point['name'], 0, 1)).'.png';
 }
 arsort($label);
 $limit = 100;
