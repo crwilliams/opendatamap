@@ -99,7 +99,7 @@ foreach($allbus as $point) {
 	sort($codes);
 	$codes = array_unique($codes);
 	$codes = implode('/', $codes);
-	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/dev/colin/resources/busicon.php?r='.$codes.'"],';
+	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r='.$codes.'"],';
 }
 
 foreach($allcls as $point) {
