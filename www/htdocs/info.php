@@ -36,10 +36,39 @@ else
 $icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $icon);
 $icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $icon);
 
+function routestyle($code)
+{
+	$color['U1'] = array(  0, 142, 207);
+	$color['U2'] = array(226,   2,  20);
+	$color['U6'] = array(246, 166,  24);
+	$color['U9'] = array(232,  84, 147);
+	if(isset($color[$code]))
+	{
+		return "style='background-color:#".str_pad(dechex($color[$code][0]), 2, '0').str_pad(dechex($color[$code][1]), 2, '0').str_pad(dechex($color[$code][2]), 2, '0').";' ";
+	}
+}
+
 if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/bus-stop\/(.*)/', $uri, $matches))
 {
-	echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
+$allbus = sparql_get($endpoint, "
+SELECT DISTINCT ?code WHERE {
+  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
+  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> <$uri> .
+  ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
+  FILTER ( REGEX( ?code, '^U', 'i') )
+} ORDER BY ?code
+");
+	$codes = array();
+	foreach($allbus as $code)
+		$codes[] = $code['code'];
+	echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos[0]['name'];
 	echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
+	echo "<h3> Served by: (click to filter) </h3>";
+	echo "<ul class='offers'>"; 
+	foreach($allbus as $code) {
+		echo "<li ".routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
+	}
+	echo "</ul>";
 	echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
 	die();
 }
