@@ -2,6 +2,8 @@
 error_reporting(0);
 include_once "inc/sparqllib.php";
 
+// This script should return info on all of the markers that can be visible on the map.
+
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
 $allpos = sparql_get($endpoint, "
@@ -80,8 +82,15 @@ SELECT ?pos ?poslabel ?lat ?long (GROUP_CONCAT(?code) as ?codes) {
 } GROUP BY ?pos ?poslabel ?lat ?long ORDER BY ?poslabel
 ");
 
+//Begin response
 echo "[";
 $i = 0;
+//Each entry in the response is an array containing the following data:
+// * ID of marker
+// * Latitude of marker
+// * Longitude of marker
+// * Label of marker
+// * URL to marker icon
 foreach($allpos as $point) {
 	$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
 	$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
@@ -105,5 +114,6 @@ foreach($allbus as $point) {
 foreach($allcls as $point) {
 	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png"],';
 }
+//End response (including empty element for convenience (required))
 echo "[]]";
 ?>
