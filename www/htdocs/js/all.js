@@ -349,7 +349,7 @@ var initmarkers = function(cont) {
 			var icon = markpt[4];
 			markers[pos] = new google.maps.Marker({
 				position: new google.maps.LatLng(lat, lon), 
-				title: poslabel,
+				title: poslabel.replace('\\\'', '\''),
 				map: window.map,
 				icon: icon,
 				visible: false
