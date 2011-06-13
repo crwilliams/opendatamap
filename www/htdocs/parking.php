@@ -1,6 +1,6 @@
 <?
 $uri = urldecode($_GET['uri']);
-if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/PARKING-([0-9]{4})/', $uri, $matches))
+if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/parking-([0-9]{4})/', $uri, $matches))
 {
 	echo "<style>table{width:100%; margin:3px} td{background-color:black; color:yellow; margin:3px; padding:3px}</style>";
 	$data = file_get_contents("http://dor.ky/api/parking/Southampton/C0".$matches[1]."");

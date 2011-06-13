@@ -156,7 +156,7 @@ if(count($allpos) > 0)
 	echo "</ul>";
 }
 
-if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/PARKING-(.*)/', $uri, $matches))
+if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/parking-(.*)/', $uri, $matches))
 {
 	echo "<iframe style='border:none' src='parking.php?uri=".$_GET['uri']."' />";
 	die();
