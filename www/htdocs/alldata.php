@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include_once "config.php"
+include_once "config.php";
 include_once $config['datasource'].".php";
 
 // This script should return info on all of the markers that can be visible on the map.
