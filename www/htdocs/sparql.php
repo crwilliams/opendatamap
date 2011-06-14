@@ -48,35 +48,35 @@ PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
 PREFIX gr: <http://purl.org/goodrelations/v1#>
 
-SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
-  ?pos a gr:LocationOfSalesOrServiceProvisioning .
-  ?pos rdfs:label ?poslabel .
+SELECT DISTINCT ?id ?lat ?long ?label ?icon WHERE {
+  ?id a gr:LocationOfSalesOrServiceProvisioning .
+  ?id rdfs:label ?label .
   OPTIONAL { ?pos spacerel:within ?b .
              ?b geo:lat ?lat . 
              ?b geo:long ?long .
              ?b a <http://vocab.deri.ie/rooms#Building> .
            }
-  OPTIONAL { ?pos spacerel:within ?s .
+  OPTIONAL { ?id spacerel:within ?s .
              ?s geo:lat ?lat . 
              ?s geo:long ?long .
              ?s a org:Site .
            }
-  OPTIONAL { ?pos geo:lat ?lat .
-             ?pos geo:long ?long .
+  OPTIONAL { ?id geo:lat ?lat .
+             ?id geo:long ?long .
            }
-  OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
+  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
   FILTER ( BOUND(?long) && BOUND(?lat) )
-} ORDER BY ?poslabel
+} ORDER BY ?label
 	");
 	$points = array();
 	foreach($tpoints as $point)
 	{
-		$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
+		$point['label'] = str_replace('\'', '\\\'', $point['label']);
+		$point['label'] = str_replace("\\", "\\\\", $point['label']);
 		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
 		$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
 		if($point['icon'] == "")
 			$point['icon'] = "img/blackness.png";
-		$point['poslabel'] = str_replace("\\", "\\\\", $point['poslabel']);
 		$points[] = $point;
 	}
 	return $points;
@@ -120,15 +120,15 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 PREFIX org: <http://www.w3.org/ns/org#>
 
-SELECT ?pos ?poslabel ?lat ?long (GROUP_CONCAT(?code) as ?codes) {
+SELECT ?id ?lat ?long ?label (GROUP_CONCAT(?code) as ?codes) WHERE {
   ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
-  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> ?pos .
+  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> ?id .
   ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
-  ?pos rdfs:label ?poslabel .
-  ?pos geo:lat ?lat .
-  ?pos geo:long ?long .
+  ?id rdfs:label ?label .
+  ?id geo:lat ?lat .
+  ?id geo:long ?long .
   FILTER ( REGEX( ?code, '^U', 'i') )
-} GROUP BY ?pos ?poslabel ?lat ?long ORDER BY ?poslabel
+} GROUP BY ?id ?label ?lat ?long ORDER BY ?label
 	");
 	$points = array();
 	foreach($tpoints as $point)
@@ -175,27 +175,27 @@ PREFIX org: <http://www.w3.org/ns/org#>
 PREFIX gr: <http://purl.org/goodrelations/v1#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT DISTINCT ?pos ?lat ?long ?poslabel WHERE {
-  ?pos <http://purl.org/openorg/hasFeature> ?f .
+SELECT DISTINCT ?id ?lat ?long ?label WHERE {
+  ?id <http://purl.org/openorg/hasFeature> ?f .
   ?f a ?ft .
   ?ft rdfs:label ?ftl .
-  ?pos skos:notation ?poslabel .
-  OPTIONAL { ?pos spacerel:within ?b .
+  ?id skos:notation ?label .
+  OPTIONAL { ?id spacerel:within ?b .
              ?b geo:lat ?lat . 
              ?b geo:long ?long .
              ?b a <http://vocab.deri.ie/rooms#Building> .
            }
-  OPTIONAL { ?pos spacerel:within ?s .
+  OPTIONAL { ?id spacerel:within ?s .
              ?s geo:lat ?lat . 
              ?s geo:long ?long .
              ?s a org:Site .
            }
-  OPTIONAL { ?pos geo:lat ?lat .
-             ?pos geo:long ?long .
+  OPTIONAL { ?id geo:lat ?lat .
+             ?id geo:long ?long .
            }
-  OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
+  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
   FILTER ( BOUND(?long) && BOUND(?lat) && REGEX(?ftl, '^WORKSTATION -') )
-} ORDER BY ?poslabel
+} ORDER BY ?label
 	");
 	$points = array();
 	foreach($tpoints as $point)

@@ -16,7 +16,7 @@ echo "[";
 // * Label of marker
 // * URL to marker icon
 foreach($points as $point) {
-	echo '["'.$point['pos'].'",'.$point['lat'].','.$point['long'].',"'.$point['poslabel'].'","'.$point['icon'].'"],';
+	echo '["'.$point['id'].'",'.$point['lat'].','.$point['long'].',"'.$point['label'].'","'.$point['icon'].'"],';
 }
 //End response (including empty element for convenience (required))
 echo "[]]";
