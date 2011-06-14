@@ -6,9 +6,9 @@ $endpoint = "http://sparql.data.southampton.ac.uk";
 function getAllDataPoints()
 {
 	$points = array();
-	$points = array_merge($points, getAllPointsOfService());
-	$points = array_merge($points, getAllBusStops());
-	$points = array_merge($points, getAllWorkstationRooms());
+	foreach(getAllPointsOfService()	 as $point) $points[] = $point;
+	foreach(getAllBusStops()	 as $point) $points[] = $point;
+	foreach(getAllWorkstationRooms() as $point) $points[] = $point;
 	return $points;
 }
 
@@ -130,7 +130,7 @@ SELECT ?pos ?poslabel ?lat ?long (GROUP_CONCAT(?code) as ?codes) {
 	");
 	foreach($points as $point)
 	{
-		$codes = explode(' ', $points[$i]['codes']);
+		$codes = explode(' ', $point['codes']);
 		sort($codes);
 		$codes = array_unique($codes);
 		$codes = implode('/', $codes);
