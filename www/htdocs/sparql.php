@@ -68,14 +68,14 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
   FILTER ( BOUND(?long) && BOUND(?lat) )
 } ORDER BY ?poslabel
 	");
-	for($i = 0; $i < count($points); $i++)
+	foreach($points as $point)
 	{
-		$points[$i]['poslabel'] = str_replace('\'', '\\\'', $points[$i]['poslabel']);
-		$points[$i]['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $points[$i]['icon']);
-		$points[$i]['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $points[$i]['icon']);
-		if($points[$i]['icon'] == "")
-			$points[$i]['icon'] = "img/blackness.png";
-		$points[$i]['poslabel'] = str_replace("\\", "\\\\", $points[$i]['poslabel']);
+		$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
+		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
+		$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
+		if($point['icon'] == "")
+			$point['icon'] = "img/blackness.png";
+		$point['poslabel'] = str_replace("\\", "\\\\", $point['poslabel']);
 	}
 	return $points;
 }
@@ -128,13 +128,13 @@ SELECT ?pos ?poslabel ?lat ?long (GROUP_CONCAT(?code) as ?codes) {
   FILTER ( REGEX( ?code, '^U', 'i') )
 } GROUP BY ?pos ?poslabel ?lat ?long ORDER BY ?poslabel
 	");
-	for($i = 0; $i < count($points); $i++)
+	foreach($points as $point)
 	{
 		$codes = explode(' ', $points[$i]['codes']);
 		sort($codes);
 		$codes = array_unique($codes);
 		$codes = implode('/', $codes);
-		$points[$i]['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".$codes;
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".$codes;
 	}
 	return $points;
 }
@@ -193,9 +193,9 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel WHERE {
   FILTER ( BOUND(?long) && BOUND(?lat) && REGEX(?ftl, '^WORKSTATION -') )
 } ORDER BY ?poslabel
 	");
-	for($i = 0; $i < count($points); $i++)
+	foreach($points as $point)
 	{
-		$points[$i]['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
 	}
 	return $points;
 }
