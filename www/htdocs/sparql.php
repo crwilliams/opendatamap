@@ -277,8 +277,8 @@ SELECT ?p ?lat ?long ?wlabel ?dlabel WHERE {
 
 function visibleCategory($icon, $cats)
 {
-	include_once "inc/categories.php";
 	global $iconcats;
+	if($iconcats == null) include_once "inc/categories.php";
 	return in_cat($iconcats, $icon, $cats);
 }
 
