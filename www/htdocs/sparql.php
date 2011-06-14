@@ -1,6 +1,5 @@
 <?
 include_once "inc/sparqllib.php";
-include_once "inc/categories.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
@@ -272,6 +271,7 @@ SELECT ?p ?lat ?long ?wlabel ?dlabel WHERE {
 
 function visibleCategory($icon)
 {
+	include_once "inc/categories.php";
 	global $iconcats;
 	global $cats;
 	return in_cat($iconcats, $icon, $cats);
