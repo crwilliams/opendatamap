@@ -41,7 +41,7 @@ function getAllMatches($q, $cats)
 function getAllPointsOfService()
 {
 	global $endpoint;
-	$points = sparql_get($endpoint, "
+	$tpoints = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -68,7 +68,8 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
   FILTER ( BOUND(?long) && BOUND(?lat) )
 } ORDER BY ?poslabel
 	");
-	foreach($points as $point)
+	$points = array();
+	foreach($tpoints as $point)
 	{
 		$point['poslabel'] = str_replace('\'', '\\\'', $point['poslabel']);
 		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
@@ -76,6 +77,7 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel ?icon WHERE {
 		if($point['icon'] == "")
 			$point['icon'] = "img/blackness.png";
 		$point['poslabel'] = str_replace("\\", "\\\\", $point['poslabel']);
+		$points[] = $point;
 	}
 	return $points;
 }
@@ -112,7 +114,7 @@ SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
 function getAllBusStops()
 {
 	global $endpoint;
-	$points = sparql_get($endpoint, "
+	$tpoints = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -128,13 +130,15 @@ SELECT ?pos ?poslabel ?lat ?long (GROUP_CONCAT(?code) as ?codes) {
   FILTER ( REGEX( ?code, '^U', 'i') )
 } GROUP BY ?pos ?poslabel ?lat ?long ORDER BY ?poslabel
 	");
-	foreach($points as $point)
+	$points = array();
+	foreach($tpoints as $point)
 	{
 		$codes = explode(' ', $point['codes']);
 		sort($codes);
 		$codes = array_unique($codes);
 		$codes = implode('/', $codes);
 		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".$codes;
+		$points[] = $point;
 	}
 	return $points;
 }
@@ -163,7 +167,7 @@ SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
 function getAllWorkstationRooms()
 {
 	global $endpoint;
-	return sparql_get($endpoint, "
+	$tpoints = sparql_get($endpoint, "
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -193,9 +197,11 @@ SELECT DISTINCT ?pos ?lat ?long ?poslabel WHERE {
   FILTER ( BOUND(?long) && BOUND(?lat) && REGEX(?ftl, '^WORKSTATION -') )
 } ORDER BY ?poslabel
 	");
-	foreach($points as $point)
+	$points = array();
+	foreach($tpoints as $point)
 	{
 		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+		$points[] = $point;
 	}
 	return $points;
 }
