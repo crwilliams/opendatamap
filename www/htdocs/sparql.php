@@ -25,11 +25,11 @@ function getAllMatches($q, $cats)
 	$icon = array();
 
 	createPostcodeEntries($label, $type, $url);
-	createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q);
-	createBusEntries($pos, $label, $type, $url, $icon, $q);
-	createWorkstationEntries($pos, $label, $type, $url, $icon, $q);
-	createBuildingEntries($pos, $label, $type, $url, $icon, $q);
-	createSiteEntries($pos, $label, $type, $url, $icon, $q);
+	createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
+	createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
+	createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
+	createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
+	createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 	
 	arsort($label);
 	if(count($label) > $labellimit)
@@ -275,11 +275,10 @@ SELECT ?p ?lat ?long ?wlabel ?dlabel WHERE {
 		return null;
 }
 
-function visibleCategory($icon)
+function visibleCategory($icon, $cats)
 {
 	include_once "inc/categories.php";
 	global $iconcats;
-	global $cats;
 	return in_cat($iconcats, $icon, $cats);
 }
 
@@ -329,11 +328,11 @@ function createPostcodeEntries(&$label, &$type, &$url)
 }
 
 // Process point of service data
-function createPointOfServiceEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
+function createPointOfServiceEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 {
 	$data = getPointsOfService($q);
 	foreach($data as $point) {
-		if(!visibleCategory($point['icon']))
+		if(!visibleCategory($point['icon'], $cats))
 			continue;
 		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
 		$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
@@ -354,11 +353,11 @@ function createPointOfServiceEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
 }
 
 // Process bus data
-function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
+function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 {
 	$data = getBusStops($q);
 	foreach($data as $point) {
-		if(!visibleCategory($point['icon']))
+		if(!visibleCategory($point['icon'], $cats))
 			continue;
 		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
 		$pos[$point['pos']] ++;
@@ -377,12 +376,12 @@ function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
 }
 
 // Process workstation data
-function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
+function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 {
 	$data = getWorkstationRooms($q);
 	foreach($data as $point) {
 		$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png';
-		if(!visibleCategory($point['icon']))
+		if(!visibleCategory($point['icon'], $cats))
 			continue;
 		$pos[$point['pos']] ++;
 		if(preg_match('/'.$q.'/i', $point['label']))
@@ -401,7 +400,7 @@ function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
 }
 
 // Process building data
-function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
+function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 {
 	$qbd = trim(str_replace(array('building', 'buildin', 'buildi', 'build', 'buil', 'bui', 'bu', 'b'), '', strtolower($q)));
 	$data = getBuildings($q, $qbd);
@@ -425,7 +424,7 @@ function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
 }
 
 // Process site data
-function createSiteEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
+function createSiteEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 {
 	$data = getSites($q);
 	foreach($data as $point) {
@@ -436,6 +435,5 @@ function createSiteEntries(&$pos, &$label, &$type, &$url, &$icon, $q)
 		$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
 	}
 }
-
 
 ?>
