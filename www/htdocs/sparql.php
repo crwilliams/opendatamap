@@ -51,7 +51,7 @@ PREFIX gr: <http://purl.org/goodrelations/v1#>
 SELECT DISTINCT ?id ?lat ?long ?label ?icon WHERE {
   ?id a gr:LocationOfSalesOrServiceProvisioning .
   ?id rdfs:label ?label .
-  OPTIONAL { ?pos spacerel:within ?b .
+  OPTIONAL { ?id spacerel:within ?b .
              ?b geo:lat ?lat . 
              ?b geo:long ?long .
              ?b a <http://vocab.deri.ie/rooms#Building> .
