@@ -10,6 +10,7 @@ function getAllDataPoints()
 	$points = array_merge($points, getAllPointsOfService());
 	$points = array_merge($points, getAllBusStops());
 	$points = array_merge($points, getAllWorkstationRooms());
+	return $points;
 }
 
 function getAllMatches($q, $cats)
