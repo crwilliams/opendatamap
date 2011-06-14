@@ -1,2 +1,2 @@
 rm source/opendatamap-source.zip
-zip source/opendatamap-source.zip *.php *.csv css/* img/*.png img/*.gif img/icon/*.png img/icon/README inc/* js/* resources/clustericon.php resources/cache README
+zip source/opendatamap-source.zip *.php *.csv css/* img/*.png img/*.gif img/icon/*.png img/icon/README inc/* js/* resources/clustericon.php resources/cache README -x config.local.php
