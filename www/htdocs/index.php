@@ -1,30 +1,31 @@
 <!DOCTYPE html>
 <?php
 error_reporting(0);
+include 'config.php';
 
 $q = $_GET['q'];
 if(isset($_GET['lat']) && $_GET['lat'] != "")
 	$lat = $_GET['lat'];
 else
-	$lat = 50.9355;
+	$lat = $config['default lat'];
 if(isset($_GET['long']) && $_GET['long'] != "")
 	$long = $_GET['long'];
 else
-	$long = -1.39595;
+	$long = $config['default long'];
 if(isset($_GET['zoom']) && $_GET['zoom'] != "")
 	$zoom = $_GET['zoom'];
 else
-	$zoom = 17;
+	$zoom = $config['default zoom'];;
 $uri = $_GET['uri'];
 ?>
 <html>
 	<head>
-		<title>University of Southampton Linked Open Data Map</title>
+		<title><?php echo $config['Site title'] ?></title>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-		<meta name="keywords" content="University of Southampton,map,Southampton,amenity,bus stop,building,site,campus,interactive" />
-		<meta name="description" content="Interactive Map of the University of Southampton, generated from Linked Open Data" />
+		<meta name="keywords" content="<?php echo $config['Site keywords'] ?>" />
+		<meta name="description" content="<?php echo $config['Site description'] ?>" />
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 		<link rel="apple-touch-icon" href="img/opendatamap.png" />
 		<link rel="apple-touch-icon-precomposed" href="img/opendatamap.png" />
@@ -41,18 +42,6 @@ $uri = $_GET['uri'];
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."'" ?>)">
 <? include_once 'googleanalytics.php'; ?>
 		<div id="spinner"><img src="img/ajax-loader.gif"></div>
-<?php/*
-		<div style="width:210px; height:100%;">
-			<ul style='height:40px;'>
-				<li><img id="layersbutton" src='img/geoloc.png' onclick="geoloc()" alt="Toggle layers" title="Toggle layers" />Toggle layers</li>
-				<li><img id="searchbutton" src='img/geoloc.png' onclick="geoloc()" alt="Search" title="Search" />Search</li>
-			</ul>
-			<div id='scroll-container' style='position:absolute; top:40px; left:0px; bottom:0px; width:200px; overflow: scroll; margin-left:5px; padding:0px'>
-				<div id='content' style=''>
-				</div>
-			</div>
-		</div>
-*/?>
 		<div id="map_canvas" style=''></div>
 		<img id="geobutton" src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons">
@@ -76,5 +65,4 @@ $uri = $_GET['uri'];
 		<div id="credits"><?php $include = true; include 'credits.php' ?></div>
 		<div id="credits-small"><a href="credits.php">Application Credits</a></div>
 	</body>
-	<!--<script type="text/javascript" src="alldata.php"></script>-->
 </html>
