@@ -1,4 +1,5 @@
 var map;
+var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};
 var markers = new Array();
 var infowindows = new Array();
@@ -63,10 +64,10 @@ var reset_search_icon = function() {
 	}
 }
 
-// Colin sez: "someone's clicked on something, you need to load the real data into it"
+// someone's clicked on something, you need to load the real data into it
 var loadWindow = function(j) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
-	$.get("info.php?uri="+encodeURI(j), function(data) {
+	$.get("info.php?version="+version+"&uri="+encodeURI(j), function(data) {
 		infowindows[j].setContent(data);
 	});
 }
@@ -450,7 +451,8 @@ var initmarkers = function(cont) {
 	},'json');
 };
 
-var initialize = function(lat, long, zoom, uri) {
+var initialize = function(lat, long, zoom, uri, v) {
+	version = v;
 	map = new google.maps.Map(document.getElementById('map_canvas'), {
 		zoom: zoom,
 		center: new google.maps.LatLng(lat, long),
@@ -468,7 +470,7 @@ var initialize = function(lat, long, zoom, uri) {
       { visibility: "off" }
     ]
   },{
-    featureType: "transit.station.bus",
+    featureType: "transit.station",
     elementType: "all",
     stylers: [
       { visibility: "off" }
