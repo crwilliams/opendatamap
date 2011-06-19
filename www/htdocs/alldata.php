@@ -26,7 +26,7 @@ function getAllDataPoints()
 	foreach($config['datasource'] as $ds)
 	{
 		$dsclass = ucwords($ds).'DataSource';
-		foreach($dsclass::getAll() as $point) $points[] = $point;
+		foreach(call_user_func(array($dsclass, 'getAll')) as $point) $points[] = $point;
 	}
 	return $points;
 }

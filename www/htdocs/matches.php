@@ -85,7 +85,7 @@ function getAllMatches($q, $cats)
 	foreach($config['datasource'] as $ds)
 	{
 		$dsclass = ucwords($ds).'DataSource';
-		$dsclass::createEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		call_user_func(array($dsclass, 'createEntries'), $pos, $label, $type, $url, $icon, $q, $cats);
 	}
 	
 	arsort($label);
