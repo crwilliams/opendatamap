@@ -3,11 +3,11 @@ include_once "inc/sparqllib.php";
 
 class OxfordDataSource extends DataSource
 {
-	$endpoint = "http://oxpoints.oucs.ox.ac.uk/sparql";
+	static $endpoint = "http://oxpoints.oucs.ox.ac.uk/sparql";
 
-	function getAllOxPoints()
+	function getAll()
 	{
-		$tpoints = sparql_get($endpoint, "
+		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX oxp: <http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#>
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -64,10 +64,38 @@ class OxfordDataSource extends DataSource
 		}
 		return $points;
 	}
+	
+	function getEntries($q, $cats)
+	{	
+		$pos = array();
+		$label = array();
+		$type = array();
+		$url = array();
+		$icon = array();
+		$data = self::getOxPoints($q);
+		foreach($data as $point) {
+			if(!self::visibleCategory($point['icon'], $cats))
+				continue;
+			$pos[$point['pos']] ++;
+			if(preg_match('/'.$q.'/i', $point['label']))
+			{
+				$label[$point['label']] ++;
+				$type[$point['label']] = "offering";
+			}
+			if(preg_match('/'.$q.'/i', $point['poslabel']))
+			{
+				$label[$point['poslabel']] += 10;
+				$type[$point['poslabel']] = "workstation";
+				$url[$point['poslabel']] = $point['pos'];
+				$icon[$point['poslabel']] = $point['icon'];
+			}
+		}
+		return array($pos, $label, $type, $url, $icon);
+	}
 
 	function getOxPoints($q)
 	{
-		$tpoints = sparql_get($endpoint, "
+		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX oxp: <http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#>
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX dc: <http://purl.org/dc/elements/1.1/>
@@ -99,28 +127,6 @@ class OxfordDataSource extends DataSource
 		global $iconcats;
 		if($iconcats == null) include_once "inc/categories.php";
 		return in_cat($iconcats, $icon, $cats);
-	}
-
-	function createOxPointEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = getOxPoints($q);
-		foreach($data as $point) {
-			if(!visibleCategory($point['icon'], $cats))
-				continue;
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-			{
-				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
-			}
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "workstation";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'];
-			}
-		}
 	}
 }
 ?>

@@ -1,7 +1,7 @@
 <?
 class CambridgeDataSource extends DataSource
 {
-	function getAllLibraries()
+	function getAll()
 	{
 		//id, lat, long, label
 		$libs = simplexml_load_file('camlib.xml');
@@ -17,6 +17,36 @@ class CambridgeDataSource extends DataSource
 			$points[] = $point;
 		}
 		return $points;
+	}
+
+	// Process library data
+	function getEntries($q, $cats)
+	{	
+		$pos = array();
+		$label = array();
+		$type = array();
+		$url = array();
+		$icon = array();
+		$data = self::getLibraries($q);
+		foreach($data as $point) {
+			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/library.png';
+			if(!visibleCategory($point['icon'], $cats))
+				continue;
+			$pos[$point['pos']] ++;
+			if(preg_match('/'.$q.'/i', $point['label']))
+			{
+				$label[$point['label']] ++;
+				$type[$point['label']] = "offering";
+			}
+			if(preg_match('/'.$q.'/i', $point['poslabel']))
+			{
+				$label[$point['poslabel']] += 10;
+				$type[$point['poslabel']] = "workstation";
+				$url[$point['poslabel']] = $point['pos'];
+				$icon[$point['poslabel']] = $point['icon'];
+			}
+		}
+		return array($pos, $label, $type, $url, $icon);
 	}
 
 	function getLibraries($q)
@@ -41,30 +71,6 @@ class CambridgeDataSource extends DataSource
 		global $iconcats;
 		if($iconcats == null) include_once "inc/categories.php";
 		return in_cat($iconcats, $icon, $cats);
-	}
-
-	// Process library data
-	function createLibraryEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = getLibraries($q);
-		foreach($data as $point) {
-			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/library.png';
-			if(!visibleCategory($point['icon'], $cats))
-				continue;
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-			{
-				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
-			}
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "workstation";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'];
-			}
-		}
 	}
 }
 ?>
