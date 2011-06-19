@@ -3,7 +3,7 @@ include_once "inc/sparqllib.php";
 
 class PostcodeDataSource extends DataSource
 {
-	var $endpoint = "http://api.talis.com/stores/ordnance-survey/services/sparql";
+	static $endpoint = "http://api.talis.com/stores/ordnance-survey/services/sparql";
 
 	static function getPostcodeData($postcode)
 	{
@@ -52,7 +52,7 @@ class PostcodeDataSource extends DataSource
 				$postcode = $q.substr($fullqs[0]." ...", strlen($q));
 				if(strpos($postcode, '.') === false)
 				{
-					$data = getPostcodeData($q);
+					$data = self::getPostcodeData($q);
 					if($data != null)
 					{
 						$postcode =  $q.' '.$data['wlabel'].', '.$data['dlabel'];

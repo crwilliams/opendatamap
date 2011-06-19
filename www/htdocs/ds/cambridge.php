@@ -30,7 +30,7 @@ class CambridgeDataSource extends DataSource
 		$data = self::getLibraries($q);
 		foreach($data as $point) {
 			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/library.png';
-			if(!visibleCategory($point['icon'], $cats))
+			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
