@@ -22,6 +22,8 @@ echo "[]]";
 
 function getAllDataPoints()
 {
+	global $config;
+
 	$points = array();
 	foreach($config['datasource'] as $ds)
 	{

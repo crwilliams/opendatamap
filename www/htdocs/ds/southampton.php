@@ -1,11 +1,13 @@
 <?
 include_once "inc/sparqllib.php";
 
+class DataSource{}
+
 class SouthamptonDataSource extends DataSource
 {
-	$endpoint = "http://sparql.data.southampton.ac.uk";
+	static $endpoint = "http://sparql.data.southampton.ac.uk";
 
-	static function getAllDataPoints()
+	static function getAll()
 	{
 		$points = array();
 		foreach(SouthamptonDataSource::getAllPointsOfService()	as $point) $points[] = $point;
@@ -14,19 +16,24 @@ class SouthamptonDataSource extends DataSource
 		return $points;
 	}
 
-	static function createEntries($pos, $label, $type, $url, $icon, $q, $cats)
+	static function getEntries($q, $cats)
 	{
+		$pos = array();
+		$label = array();
+		$type = array();
+		$url = array();
+		$icon = array();
 		SouthamptonDataSource::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		SouthamptonDataSource::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		SouthamptonDataSource::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		SouthamptonDataSource::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		SouthamptonDataSource::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		return array($pos, $label, $type, $url, $icon);
 	}
 
 	static function getAllPointsOfService()
 	{
-		global $endpoint;
-		$tpoints = sparql_get($endpoint, "
+		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -69,12 +76,11 @@ class SouthamptonDataSource extends DataSource
 
 	static function getPointsOfService($q)
 	{
-		global $endpoint;
 		if($q == '')
 			$filter = '';
 		else
 			$filter = "FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
-		return sparql_get($endpoint, "
+		return sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -98,8 +104,7 @@ class SouthamptonDataSource extends DataSource
 
 	static function getAllBusStops()
 	{
-		global $endpoint;
-		$tpoints = sparql_get($endpoint, "
+		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -130,8 +135,7 @@ class SouthamptonDataSource extends DataSource
 
 	static function getBusStops($q)
 	{
-		global $endpoint;
-		return sparql_get($endpoint, "
+		return sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -151,8 +155,7 @@ class SouthamptonDataSource extends DataSource
 
 	static function getAllWorkstationRooms()
 	{
-		global $endpoint;
-		$tpoints = sparql_get($endpoint, "
+		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -193,12 +196,11 @@ class SouthamptonDataSource extends DataSource
 
 	static function getWorkstationRooms($q)
 	{
-		global $endpoint;
 		if($q == '')
 			$filter = '';
 		else
 			$filter = "&& ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
-		return sparql_get($endpoint, "
+		return sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -217,8 +219,7 @@ class SouthamptonDataSource extends DataSource
 
 	static function getBuildings($q, $qbd)
 	{
-		global $endpoint;
-		return sparql_get($endpoint, "
+		return sparql_get(self::$endpoint, "
 	SELECT DISTINCT ?url ?name ?number WHERE {
 	  ?url a <http://vocab.deri.ie/rooms#Building> .
 	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
@@ -230,8 +231,7 @@ class SouthamptonDataSource extends DataSource
 
 	static function getSites($q)
 	{
-		global $endpoint;
-		return sparql_get($endpoint, "
+		return sparql_get(self::$endpoint, "
 	SELECT DISTINCT ?url ?name WHERE {
 	  ?url a <http://www.w3.org/ns/org#Site> .
 	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
@@ -251,9 +251,9 @@ class SouthamptonDataSource extends DataSource
 	// Process point of service data
 	static function createPointOfServiceEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
-		$data = getPointsOfService($q);
+		$data = self::getPointsOfService($q);
 		foreach($data as $point) {
-			if(!visibleCategory($point['icon'], $cats))
+			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
 			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
@@ -276,9 +276,9 @@ class SouthamptonDataSource extends DataSource
 	// Process bus data
 	static function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
-		$data = getBusStops($q);
+		$data = self::getBusStops($q);
 		foreach($data as $point) {
-			if(!visibleCategory($point['icon'], $cats))
+			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
 			$pos[$point['pos']] ++;
@@ -299,10 +299,10 @@ class SouthamptonDataSource extends DataSource
 	// Process workstation data
 	static function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
-		$data = getWorkstationRooms($q);
+		$data = self::getWorkstationRooms($q);
 		foreach($data as $point) {
 			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png';
-			if(!visibleCategory($point['icon'], $cats))
+			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
@@ -324,7 +324,7 @@ class SouthamptonDataSource extends DataSource
 	static function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
 		$qbd = trim(str_replace(array('building', 'buildin', 'buildi', 'build', 'buil', 'bui', 'bu', 'b'), '', strtolower($q)));
-		$data = getBuildings($q, $qbd);
+		$data = self::getBuildings($q, $qbd);
 		foreach($data as $point) {
 			$pos[$point['url']] += 100;
 			if(preg_match('/'.$q.'/i', $point['name']))
@@ -347,7 +347,7 @@ class SouthamptonDataSource extends DataSource
 	// Process site data
 	static function createSiteEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
-		$data = getSites($q);
+		$data = self::getSites($q);
 		foreach($data as $point) {
 			$pos[$point['url']] += 1000;
 			$label[$point['name']] += 1000;

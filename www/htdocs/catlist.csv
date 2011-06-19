@@ -11,6 +11,7 @@ http://google-maps-icons.googlecode.com/files/cinema.png,Entertainment
 http://google-maps-icons.googlecode.com/files/cityhall-tourism.png,Religion
 http://google-maps-icons.googlecode.com/files/cityhall-admin.png,Services
 http://google-maps-icons.googlecode.com/files/club.png,Entertainment
+http://opendatamap.ecs.soton.ac.uk/img/icon/club.png,Entertainment
 http://google-maps-icons.googlecode.com/files/coffee.png,Catering
 http://google-maps-icons.googlecode.com/files/computer.png,Education
 http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png,Education
@@ -27,12 +28,17 @@ http://google-maps-icons.googlecode.com/files/hotel.png,Catering
 http://google-maps-icons.googlecode.com/files/hospital.png,Health
 http://google-maps-icons.googlecode.com/files/info.png,General
 http://google-maps-icons.googlecode.com/files/library.png,Education
+http://opendatamap.ecs.soton.ac.uk/img/icon/library.png,Education
+http://opendatamap.ecs.soton.ac.uk/img/icon/library-uni.png,Education
 http://google-maps-icons.googlecode.com/files/liquor.png,Retail
 http://google-maps-icons.googlecode.com/files/mosque.png,Religion
+http://opendatamap.ecs.soton.ac.uk/img/icon/museum.png,Entertainment
 http://google-maps-icons.googlecode.com/files/museum-art.png,Entertainment
 http://google-maps-icons.googlecode.com/files/museum-crafts.png,Entertainment
 http://google-maps-icons.googlecode.com/files/music-classical.png,Entertainment
 http://google-maps-icons.googlecode.com/files/parking.png,Transport
+http://opendatamap.ecs.soton.ac.uk/img/icon/parking.png,Transport
+http://opendatamap.ecs.soton.ac.uk/img/icon/park-urban.png,Religion
 http://google-maps-icons.googlecode.com/files/police2.png,Services
 http://google-maps-icons.googlecode.com/files/pool.png,Health
 http://google-maps-icons.googlecode.com/files/port.png,Transport
@@ -40,6 +46,7 @@ http://google-maps-icons.googlecode.com/files/postal.png,Services
 http://opendatamap.ecs.soton.ac.uk/img/prayer.png,Religion
 http://google-maps-icons.googlecode.com/files/recycle.png,General
 http://google-maps-icons.googlecode.com/files/restaurant.png,Catering
+http://opendatamap.ecs.soton.ac.uk/img/icon/school.png,Education
 http://opendatamap.ecs.soton.ac.uk/img/sikh.png,Religion
 http://google-maps-icons.googlecode.com/files/squash.png,Health
 http://google-maps-icons.googlecode.com/files/stadium.png,Health
@@ -50,6 +57,7 @@ http://google-maps-icons.googlecode.com/files/text.png,Services
 http://google-maps-icons.googlecode.com/files/theater.png,Entertainment
 http://google-maps-icons.googlecode.com/files/train.png,Transport
 http://google-maps-icons.googlecode.com/files/trash.png,General
+http://opendatamap.ecs.soton.ac.uk/img/icon/university.png,Education
 http://google-maps-icons.googlecode.com/files/wifi.png,General
 http://google-maps-icons.googlecode.com/files/workoffice.png,Services
 

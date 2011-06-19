@@ -72,7 +72,7 @@ echo ']';
 
 function getAllMatches($q, $cats)
 {
-	global $endpoint;
+	global $config;
 	
 	$labellimit = 100;
 
@@ -85,7 +85,17 @@ function getAllMatches($q, $cats)
 	foreach($config['datasource'] as $ds)
 	{
 		$dsclass = ucwords($ds).'DataSource';
-		call_user_func(array($dsclass, 'createEntries'), $pos, $label, $type, $url, $icon, $q, $cats);
+		list($npos, $nlabel, $ntype, $nurl, $nicon) = call_user_func(array($dsclass, 'getEntries'), $q, $cats);
+		foreach($npos as $k => $v)
+			$pos[$k] += $v;
+		foreach($nlabel as $k => $v)
+			$label[$k] += $v;
+		foreach($ntype as $k => $v)
+			$type[$k] = $v;
+		foreach($nurl as $k => $v)
+			$url[$k] = $v;
+		foreach($nicon as $k => $v)
+			$icon[$k] = $v;
 	}
 	
 	arsort($label);
