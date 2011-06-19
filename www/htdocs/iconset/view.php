@@ -3,13 +3,30 @@
 	<link rel="stylesheet" href="../css/reset.css" type="text/css">
 	<link rel="stylesheet" href="../css/index.css" type="text/css">
 	<link rel="stylesheet" href="../css/credits.css" type="text/css">
+	<script type="text/javascript" src="../js/jquery-1.6.1.min.js"></script>
 	<title>opendatamap iconset | listing</title>
+<script type='text/javascript' lang='javascript'>
+function searchyou()
+{
+	var sb = document.getElementById('search').value;
+	$('img').each(function(value){
+		if($(this).attr('id').substr(0, sb.length) == sb)
+			$(this).show();
+		else
+			$(this).hide();
+	});
+}
+</script>
 </head>
 <body>
 <? include_once '../googleanalytics.php'; ?>
 <h1>opendatamap iconset</h1>
 <h2>Listing</h2>
 <p>Below is a listing of all icons in the <a href='.'>opendatamap iconset</a>.</p>
+<form>
+<label for='search'>Search: </label><input type='text' name='search' id='search' onkeyup='searchyou()' />
+</form>
+<br/>
 <?
 
 $handle = opendir('../img/icon/');
@@ -17,8 +34,13 @@ $handle = opendir('../img/icon/');
 while (false !== ($file = readdir($handle))) {
 	if(substr($file, -4, 4) != '.png')
 		continue;
+	$files[] = $file;
+}
+sort($files);
+foreach($files as $file)
+{
 	$filename = substr($file, 0, -4);
-	echo "<img src='../img/icon/$file' alt='$filename icon' title='$filename' />";
+	echo "<img id='$filename' src='../img/icon/$file' alt='$filename icon' title='$filename' />";
 }
 ?>
 </body>
