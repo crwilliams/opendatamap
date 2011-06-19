@@ -5,7 +5,7 @@ class OxfordDataSource extends DataSource
 {
 	static $endpoint = "http://oxpoints.oucs.ox.ac.uk/sparql";
 
-	function getAll()
+	static function getAll()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX oxp: <http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#>
@@ -27,45 +27,13 @@ class OxfordDataSource extends DataSource
 		foreach($tpoints as $point)
 		{
 			//if($point['icon'] == '')
-			switch($point['type'])
-			{
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Building':
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Room':
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Site':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Hall':
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#College':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/school.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library-uni.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/parking.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/park-urban.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Library':
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#SubLibrary':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
-					break;
-				case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Museum':
-					$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/museum-historical.png";
-					break;
-			}
+			$point['icon'] = self::getIcon($point);
 			$points[] = $point;
 		}
 		return $points;
 	}
 	
-	function getEntries($q, $cats)
+	static function getEntries($q, $cats)
 	{	
 		$pos = array();
 		$label = array();
@@ -93,7 +61,7 @@ class OxfordDataSource extends DataSource
 		return array($pos, $label, $type, $url, $icon);
 	}
 
-	function getOxPoints($q)
+	static function getOxPoints($q)
 	{
 		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX oxp: <http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#>
@@ -101,7 +69,7 @@ class OxfordDataSource extends DataSource
 	PREFIX dc: <http://purl.org/dc/elements/1.1/>
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 
-	SELECT ?pos ?poslabel WHERE {
+	SELECT ?pos ?poslabel ?type WHERE {
 	  ?pos a ?type .
 	  ?pos dc:title ?label .
 	    ?pos oxp:occupies ?c .
@@ -115,18 +83,47 @@ class OxfordDataSource extends DataSource
 		{
 			if(!preg_match('/'.$q.'/i', $point['label']) && !preg_match('/'.$q.'/i', $point['poslabel']))
 				continue;
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+			$point['icon'] = self::getIcon($point);
 			$point['label'] = 'point';
 			$points[] = $point;
 		}
 		return $points;
 	}
 
-	function visibleCategory($icon, $cats)
+	static function visibleCategory($icon, $cats)
 	{
 		global $iconcats;
 		if($iconcats == null) include_once "inc/categories.php";
 		return in_cat($iconcats, $icon, $cats);
+	}
+
+	static function getIcon($point)
+	{
+		switch($point['type'])
+		{
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Building':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Room':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Site':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Hall':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#College':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/school.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/library-uni.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/parking.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/park-urban.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Library':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#SubLibrary':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Museum':
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/museum-historical.png";
+		}
 	}
 }
 ?>
