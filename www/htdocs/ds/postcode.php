@@ -24,8 +24,16 @@ class PostcodeDataSource extends DataSource
 			return null;
 	}
 
-	static function createPostcodeEntries(&$label, &$type, &$url)
+	static function getEntries($q, $cats)
 	{
+		$q = strtoupper($q);
+		
+		$pos = array();
+		$label = array();
+		$type = array();
+		$url = array();
+		$icon = array();
+		
 		$postcodedata = array();
 		$postcodefile = "resources/postcodetypes";
 		$file = fopen($postcodefile, 'r');
@@ -35,38 +43,38 @@ class PostcodeDataSource extends DataSource
 		}
 		fclose($file);
 
-		$fullq = strtoupper($_GET['q']);
-		$fullqs = explode(' ', $fullq);
+		$fullqs = explode(' ', $q);
 
 		if(count($fullqs) == 1 || (count($fullqs) == 2 && preg_match('/^([0-9]([A-Z][A-Z]?)?)?$/', $fullqs[1])))
 		{
 			if(in_array($fullqs[0], $postcodedata))
 			{
-				$postcode = $fullq.substr($fullqs[0]." ...", strlen($fullq));
+				$postcode = $q.substr($fullqs[0]." ...", strlen($q));
 				if(strpos($postcode, '.') === false)
 				{
-					$data = getPostcodeData($fullq);
+					$data = getPostcodeData($q);
 					if($data != null)
 					{
-						$postcode =  $fullq.' '.$data['wlabel'].', '.$data['dlabel'];
-						$url[$postcode] = 'postcode:'.$fullq.','.$data['lat'].','.$data['long'].','.$data['p'];
+						$postcode =  $q.' '.$data['wlabel'].', '.$data['dlabel'];
+						$url[$postcode] = 'postcode:'.$q.','.$data['lat'].','.$data['long'].','.$data['p'];
 					}
 					else
 					{
-						$postcode =  $fullq.' (postcode not found)';
+						$postcode =  $q.' (postcode not found)';
 						$url[$postcode] = null;
 					}
 				}
 				$label[$postcode] = 99;
 				$type[$postcode] = "postcode";
 			}
-			if(strpos($fullq, ' ') === false && in_array($fullqs[0].'?', $postcodedata))
+			if(strpos($q, ' ') === false && in_array($fullqs[0].'?', $postcodedata))
 			{
-				$postcode = $fullq.substr($fullqs[0].". ...", strlen($fullq));
+				$postcode = $q.substr($fullqs[0].". ...", strlen($q));
 				$label[$postcode] = 100;
 				$type[$postcode] = "postcode";
 			}
 		}
+		return array($pos, $label, $type, $url, $icon);
 	}
 }
 ?>

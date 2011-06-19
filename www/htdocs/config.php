@@ -27,6 +27,9 @@ if(!is_array($config['datasource']))
 {
 	$config['datasource'] = array($config['datasource']);
 }
+
+class DataSource{}
+
 foreach($config['datasource'] as $ds)
 {
 	include_once 'ds/'.$ds.'.php';

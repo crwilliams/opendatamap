@@ -5,15 +5,9 @@ include_once "config.php";
 // This script should return details of the markers (and terms) that match the query (provided in $_GET['q']).
 // It should only return those markers which belong to the categories specified in $_GET['ec'].
 
-$q = getQueryTerm();
+$q = $_GET['q'];
+//getQueryTerm();
 $cats = getEnabledCategories();
-
-function getQueryTerm()
-{
-	$q = trim($_GET['q']);
-	$q = str_replace("\\", "\\\\\\\\\\\\\\", $q);
-	return $q;
-}
 
 function getEnabledCategories()
 {

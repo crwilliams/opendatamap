@@ -1,8 +1,6 @@
 <?
 include_once "inc/sparqllib.php";
 
-class DataSource{}
-
 class SouthamptonDataSource extends DataSource
 {
 	static $endpoint = "http://sparql.data.southampton.ac.uk";
@@ -18,6 +16,8 @@ class SouthamptonDataSource extends DataSource
 
 	static function getEntries($q, $cats)
 	{
+		$q = str_replace("\\", "\\\\\\\\\\\\\\", trim($q));
+		
 		$pos = array();
 		$label = array();
 		$type = array();
