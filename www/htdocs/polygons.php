@@ -50,6 +50,7 @@ foreach($buildings as $x) {
 	echo '[';
 	if($x['outline'] != "")
 	{
+		$x['outline'] = str_replace(" -1", ",-1", $x['outline']);
 		$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $x['outline']));
 		foreach($x['outline'] as $p)
 		{

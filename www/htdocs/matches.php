@@ -1,7 +1,6 @@
 <?php
 error_reporting(0);
 include_once "config.php";
-include_once $config['datasource'].".php";
 
 // This script should return details of the markers (and terms) that match the query (provided in $_GET['q']).
 // It should only return those markers which belong to the categories specified in $_GET['ec'].
@@ -70,4 +69,29 @@ foreach (array_keys($label) as $x)
 echo '[]]';
 //End response
 echo ']';
+
+function getAllMatches($q, $cats)
+{
+	global $endpoint;
+	
+	$labellimit = 100;
+
+	$pos = array();
+	$label = array();
+	$type = array();
+	$url = array();
+	$icon = array();
+
+	foreach($config['datasource'] as $ds)
+	{
+		$dsclass = ucwords($ds).'DataSource';
+		$dsclass::createEntries($pos, $label, $type, $url, $icon, $q, $cats);
+	}
+	
+	arsort($label);
+	if(count($label) > $labellimit)
+		$label = array_slice($label, 0,$labellimit);
+
+	return array($pos, $label, $type, $url, $icon);
+}
 ?>

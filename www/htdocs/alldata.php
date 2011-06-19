@@ -1,7 +1,6 @@
 <?php
 error_reporting(0);
 include_once "config.php";
-include_once $config['datasource'].".php";
 
 // This script should return info on all of the markers that can be visible on the map.
 
@@ -20,4 +19,15 @@ foreach($points as $point) {
 }
 //End response (including empty element for convenience (required))
 echo "[]]";
+
+function getAllDataPoints()
+{
+	$points = array();
+	foreach($config['datasource'] as $ds)
+	{
+		$dsclass = ucwords($ds).'DataSource';
+		foreach($dsclass::getAll() as $point) $points[] = $point;
+	}
+	return $points;
+}
 ?>
