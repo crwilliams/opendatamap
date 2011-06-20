@@ -60,6 +60,10 @@ class OxfordDataSource extends DataSource
 		}
 		return array($pos, $label, $type, $url, $icon);
 	}
+	
+	static function getDataSets(){
+		return array(array('name' => 'OxPoints', 'uri' => 'http://www.oucs.ox.ac.uk/oxpoints/', 'l' => 'http://www.opendefinition.org/licenses/cc-zero'));
+	}
 
 	static function getOxPoints($q)
 	{

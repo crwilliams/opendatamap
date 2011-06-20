@@ -1,70 +1,58 @@
 <?php
 error_reporting(0);
-include_once "inc/sparqllib.php";
+include_once "config.php";
 
-$endpoint = "http://sparql.data.southampton.ac.uk";
-
-$sites = sparql_get($endpoint, "
-SELECT DISTINCT ?url ?name ?outline WHERE {
-  ?url a <http://www.w3.org/ns/org#Site> .
-  ?url <http://purl.org/dc/terms/spatial> ?outline .
-  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-} 
-");
-$buildings = sparql_get($endpoint, "
-SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
-  ?url a <http://vocab.deri.ie/rooms#Building> .
-  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
-  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
-  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
-  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-  OPTIONAL { ?url <http://purl.org/openorg/hasFeature> ?hfeature . 
-           ?hfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-  OPTIONAL { ?url <http://purl.org/openorg/lacksFeature> ?lfeature . 
-           ?lfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-  OPTIONAL { ?url <http://www.w3.org/2004/02/skos/core#notation> ?number . }
-} 
-");
 echo '[';
-foreach($sites as $x) {
-	echo '[';
-	echo '["'.$x['url'].'"],';
-	echo '["'.$x['name'].'"],';
-	echo '-10,';
-	echo '[';
-	$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $x['outline']));
-	foreach($x['outline'] as $p)
+foreach($config['datasource'] as $ds)
+{
+	$dsclass = ucwords($ds).'DataSource';
+	foreach(call_user_func(array($dsclass, 'getAllSites')) as $site)
 	{
 		echo '[';
-		echo str_replace(' ', ',', $p);
-		echo '],';
-	}
-	echo '[]]';
-	echo '],';
-}
-foreach($buildings as $x) {
-	echo '[';
-	echo '["'.$x['url'].'"],';
-	echo '["'.$x['number'].': '.$x['name'].'"],';
-	echo '-5,';
-	echo '[';
-	if($x['outline'] != "")
-	{
-		$x['outline'] = str_replace(" -1", ",-1", $x['outline']);
-		$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $x['outline']));
-		foreach($x['outline'] as $p)
+		echo '["'.$site['url'].'"],';
+		echo '["'.$site['name'].'"],';
+		echo '-10,';
+		echo '[';
+		$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $site['outline']));
+		foreach($site['outline'] as $polygon)
 		{
 			echo '[';
-			echo str_replace(' ', ',', $p);
+			echo str_replace(' ', ',', $polygon);
 			echo '],';
 		}
 		echo '[]]';
+		echo '],';
 	}
-	else
+}
+
+foreach($config['datasource'] as $ds)
+{
+	$dsclass = ucwords($ds).'DataSource';
+	foreach(call_user_func(array($dsclass, 'getAllBuildings')) as $building)
 	{
-		echo '['.$x['long'].','.$x['lat'].']]';
+		echo '[';
+		echo '["'.$building['url'].'"],';
+		echo '["'.$building['number'].': '.$building['name'].'"],';
+		echo '-5,';
+		echo '[';
+		if($building['outline'] != "")
+		{
+			$building['outline'] = str_replace(" -1", ",-1", $building['outline']);
+			$building['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $building['outline']));
+			foreach($building['outline'] as $polygon)
+			{
+				echo '[';
+				echo str_replace(' ', ',', $polygon);
+				echo '],';
+			}
+			echo '[]]';
+		}
+		else
+		{
+			echo '['.$building['long'].','.$building['lat'].']]';
+		}
+		echo '],';
 	}
-	echo '],';
 }
 echo '[]]';
 ?>

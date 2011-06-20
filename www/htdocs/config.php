@@ -28,7 +28,15 @@ if(!is_array($config['datasource']))
 	$config['datasource'] = array($config['datasource']);
 }
 
-class DataSource{}
+class DataSource{
+	static function getAll(){};
+	static function getEntries($q, $cats){};
+	static function getDataSets(){};
+	static function getDataSetExtras(){};
+	static function getAllSites(){};
+	static function getAllBuildings(){};
+	static function processURI($uri){};
+}
 
 foreach($config['datasource'] as $ds)
 {
