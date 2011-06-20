@@ -411,21 +411,25 @@ class SouthamptonDataSource extends DataSource
 	{
 		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
 			return self::processSouthamptonBusStopURI($uri);
-		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
+		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
 			return self::processSouthamptonURI($uri);
 		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
-			return self::processSownURI($uri);
+			return self::processSouthamptonURI($uri);
 		else
 			return false;
 	}
 
 	static function processSownURI($uri)
 	{
+		echo '<div id="content">';
 		echo $uri;
+		echo '</div>';
+		return true;
 	}
 	
 	static function processSouthamptonBusStopURI($uri)
 	{	
+		$allpos = self::getURIInfo($uri);
 		$allbus = sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?code WHERE {
 		  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
@@ -445,13 +449,13 @@ class SouthamptonDataSource extends DataSource
 			echo "<li ".self::routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
 		}
 		echo "</ul>";
-		echo "<iframe style='border:none' src='bus.php?uri=".$_GET['uri']."' />";
+		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
 		return true;
 	}
 
-	static function processSouthamptonURI($uri)
+	static function getURIInfo($uri)
 	{
-		$allpos = sparql_get(self::$endpoint, "
+		return sparql_get(self::$endpoint, "
 		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -462,6 +466,11 @@ class SouthamptonDataSource extends DataSource
 		    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
 		}
 		");
+	}
+
+	static function processSouthamptonURI($uri)
+	{
+		$allpos = self::getURIInfo($uri);
 		echo "<div id='content'>";
 		$computer = false;
 		if(!isset($allpos[0]['icon']))
@@ -564,6 +573,7 @@ class SouthamptonDataSource extends DataSource
 		if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/point-of-service\/parking-(.*)/', $uri, $matches))
 		{
 			echo "<iframe style='border:none' src='parking.php?uri=".$_GET['uri']."' />";
+			echo "</div>";
 			die();
 		}
 
@@ -702,6 +712,7 @@ class SouthamptonDataSource extends DataSource
 			}
 		}
 		echo "</div>";
+		return true;
 	}
 
 	static function routestyle($code)

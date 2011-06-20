@@ -1,7 +1,7 @@
 <?
 class CambridgeDataSource extends DataSource
 {
-	function getAll()
+	static function getAll()
 	{
 		//id, lat, long, label
 		$libs = simplexml_load_file('camlib.xml');
@@ -20,7 +20,7 @@ class CambridgeDataSource extends DataSource
 	}
 
 	// Process library data
-	function getEntries($q, $cats)
+	static function getEntries($q, $cats)
 	{	
 		$pos = array();
 		$label = array();
@@ -49,7 +49,7 @@ class CambridgeDataSource extends DataSource
 		return array($pos, $label, $type, $url, $icon);
 	}
 
-	function getLibraries($q)
+	static function getLibraries($q)
 	{
 		//poslabel, label, pos, icon
 		$libs = simplexml_load_file('camlib.xml');
@@ -66,7 +66,7 @@ class CambridgeDataSource extends DataSource
 		return $points;
 	}
 
-	function visibleCategory($icon, $cats)
+	static function visibleCategory($icon, $cats)
 	{
 		global $iconcats;
 		if($iconcats == null) include_once "inc/categories.php";

@@ -9,17 +9,18 @@ $config['default long'] = -1.39595;
 $config['default zoom'] = 17;
 $config['datasource'] = 'sqldemo';
 
+error_reporting(0);
 if(file_exists('config.local.php'))
 {
 	include 'config.local.php';
 }
 
-if(preg_match('/^[a-zA-Z0-9]+$/', $_GET['ss']))
+if(preg_match('/^[a-zA-Z0-9]+$/', $_GET['v']))
 {
-	$subsite = $_GET['ss'];
-	if(file_exists('config.'.$subsite.'.php'))
+	$version = $_GET['v'];
+	if(file_exists('config.'.$version.'.php'))
 	{
-		include 'config.'.$subsite.'.php';
+		include 'config.'.$version.'.php';
 	}
 }
 
@@ -29,17 +30,18 @@ if(!is_array($config['datasource']))
 }
 
 class DataSource{
-	static function getAll(){};
-	static function getEntries($q, $cats){};
-	static function getDataSets(){};
-	static function getDataSetExtras(){};
-	static function getAllSites(){};
-	static function getAllBuildings(){};
-	static function processURI($uri){};
+	static function getAll(){}
+	static function getEntries($q, $cats){}
+	static function getDataSets(){}
+	static function getDataSetExtras(){}
+	static function getAllSites(){}
+	static function getAllBuildings(){}
+	static function processURI($uri){return false;}
 }
 
 foreach($config['datasource'] as $ds)
 {
 	include_once 'ds/'.$ds.'.php';
 }
+
 ?>

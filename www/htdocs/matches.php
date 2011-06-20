@@ -1,5 +1,4 @@
 <?php
-error_reporting(0);
 include_once "config.php";
 
 // This script should return details of the markers (and terms) that match the query (provided in $_GET['q']).

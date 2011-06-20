@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <?php
-error_reporting(0);
 include 'config.php';
 
 $q = $_GET['q'];
@@ -39,7 +38,7 @@ $uri = $_GET['uri'];
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
 	</head>
-	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', 'default'" ?>)">
+	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$_GET['v']."'" ?>)">
 <? include_once 'googleanalytics.php'; ?>
 		<div id="spinner"><img src="img/ajax-loader.gif"></div>
 		<div id="map_canvas" style=''></div>
