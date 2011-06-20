@@ -265,6 +265,12 @@ var cluster = function() {
 			}
 		}
 	}
+	for(var i in clusterInfowindows) {
+		with({i: i})
+		{
+			clusterInfowindows[i].setContent('<div id="content">'+clusterInfowindows[i].getContent()+'</div>');
+		}
+	}
 	for(var i in clusterMarkers) {
 		with({i: i})
 		{
