@@ -2,19 +2,8 @@
 if(isset($include) && !$include && substr($_SERVER['REQUEST_URI'], -4, 4) == '.php')
 	header('Location: credits');
 error_reporting(0);
-include_once "inc/sparqllib.php";
+include_once "config.php";
 
-$endpoint = "http://sparql.data.southampton.ac.uk";
-$uri = "http://opendatamap.ecs.soton.ac.uk";
-
-$datasets = sparql_get($endpoint, "
-SELECT DISTINCT ?name ?uri ?l {
-  ?app <http://xmlns.com/foaf/0.1/homepage> <$uri> .
-  ?app <http://purl.org/dc/terms/requires> ?uri .
-  ?uri <http://purl.org/dc/terms/title> ?name .
-  OPTIONAL { ?uri <http://purl.org/dc/terms/license> ?l . }
-} ORDER BY ?name
-");
 /*
 $creators = sparql_get($endpoint, "
 SELECT DISTINCT ?name ?uri {
@@ -25,19 +14,8 @@ SELECT DISTINCT ?name ?uri {
 ");
 */
 
-$licencenames['http://reference.data.gov.uk/id/open-government-licence'] = "Open Government Licence";
+list($datasetlinks, $datasetextras) = getDataSetLinks($include);
 
-foreach($datasets as $dataset)
-{
-	$datasetlink =  "<a href='".$dataset['uri']."'>".$dataset['name']."</a>";
-	if($dataset['l'] != "")
-	{
-		$ln = $licencenames[$dataset['l']];
-		if(!$include)
-			$datasetlink .= " (available under the <a href='".$dataset['l']."'>$ln</a>)";
-	}
-	$datasetlinks[] = $datasetlink;
-}
 
 /*
 foreach($creators as $creator)
@@ -62,7 +40,8 @@ if($include)
 	echo "<br/>using the following datasets: ";
 	echo implode(", ", $datasetlinks);
 	//echo "<br/><a href='credits'>Full Application Credits</a>";
-	echo ", <a href='http://data.ordnancesurvey.co.uk'>Ordnance Survey Linked Data</a><br />Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.";
+	foreach($datasetextras as $datasetextra)
+		echo "<br/>".$datasetextra;
 }
 else
 {
@@ -96,13 +75,15 @@ else
 ?>
 <h3>Data</h3>
 <?
-	echo "<p>It makes use of the following datasets, provided by the <a href='http://id.southampton.ac.uk/'>University of Southampton</a>'s <a href='http://data.southampton.ac.uk'>Open Data Service</a>:";
+	echo "<p>It makes use of the following datasets:";
 	echo "<ul>";
 	foreach($datasetlinks as $datasetlink)
 		echo "<li>$datasetlink</li>";
 	echo "</ul>";
 	echo "</p>";
-	echo "<p>Additionally, it makes use of the <a href='http://data.ordnancesurvey.co.uk/id/ordnancesurvey'>Ordnance Survey</a>'s <a href='http://data.ordnancesurvey.co.uk/'>Linked Data</a>, available under the <a href='http://www.ordnancesurvey.co.uk/oswebsite/opendata/docs/os-opendata-licence.pdf'>OS OpenData Licence</a>.  Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.";
+	echo "<p>";
+	echo implode('<br/>', $datasetextras);
+	echo "</p>";
 ?>
 <h3>Icons</h3>
 	<p>The opendatamap <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>iconset</a> is available under the <a href='http://creativecommons.org/licenses/by-sa/3.0/' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap iconset</em>, with a link provided to <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>http://opendatamap.ecs.soton.ac.uk/iconset</a>.  Is is based on the <a href='http://code.google.com/p/google-maps-icons/'>Map Icons Collection</a> which is also available under the same licence.
@@ -134,6 +115,38 @@ else
 </html>
 <?php
 }
+
+function getDataSetLinks($include)
+{
+	global $config;
+
+	$licencenames['http://reference.data.gov.uk/id/open-government-licence'] = "Open Government Licence";
+
+	$datasets = array();
+	foreach($config['datasource'] as $ds)
+	{
+		$dsclass = ucwords($ds).'DataSource';
+		foreach(call_user_func(array($dsclass, 'getDataSets')) as $dataset)
+			$datasets[] = $dataset;
+		foreach(call_user_func(array($dsclass, 'getDataSetExtras')) as $datasetextra)
+			$datasetextras[] = $datasetextra;
+	}
+	foreach($datasets as $dataset)
+	{
+		$datasetlink =  "<a href='".$dataset['uri']."'>".$dataset['name']."</a>";
+		if($dataset['l'] != "")
+		{
+			$ln = $licencenames[$dataset['l']];
+			if(!$include)
+				$datasetlink .= " (available under the <a href='".$dataset['l']."'>$ln</a>)";
+		}
+		$datasetlinks[] = $datasetlink;
+	}
+	$datasetlinks = array_unique($datasetlinks);
+	$datasetextras = array_unique($datasetextras);
+	return array($datasetlinks, $datasetextras);
+}
+
 ?>
 
 

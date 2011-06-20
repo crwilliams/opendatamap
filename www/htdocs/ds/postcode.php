@@ -76,5 +76,15 @@ class PostcodeDataSource extends DataSource
 		}
 		return array($pos, $label, $type, $url, $icon);
 	}
+
+	static function getDataSets()
+	{
+		return array(array('name' => 'Ordnance Survey Linked Data', 'uri' => 'http://data.ordnancesurvey.co.uk', 'l' => 'http://reference.data.gov.uk/id/open-government-licence'));
+	}
+
+	static function getDataSetExtras()
+	{
+		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
+	}
 }
 ?>
