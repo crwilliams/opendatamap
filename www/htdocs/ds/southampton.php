@@ -251,7 +251,6 @@ class SouthamptonDataSource extends DataSource
 	
 	static function getAllSites()
 	{
-		
 		return sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?url ?name ?outline WHERE {
 		  ?url a <http://www.w3.org/ns/org#Site> .

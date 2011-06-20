@@ -12,7 +12,7 @@ foreach($config['datasource'] as $ds)
 		echo '["'.$site['name'].'"],';
 		echo '-10,';
 		echo '[';
-		$x['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $site['outline']));
+		$site['outline'] = explode(",", str_replace(array("POLYGON((", "))"), "", $site['outline']));
 		foreach($site['outline'] as $polygon)
 		{
 			echo '[';
