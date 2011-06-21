@@ -24,6 +24,8 @@ class SqldemoDataSource extends DataSource
 	
 	static function getEntries($q, $cats)
 	{
+		$q = mysql_real_escape_string($q);
+		$cats = mysql_real_escape_string($cats); //This line is unlikely to be correct, but be careful to escape input before passing to database.
 		$labellimit = 100;
 	
 		$pos = array();
@@ -70,6 +72,24 @@ class SqldemoDataSource extends DataSource
 
 		return array($pos, $label, $type, $url, $icon);
 	}
+
+	static function processURI($uri)
+	{
+		$uri = mysql_real_escape_string($uri);
+		$query = "
+		SELECT	label,
+			icon
+		FROM	point_of_service
+		WHERE	id = '$uri'
+		";
+		$res = mysql_query($query);
+		$row = mysql_fetch_assoc($res);
+		echo "<div id='content'>";
+		echo "<h2><img class='icon' src='".$row['icon']."' />".$row['label']."<h2>";
+		echo "</div>";
+		return true;
+	}
+
 }
 
 ?>
