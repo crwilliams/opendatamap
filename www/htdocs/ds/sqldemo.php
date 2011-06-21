@@ -1,7 +1,9 @@
 <?
+mysql_connect('localhost', 'user', 'pass');
+
 class SqldemoDataSource extends DataSource
 {
-	function getAll()
+	static function getAll()
 	{
 		$query = "
 		SELECT	id,
@@ -20,7 +22,7 @@ class SqldemoDataSource extends DataSource
 		return $points;
 	}
 	
-	function getEntries($q, $cats)
+	static function getEntries($q, $cats)
 	{
 		$labellimit = 100;
 	

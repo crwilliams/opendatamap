@@ -420,8 +420,12 @@ class SouthamptonDataSource extends DataSource
 
 	static function processSownURI($uri)
 	{
+		return true;
 		echo '<div id="content">';
-		echo $uri;
+		echo '<pre>';
+		$data = simplexml_load_file('https://sown-auth.ecs.soton.ac.uk/status-nagios/generateNodesXML.php');
+		print_r($data);
+		echo '</pre>';
 		echo '</div>';
 		return true;
 	}
@@ -710,6 +714,8 @@ class SouthamptonDataSource extends DataSource
 				echo "</div>";
 			}
 		}
+		if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
+			self::processSownURI($uri);
 		echo "</div>";
 		return true;
 	}

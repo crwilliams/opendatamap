@@ -65,6 +65,25 @@ class OxfordDataSource extends DataSource
 		return array(array('name' => 'OxPoints', 'uri' => 'http://www.oucs.ox.ac.uk/oxpoints/', 'l' => 'http://www.opendefinition.org/licenses/cc-zero'));
 	}
 
+	static function processURI($uri){
+		if(substr($uri, 0, strlen('http://oxpoints.oucs.ox.ac.uk/id/')) == 'http://oxpoints.oucs.ox.ac.uk/id/')
+		{
+			$info = sparql_get(self::$endpoint, "
+	PREFIX oxp: <http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#>
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	PREFIX dc: <http://purl.org/dc/elements/1.1/>
+	PREFIX dct: <http://purl.org/dc/terms/>
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+	SELECT ?label WHERE {
+	  <$uri> dc:title ?label .
+	}
+			");
+			echo "<h2>".$info[0]['label']."</h2>";
+			return true;
+		}
+	}
+
 	static function getOxPoints($q)
 	{
 		$tpoints = sparql_get(self::$endpoint, "

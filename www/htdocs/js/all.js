@@ -67,7 +67,7 @@ var reset_search_icon = function() {
 // someone's clicked on something, you need to load the real data into it
 var loadWindow = function(j) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
-	$.get("info.php?version="+version+"&uri="+encodeURI(j), function(data) {
+	$.get("info.php?v="+version+"&uri="+encodeURI(j), function(data) {
 		infowindows[j].setContent(data);
 	});
 }
@@ -108,7 +108,7 @@ var updateFunc = function(force) {
 	oldString = inputbox.value;
 	if(xmlhttp !== undefined) xmlhttp.abort();
 	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET","matches.php?q="+inputbox.value+'&ec='+enabledCategories,true);
+	xmlhttp.open("GET","matches.php?v="+version+"&q="+inputbox.value+'&ec='+enabledCategories,true);
 	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
 	xmlhttp.send();
 	xmlhttp.onreadystatechange=function() {
@@ -341,7 +341,7 @@ var delayHide = function(id, delay) {
 }
 
 var initmarkers = function(cont) {
-	$.get('alldata.php', function(data,textstatus,xhr) {
+	$.get('alldata.php?v='+version, function(data,textstatus,xhr) {
 		// do party!!!!
 		// clear em out, babes. 
 		window.markers = {};
