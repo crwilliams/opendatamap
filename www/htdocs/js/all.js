@@ -365,7 +365,7 @@ var initmarkers = function(cont) {
 		});
 		cont();
 	},'json');
-	$.get('polygons.php', function(data,textstatus,xhr) {
+	$.get('polygons.php?v='+version, function(data,textstatus,xhr) {
 		// do party!!!!
 		// clear em out, babes. 
 		window.polygons = {};
