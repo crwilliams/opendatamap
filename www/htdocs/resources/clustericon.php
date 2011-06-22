@@ -16,7 +16,7 @@ function positionimg($rimg, $img, $destx, $desty) {
 	imagecopyresampled($rimg, $img, $destx, $desty, 5, 5, 10, 10, $x - 10, $y - 15);
 }
 $hash = md5($_SERVER['QUERY_STRING']);
-$filename = 'cache/'.$hash.'.png';
+$filename = 'cache/ci_'.$hash.'.png';
 if(!file_exists($filename))
 {
 	$imgs = $_GET['i'];
@@ -33,13 +33,13 @@ if(!file_exists($filename))
 	imagealphablending($oimg,false);
 	imagefilledrectangle($oimg, 0, 0, imagesx($oimg), imagesy($oimg), imagecolorallocatealpha($oimg, 255, 255, 255, 127));
 	imagealphablending($oimg, true);
-	for($i=0; $i<$count; $i++)
+	for($i=$count-1; $i>=0; $i--)
 	{
 		$img = simagecreatefrompng($imgs[$i]);
 		//if($i != $count-1)
 		//	imagecopymerge($oimg, $img, ($count - $i - 1) * $offsetx, $i * $offsety, 0, 0, 32, 32, max(100 - ($count - $i - 1) * 20, 0));
 		//else
-			imagecopy($oimg, $img, ($count - $i - 1) * $offsetx, $i * $offsety, 0, 0, 32, 37);
+			imagecopy($oimg, $img, $i * $offsetx, ($count - $i - 1) * $offsety, 0, 0, 32, 37);
 	}
 	imagesavealpha($oimg,true);
 	imagepng($oimg, $filename);

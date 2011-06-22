@@ -1,10 +1,12 @@
 <?
 class CambridgeDataSource extends DataSource
 {
+	static $datafile = 'resources/camlib.xml';
+
 	static function getAll()
 	{
 		//id, lat, long, label
-		$libs = simplexml_load_file('camlib.xml');
+		$libs = simplexml_load_file(self::$datafile);
 		foreach($libs->library as $lib)
 		{
 			if($lib->lat == null || $lib->lng == null)
@@ -52,7 +54,7 @@ class CambridgeDataSource extends DataSource
 	static function getLibraries($q)
 	{
 		//poslabel, label, pos, icon
-		$libs = simplexml_load_file('camlib.xml');
+		$libs = simplexml_load_file(self::$datafile);
 		foreach($libs->library as $lib)
 		{
 			if($lib->lat == null || $lib->lng == null)

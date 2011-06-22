@@ -1,7 +1,7 @@
 <?
 include_once "inc/sparqllib.php";
 
-class SouthamptonDataSource extends DataSource
+class SouthamptonopendayDataSource extends DataSource
 {
 	static $endpoint = "http://sparql.data.southampton.ac.uk";
 
@@ -10,7 +10,6 @@ class SouthamptonDataSource extends DataSource
 		$points = array();
 		foreach(self::getAllPointsOfService()	as $point) $points[] = $point;
 		foreach(self::getAllBusStops()	 	as $point) $points[] = $point;
-		foreach(self::getAllWorkstationRooms()	as $point) $points[] = $point;
 		return $points;
 	}
 
@@ -25,7 +24,6 @@ class SouthamptonDataSource extends DataSource
 		$icon = array();
 		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		return array($pos, $label, $type, $url, $icon);
@@ -51,8 +49,63 @@ class SouthamptonDataSource extends DataSource
 		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
 	}
 
+/*
+*/
 	static function getAllPointsOfService()
 	{
+		$points = array();
+		$tpoints = sparql_get(self::$endpoint, "
+		SELECT DISTINCT ?id ?lat ?long ?label ?number WHERE {
+		  ?id a <http://vocab.deri.ie/rooms#Building> .
+		  OPTIONAL { ?id <http://purl.org/dc/terms/spatial> ?outline . }
+		  ?id <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+		  ?id <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
+		  ?id <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+		  OPTIONAL { ?id <http://www.w3.org/2004/02/skos/core#notation> ?number . }
+		} 
+		");
+		foreach($tpoints as $point)
+		{
+			$vbuildings = array(36,12,13,18,2,30,32,34,38,4,40,42,44,45,46,48,52,53,54,58,'58A',6,65,67,68,7,'76Z',85);
+			if(!in_array($point['number'], $vbuildings))
+				continue;
+			$point['label'] = str_replace('\'', '\\\'', $point['label']);
+			$point['label'] = str_replace("\\", "\\\\", $point['label']);
+			if($point['icon'] == "")
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n=".$point['number'];
+			$points[] = $point;
+		}
+		$tpoints = sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX gr: <http://purl.org/goodrelations/v1#>
+
+	SELECT DISTINCT ?id ?lat ?long ?label ?icon ?s WHERE {
+	  ?id a gr:LocationOfSalesOrServiceProvisioning .
+	  ?id rdfs:label ?label .
+	  ?id <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Transport> .
+	  OPTIONAL { ?id spacerel:within ?s .
+		     ?s a org:Site .
+		   }
+	  OPTIONAL { ?id geo:lat ?lat .
+	             ?id geo:long ?long .
+	           }
+	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
+	  FILTER ( BOUND(?long) && BOUND(?lat) && !BOUND(?s) && ?icon != <http://google-maps-icons.googlecode.com/files/gazstation.png> && (?icon != <http://google-maps-icons.googlecode.com/files/parking.png> || ?id = <http://id.southampton.ac.uk/point-of-service/parking-7326>) )
+	} ORDER BY ?label
+		");
+		foreach($tpoints as $point)
+		{
+			$point['label'] = str_replace('\'', '\\\'', $point['label']);
+			$point['label'] = str_replace("\\", "\\\\", $point['label']);
+			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
+			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
+			if($point['icon'] == "")
+				$point['icon'] = "img/blackness.png";
+			$points[] = $point;
+		}
 		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -63,24 +116,29 @@ class SouthamptonDataSource extends DataSource
 	SELECT DISTINCT ?id ?lat ?long ?label ?icon WHERE {
 	  ?id a gr:LocationOfSalesOrServiceProvisioning .
 	  ?id rdfs:label ?label .
-	  OPTIONAL { ?id spacerel:within ?b .
-	             ?b geo:lat ?lat . 
-	             ?b geo:long ?long .
-	             ?b a <http://vocab.deri.ie/rooms#Building> .
-	           }
-	  OPTIONAL { ?id spacerel:within ?s .
-	             ?s geo:lat ?lat . 
-	             ?s geo:long ?long .
-	             ?s a org:Site .
-	           }
-	  OPTIONAL { ?id geo:lat ?lat .
-	             ?id geo:long ?long .
-	           }
+	  {
+	    ?id spacerel:within ?s .
+	    ?s geo:lat ?lat . 
+            ?s geo:long ?long .
+	  } UNION {
+	    ?id spacerel:within ?b .
+	    ?b a <http://vocab.deri.ie/rooms#Building> .
+	    ?b spacerel:within ?s .
+            ?b geo:lat ?lat . 
+            ?b geo:long ?long .
+	  } .
+	  ?s a org:Site .
+	  {
+	    ?id <http://purl.org/openorg/mapIcon> <http://google-maps-icons.googlecode.com/files/convenience.png>
+	  } UNION {
+	    ?id <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Catering>
+	  } .
 	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
-	  FILTER ( BOUND(?long) && BOUND(?lat) )
+	  FILTER ( BOUND(?long) && BOUND(?lat) && !REGEX( ?label, 'Performance Nights ONLY', 'i')
+		&& ( ?s = <http://id.southampton.ac.uk/site/1> || ?s = <http://id.southampton.ac.uk/site/3> || ?s = <http://id.southampton.ac.uk/site/6> )
+          )
 	} ORDER BY ?label
 		");
-		$points = array();
 		foreach($tpoints as $point)
 		{
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
@@ -129,6 +187,7 @@ class SouthamptonDataSource extends DataSource
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 	SELECT ?id ?lat ?long ?label (GROUP_CONCAT(?code) as ?codes) WHERE {
 	  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
@@ -137,7 +196,8 @@ class SouthamptonDataSource extends DataSource
 	  ?id rdfs:label ?label .
 	  ?id geo:lat ?lat .
 	  ?id geo:long ?long .
-	  FILTER ( REGEX( ?code, '^U', 'i') )
+	  ?id foaf:based_near ?s .
+	  FILTER ( REGEX( ?code, '^U', 'i') && !REGEX( ?label, 'RTI ghost', 'i') && ?s != <http://id.southampton.ac.uk/site/18>)
 	} GROUP BY ?id ?label ?lat ?long ORDER BY ?label
 		");
 		$points = array();
@@ -265,7 +325,7 @@ class SouthamptonDataSource extends DataSource
 		return sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
 		  ?url a <http://vocab.deri.ie/rooms#Building> .
-		  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
+		  ?url <http://purl.org/dc/terms/spatial> ?outline .
 		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
 		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
 		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
