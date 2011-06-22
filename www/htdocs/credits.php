@@ -34,7 +34,7 @@ if($include)
 {
 	echo "Application created by ";
 	echo implode(", ", $creatorlinks);
-	echo " and <a href='credits' title='Full Application Credits'>others</a>";
+	echo " and <a href='".$path."/credits' title='Full Application Credits'>others</a>";
 	//echo ", ".implode(", ", $addcreatorlinks);
 	echo "<br/>using the following datasets: ";
 	echo implode(", ", $datasetlinks);
@@ -120,6 +120,8 @@ function getDataSetLinks($include)
 	global $config;
 
 	$licencenames['http://reference.data.gov.uk/id/open-government-licence'] = "Open Government Licence";
+	$licencenames['http://creativecommons.org/licenses/by/2.0/uk/'] = "Creative Commons Attribution 2.0 UK: England & Wales License";
+	$licencenames['http://www.opendefinition.org/licenses/cc-zero'] = "Creative Commons CC Zero License";
 
 	$datasets = array();
 	foreach($config['datasource'] as $ds)

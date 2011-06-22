@@ -15,9 +15,11 @@ if(file_exists('config.local.php'))
 	include 'config.local.php';
 }
 
+$path = '.';
 if(preg_match('/^[a-zA-Z0-9]+$/', $_GET['v']))
 {
 	$version = $_GET['v'];
+	$path = $version;
 	if(file_exists('config.'.$version.'.php'))
 	{
 		include 'config.'.$version.'.php';
