@@ -197,7 +197,7 @@ class SouthamptonopendayDataSource extends DataSource
 	  ?id geo:lat ?lat .
 	  ?id geo:long ?long .
 	  ?id foaf:based_near ?s .
-	  FILTER ( REGEX( ?code, '^U', 'i') && !REGEX( ?label, 'RTI ghost', 'i') && ?s != <http://id.southampton.ac.uk/site/18>)
+	  FILTER ( REGEX( ?code, '^U', 'i') && !REGEX( ?label, 'RTI ghost', 'i') && ?s != <http://id.southampton.ac.uk/site/18> && ?s != <http://id.southampton.ac.uk/site/62>)
 	} GROUP BY ?id ?label ?lat ?long ORDER BY ?label
 		");
 		$points = array();
