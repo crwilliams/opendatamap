@@ -7,7 +7,9 @@ $config['Site description'] = "Interactive Map";
 $config['default lat'] = 50.9355;
 $config['default long'] = -1.39595;
 $config['default zoom'] = 17;
+$config['default map'] = "'Map2'";
 $config['datasource'] = 'sqldemo';
+$config['enabled'] = array('search', 'geobutton', 'toggleicons');
 
 error_reporting(0);
 if(file_exists('config.local.php'))
@@ -31,6 +33,19 @@ if(preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['v']))
 if(!is_array($config['datasource']))
 {
 	$config['datasource'] = array($config['datasource']);
+}
+
+function has($id) {
+	global $config;
+	return in_array($id, $config['enabled']);
+}
+
+function show($id) {
+	global $config;
+	if(!in_array($id, $config['enabled']))
+	{
+		echo "style='display:none'";
+	}
 }
 
 class DataSource{
