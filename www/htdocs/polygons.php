@@ -31,7 +31,7 @@ foreach($config['datasource'] as $ds)
 	{
 		echo '[';
 		echo '["'.$building['url'].'"],';
-		echo '["'.$building['number'].': '.$building['name'].'"],';
+		echo '["<img class=\'icon\' style=\'width:20px;\' src=\'resources/numbericon.php?n='.$building['number'].'\' /> '.$building['name'].'"],';
 		echo '-5,';
 		echo '[';
 		if($building['outline'] != "")
