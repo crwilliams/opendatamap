@@ -16,6 +16,42 @@ body {
 	padding-bottom:5px;
 */
 }
+
+div#bookmarks {
+	text-align:right;
+}
+div#bookmarks ul {
+	margin-top:5px;
+	margin-right:5px;
+	background-color:white;
+	padding:1px;
+}
+div#bookmarks li {
+	padding:2px;
+	margin:2px;
+}
+div#subjects li,div#subjects li h2 {
+	margin-left:2px;
+	margin-right:2px;
+	margin-bottom:2px;
+}
+div#subjects li h2 {
+	padding:2px;
+}
+div#bookmarks li,div#subjects li h2 {
+	background-color:#007C92;
+	color:white;
+}
+
+._2011-07-08, ._2011-07-09 {
+	display:none;
+}
+
+div#subjects li.event {
+	border:solid 2px #007C92;
+	padding:5px;
+}
+
 a {
 	color:#7777CC;
 }
@@ -46,8 +82,39 @@ a {
 }
 #map_canvas {
 	position:absolute;
-/*	top:0px; bottom:0px; left:210px; right:0px;*/
 	top:0px; bottom:0px; left:0px; right:0px;
+}
+#selectedsubject {
+	display:block;
+	clear:both;
+	text-align:center;
+	margin-left:5px;
+	margin-top:5px;
+	padding-top:10px;
+	padding-bottom:10px;
+	vertical-align:bottom;
+	height:45px;
+	width:290px;
+}
+#day {
+	margin:5px;
+	width:290px;
+	display:block;
+	clear:both;
+}
+#day a {
+	display:block;
+	float:left;
+	width:50%;
+	text-align:center;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-decoration:none;
+	color:black;
+	cursor:pointer;
+}
+.clickable {
+	cursor:pointer;
 }
 #credits {
 	position:absolute;
@@ -144,6 +211,11 @@ form ul {
 	padding-left:30px;
 	text-indent:-30px;
 }
+.location {
+	line-height:1.2em;
+	padding-left:0px;
+	/*text-indent:-30px;*/
+}
 #clear {
 	position:absolute;
 	right:4px;
@@ -233,6 +305,12 @@ h3 {
 		display: none;
 	}
 */
+}
+
+#day .selected {
+	background-color:#007C92;
+	color:white;
+	cursor:default;
 }
 
 .deselected {

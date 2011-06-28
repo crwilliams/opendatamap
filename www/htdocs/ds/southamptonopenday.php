@@ -44,6 +44,32 @@ class SouthamptonopendayDataSource extends DataSource
 		return $ds;
 	}
 
+	static function getBookmarks()
+	{
+		$bookmarks[] = array('area' => 'http://id.southampton.ac.uk/site/1', 'label' => 'Highfield Campus');
+		$bookmarks[] = array('area' => 'http://id.southampton.ac.uk/site/3', 'label' => 'Avenue Campus');
+		$bookmarks[] = array('area' => 'http://id.southampton.ac.uk/site/6', 'label' => 'Oceanography Campus');
+		$bookmarks[] = array('area' => 'southampton-centre', 'label' => 'City Centre');
+		$bookmarks[] = array('area' => 'southampton-overview', 'label' => 'Southampton');
+		return $bookmarks;
+	}
+
+	static function getSubjects()
+	{
+		return sparql_get(self::$endpoint, "
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?uri ?label WHERE {
+  GRAPH <http://id.southampton.ac.uk/dataset/opendays-july-2011/latest> {
+    ?uri a skos:Concept .
+    ?uri skos:broader <http://id.southampton.ac.uk/opendays/2011/07/subject/Subject> .
+    ?uri rdfs:label ?label .
+  }
+} ORDER BY ?label
+		");
+	}
+
 	static function getDataSetExtras()
 	{
 		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
@@ -53,6 +79,7 @@ class SouthamptonopendayDataSource extends DataSource
 */
 	static function getAllPointsOfService()
 	{
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/07/';
 		$points = array();
 		$tpoints = sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?id ?lat ?long ?label ?number WHERE {
@@ -62,13 +89,12 @@ class SouthamptonopendayDataSource extends DataSource
 		  ?id <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
 		  ?id <http://www.w3.org/2000/01/rdf-schema#label> ?label .
 		  OPTIONAL { ?id <http://www.w3.org/2004/02/skos/core#notation> ?number . }
+		  ?s <http://purl.org/NET/c4dm/event.owl#place> ?id .
+		  ?s <http://purl.org/dc/terms/isPartOf> <$uri> .
 		} 
 		");
 		foreach($tpoints as $point)
 		{
-			$vbuildings = array(36,12,13,18,2,30,32,34,38,4,40,42,44,45,46,48,52,53,54,58,'58A',6,65,67,68,7,'76Z',85);
-			if(!in_array($point['number'], $vbuildings))
-				continue;
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
 			if($point['icon'] == "")
@@ -154,30 +180,97 @@ class SouthamptonopendayDataSource extends DataSource
 
 	static function getPointsOfService($q)
 	{
-		if($q == '')
-			$filter = '';
-		else
-			$filter = "FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
-		return sparql_get(self::$endpoint, "
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/07/';
+		$q = explode('/', $q);
+		$subject = $q[0];
+		if(count($q) > 0)
+		{
+			switch($q[1])
+			{
+				case 'friday':
+					$date = '2011-07-08';
+					break;
+				case 'saturday':
+					$date = '2011-07-09';
+					break;
+				default:
+					$date = null;;
+			}
+		}
+		if($date != null)
+		{
+			$tpoints = sparql_get(self::$endpoint, "
+		SELECT DISTINCT ?pos ?s ?l ?start WHERE {
+                  ?pos a <http://vocab.deri.ie/rooms#Building> .
+                  OPTIONAL { ?id <http://purl.org/dc/terms/spatial> ?outline . }
+                  ?pos <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+                  ?pos <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
+                  ?pos <http://www.w3.org/2000/01/rdf-schema#label> ?label .
+                  OPTIONAL { ?pos <http://www.w3.org/2004/02/skos/core#notation> ?number . }
+                  ?s <http://purl.org/NET/c4dm/event.owl#place> ?pos .
+                  ?s <http://purl.org/dc/terms/isPartOf> <$uri> .
+		  OPTIONAL { ?s <http://www.w3.org/2004/02/skos/core#broader> ?b }
+		  ?s <http://www.w3.org/2000/01/rdf-schema#label> ?l .
+    		  ?s <http://purl.org/NET/c4dm/event.owl#time> ?time .
+    		  ?time <http://purl.org/NET/c4dm/timeline.owl#start> ?start .
+                } 
+			");
+			foreach($tpoints as $point)
+			{
+				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['l'] == 'General' || $point['l'] == 'Information Stand' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/07\/subject\/'.$subject.'$/', $point['s'])))
+					$points[] = $point;
+			}
+		}
+		$tpoints = sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 	PREFIX org: <http://www.w3.org/ns/org#>
 	PREFIX gr: <http://purl.org/goodrelations/v1#>
 
-	SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
+	SELECT DISTINCT ?pos WHERE {
 	  ?pos a gr:LocationOfSalesOrServiceProvisioning .
-	  OPTIONAL {
-	    ?offering gr:availableAtOrFrom ?pos .
-	    ?offering a gr:Offering .
-	    ?offering gr:includes ?ps .
-	    ?ps rdfs:label ?label .
-	  }
-	  ?pos rdfs:label ?poslabel .
-	  ?pos <http://purl.org/openorg/mapIcon> ?icon .
-	  $filter
-	} ORDER BY ?poslabel
+	  ?pos <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Transport> .
+	  OPTIONAL { ?pos spacerel:within ?s .
+		     ?s a org:Site .
+		   }
+	  OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
+	  FILTER ( !BOUND(?s) && ?icon != <http://google-maps-icons.googlecode.com/files/gazstation.png> && (?icon != <http://google-maps-icons.googlecode.com/files/parking.png> || ?pos = <http://id.southampton.ac.uk/point-of-service/parking-7326>) )
+	}
 		");
+		foreach($tpoints as $point)
+			$points[] = $point;
+		$tpoints = sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX gr: <http://purl.org/goodrelations/v1#>
+
+	SELECT DISTINCT ?pos WHERE {
+	  ?pos a gr:LocationOfSalesOrServiceProvisioning .
+	  ?pos rdfs:label ?label .
+	  {
+	    ?pos spacerel:within ?s .
+	  } UNION {
+	    ?pos spacerel:within ?b .
+	    ?b a <http://vocab.deri.ie/rooms#Building> .
+	    ?b spacerel:within ?s .
+	  } .
+	  ?s a org:Site .
+	  {
+	    ?pos <http://purl.org/openorg/mapIcon> <http://google-maps-icons.googlecode.com/files/convenience.png>
+	  } UNION {
+	    ?pos <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Catering>
+	  } .
+	  FILTER ( !REGEX( ?label, 'Performance Nights ONLY', 'i')
+		&& ( ?s = <http://id.southampton.ac.uk/site/1> || ?s = <http://id.southampton.ac.uk/site/3> || ?s = <http://id.southampton.ac.uk/site/6> )
+          )
+	} ORDER BY ?label
+		");
+		foreach($tpoints as $point)
+			$points[] = $point;
+		return $points;
 	}
 
 	static function getAllBusStops()
@@ -220,80 +313,16 @@ class SouthamptonopendayDataSource extends DataSource
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-	SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
+	SELECT ?pos WHERE {
 	  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
 	  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> ?pos .
-	  ?route <http://www.w3.org/2004/02/skos/core#notation> ?label .
-	  ?pos rdfs:label ?poslabel .
-	  ?pos <http://purl.org/openorg/mapIcon> ?icon .
-	  FILTER ( ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i')
-	  ) && REGEX( ?label, '^U', 'i') )
-	} ORDER BY ?poslabel
-		");
+	  ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
+	  ?pos rdfs:label ?label .
+	  ?pos foaf:based_near ?s .
+	  FILTER ( REGEX( ?code, '^U', 'i') && !REGEX( ?label, 'RTI ghost', 'i') && ?s != <http://id.southampton.ac.uk/site/18> && ?s != <http://id.southampton.ac.uk/site/62>)
 	}
-
-	static function getAllWorkstationRooms()
-	{
-		$tpoints = sparql_get(self::$endpoint, "
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-	PREFIX org: <http://www.w3.org/ns/org#>
-	PREFIX gr: <http://purl.org/goodrelations/v1#>
-	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
-	SELECT DISTINCT ?id ?lat ?long ?label WHERE {
-	  ?id <http://purl.org/openorg/hasFeature> ?f .
-	  ?f a ?ft .
-	  ?ft rdfs:label ?ftl .
-	  ?id skos:notation ?label .
-	  OPTIONAL { ?id spacerel:within ?b .
-	             ?b geo:lat ?lat . 
-	             ?b geo:long ?long .
-	             ?b a <http://vocab.deri.ie/rooms#Building> .
-	           }
-	  OPTIONAL { ?id spacerel:within ?s .
-	             ?s geo:lat ?lat . 
-	             ?s geo:long ?long .
-	             ?s a org:Site .
-	           }
-	  OPTIONAL { ?id geo:lat ?lat .
-	             ?id geo:long ?long .
-	           }
-	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
-	  FILTER ( BOUND(?long) && BOUND(?lat) && REGEX(?ftl, '^WORKSTATION -') )
-	} ORDER BY ?label
-		");
-		$points = array();
-		foreach($tpoints as $point)
-		{
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
-			$points[] = $point;
-		}
-		return $points;
-	}
-
-	static function getWorkstationRooms($q)
-	{
-		if($q == '')
-			$filter = '';
-		else
-			$filter = "&& ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
-		return sparql_get(self::$endpoint, "
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-	PREFIX org: <http://www.w3.org/ns/org#>
-	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-
-	SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
-	  ?pos <http://purl.org/openorg/hasFeature> ?f .
-	  ?f a ?ft .
-	  ?ft rdfs:label ?label .
-	  ?pos skos:notation ?poslabel .
-	  FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') $filter)
-	} ORDER BY ?poslabel
 		");
 	}
 
@@ -307,6 +336,36 @@ class SouthamptonopendayDataSource extends DataSource
 	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
 	} ORDER BY ?number
 		");
+	}
+
+	static function getAllTimetables()
+	{
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/07/';
+		$data = sparql_get(self::$endpoint, "
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?placelabel ?number ?name WHERE {
+    ?event <http://purl.org/dc/terms/isPartOf> <$uri> .
+    ?uri a skos:Concept .
+    ?uri skos:broader ?broaderuri .
+    ?broaderuri rdfs:label ?broader .
+    ?uri rdfs:label ?label .
+    ?event <http://purl.org/dc/terms/subject> ?uri .
+    ?event <http://purl.org/NET/c4dm/event.owl#time> ?time .
+    ?time <http://purl.org/NET/c4dm/timeline.owl#start> ?start .
+    ?time <http://purl.org/NET/c4dm/timeline.owl#end> ?end .
+    ?event <http://purl.org/dc/terms/description> ?desc .
+    ?event <http://purl.org/NET/c4dm/event.owl#place> ?building .
+    ?event <http://purl.org/NET/c4dm/event.owl#place> ?place .
+    ?building a <http://vocab.deri.ie/rooms#Building> .
+    ?building <http://www.w3.org/2004/02/skos/core#notation> ?number .
+    ?building rdfs:label ?name .
+    ?place a <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
+    ?place rdfs:label ?placelabel .
+} ORDER BY DESC(?broader = 'Subject') ?label
+		");
+		return $data;
 	}
 	
 	static function getAllSites()
@@ -362,23 +421,7 @@ class SouthamptonopendayDataSource extends DataSource
 	{
 		$data = self::getPointsOfService($q);
 		foreach($data as $point) {
-			if(!self::visibleCategory($point['icon'], $cats))
-				continue;
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
-			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
 			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-			{
-				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
-			}
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "point-of-service";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'];
-			}
 		}
 	}
 
@@ -387,21 +430,7 @@ class SouthamptonopendayDataSource extends DataSource
 	{
 		$data = self::getBusStops($q);
 		foreach($data as $point) {
-			if(!self::visibleCategory($point['icon'], $cats))
-				continue;
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
 			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-				$label[$point['label']] ++;
-				$type[$point['label']] = "bus-route";
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$routes[$point['poslabel']][] = $point['label'];
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "bus-stop";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'].'?r='.implode('/', $routes[$point['poslabel']]);
-			}
 		}
 	}
 
@@ -470,6 +499,8 @@ class SouthamptonopendayDataSource extends DataSource
 	{
 		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
 			return self::processSouthamptonBusStopURI($uri);
+		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/buinding/')) == 'http://id.southampton.ac.uk/building/')
+			return self::processSouthamptonBuildingURI($uri);
 		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
 			return self::processSouthamptonURI($uri);
 		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
@@ -529,6 +560,18 @@ class SouthamptonopendayDataSource extends DataSource
 		    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
 		}
 		");
+	}
+
+	static function processSouthamptonBuildingURI($uri)
+	{
+		$allpos = sparql_get(self::$endpoint, "
+		SELECT DISTINCT ?name ?number WHERE {
+		  <$uri> <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+		  <$uri> <http://www.w3.org/2004/02/skos/core#notation> ?number .
+		}");
+		echo "<h2><img class='icon' src='resources/numbericon.php?n=".$allpos[0]['number']."' />".$allpos[0]['name'];
+		echo "<a class='odl' href='".$uri."'>Visit page</a>";
+		echo "</h2>";
 	}
 
 	static function processSouthamptonURI($uri)

@@ -98,7 +98,51 @@ var initmarkerevents = function() {
 	}
 }
 
+var refreshSubjectChoice = function() {
+	var str = inputbox.value.replace(/\/.*/, '');
+	if(str == '')
+	{
+		$('.General').hide();
+		$('.InformationStand').hide();
+		$('.Subject').show();
+		$('.Subject h2').show();
+		$('.Subject li').hide();
+		$('#selectedsubject').html("Choose a subject:");
+	}
+	else
+	{
+		$('.General').show();
+		$('.InformationStand').show();
+		$('.Subject').hide();
+		$('.Subject h2').hide();
+		$('.Subject.subj_'+str).show();
+		$('.Subject.subj_'+str+' li').show();
+	}
+}
+
+var chooseSubject = function(name) {
+	$('#selectedsubject').html(name+'<br/><span style="font-size:0.8em">(click to change subject)</span>');
+	$('#selectedsubject').addClass('clickable');
+	$('#selectedsubject').attr('title', 'Click to change subject');
+	$('#selectedsubject').css('background-color', '#007C92');
+	$('#selectedsubject').css('color', 'white');
+	$('#selectedsubject').click(changeSubject);
+	refreshSubjectChoice();
+}
+
+var changeSubject = function() {
+	inputbox.value=location.hash.replace(/^#/, '/');
+	$('#selectedsubject').removeClass('clickable');
+	$('#selectedsubject').attr('title', null);
+	$('#selectedsubject').css('background-color', 'inherit');
+	$('#selectedsubject').css('color', 'inherit');
+	$('#selectedsubject').click(null);
+	refreshSubjectChoice();
+	updateFunc();
+}
+
 var updateFunc = function(force) {
+
 	if(force !== true) force = false;
 	var enabledCategories = getSelectedCategories();
 	reset_search_icon();
@@ -106,6 +150,7 @@ var updateFunc = function(force) {
 	var list = document.getElementById("list");
 	if(!force && inputbox.value == oldString) return;
 	oldString = inputbox.value;
+
 	if(xmlhttp !== undefined) xmlhttp.abort();
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","matches.php?v="+version+"&q="+inputbox.value+'&ec='+enabledCategories,true);
@@ -179,7 +224,8 @@ var removepmarker = function(pc) {
 	pmarkers[pc].setMap(null);
 }
 
-var zoomTo = function(uri) {
+var zoomTo = function(uri, cl) {
+	cl = typeof(cl) != 'undefined' ? cl : true;
 	var bounds = new google.maps.LatLngBounds();
 	if(uri.substring(0,9) == 'postcode:') {
 		var pdata = uri.substring(9).split(',');
@@ -204,16 +250,29 @@ var zoomTo = function(uri) {
 				});
 			}
 			map.fitBounds(bounds);
-			google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
+			if(cl)google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
 		} else {
 			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
 			map.panTo(polygons[uri].getPosition());
-			google.maps.event.trigger(polygons[uri], 'click');
+			if(cl)google.maps.event.trigger(polygons[uri], 'click');
 		}
 	} else if(markers[uri] !== undefined) {
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
 		map.panTo(markers[uri].getPosition());
-		google.maps.event.trigger(markers[uri], 'click');
+		if(cl)google.maps.event.trigger(markers[uri], 'click');
+	} else if(uri == 'southampton-overview') {
+		bounds.extend(new google.maps.LatLng(50.9667011,-1.4444580));
+		bounds.extend(new google.maps.LatLng(50.9326431,-1.4438220));
+		bounds.extend(new google.maps.LatLng(50.8887047,-1.3935115));
+		bounds.extend(new google.maps.LatLng(50.9554826,-1.3560130));
+		bounds.extend(new google.maps.LatLng(50.9667013,-1.4178855));
+		map.fitBounds(bounds);
+	} else if(uri == 'southampton-centre') {
+		bounds.extend(new google.maps.LatLng(50.9072471,-1.4186829));
+		bounds.extend(new google.maps.LatLng(50.9111925,-1.4029262));
+		bounds.extend(new google.maps.LatLng(50.9079644,-1.3979205));
+		bounds.extend(new google.maps.LatLng(50.8930407,-1.4004233));
+		map.fitBounds(bounds);
 	}
 }
 
@@ -457,15 +516,18 @@ var initmarkers = function(cont) {
 	},'json');
 };
 
-var initialize = function(lat, long, zoom, uri, v) {
+var initialize = function(lat, long, zoom, uri, v, defaultMap) {
 	version = v;
 	map = new google.maps.Map(document.getElementById('map_canvas'), {
 		zoom: zoom,
 		center: new google.maps.LatLng(lat, long),
 		mapTypeControlOptions: {
-			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE]
+			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
+		        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+		        position: google.maps.ControlPosition.RIGHT_TOP
 		},
-		mapTypeId: 'Map2'
+		
+		mapTypeId: defaultMap
 	});
 
 	var styledMapType = new google.maps.StyledMapType([
@@ -489,6 +551,7 @@ var initialize = function(lat, long, zoom, uri, v) {
 		initmarkerevents();
 		initgeoloc();
 		inittoggle();
+		initbookmarks();
 		initcredits();
 		initsearch();
 //var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
@@ -496,9 +559,48 @@ var initialize = function(lat, long, zoom, uri, v) {
 		
 		$('#inputbox').keydown(keypress);
 		$('#inputbox').keyup(updateFunc);
+		var hashstring = location.hash.replace( /^#/, '' );
+		location.hash = location.hash.replace(/\/.*/, '');
+		hashstring = hashstring.split('/');
+		if(hashstring.length > 1)
+		{
+			hashstring = hashstring[1];
+			$('#subj_'+hashstring).click();
+		}
+		else
+			hashstring = '';
 		updateFunc();
 		if(uri != '') zoomTo(uri);
 	});
+
+	var hcf = function() {
+		var hashstring = location.hash.replace( /^#/, '' );
+		$('._2011-07-08').hide();
+		$('._2011-07-09').hide();
+		$('#link_2011-07-08').removeClass('selected');
+		$('#link_2011-07-09').removeClass('selected');
+		document.title = document.title.replace( / \| .*/, '' );
+		var selecteddate;
+		var fulldate;
+		var d = hashstring.replace(/\/.*/, '');
+		if(d == 'friday') {
+			selecteddate = '2011-07-08';
+			fulldate = 'Friday 8th July 2011';
+		}
+		else if(d == 'saturday') {
+			selecteddate = '2011-07-09';
+			fulldate = 'Saturday 9th July 2011';
+		}
+		else
+			return;
+		document.title += ' | '+fulldate;
+		$('._'+selecteddate).show();
+		$('#link_'+selecteddate).addClass('selected');
+	};
+
+	$(window).bind('hashchange', hcf);
+
+	hcf();
 
 }
 
@@ -526,4 +628,11 @@ var getSelectedCategories = function() {
 
 var inittoggle = function() {
 	addControl('toggleicons', google.maps.ControlPosition.RIGHT_TOP);
+}
+
+var initbookmarks = function() {
+	if($('#bookmarks')==null)
+		return;
+	addControl('bookmarks', google.maps.ControlPosition.TOP_RIGHT);
+	$('#bookmarks').show();
 }
