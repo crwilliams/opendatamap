@@ -16,6 +16,8 @@ if(isset($_GET['zoom']) && $_GET['zoom'] != "")
 else
 	$zoom = $config['default zoom'];;
 $uri = $_GET['uri'];
+$zoomuri = $_GET['zoomuri'];
+$clickuri = $_GET['clickuri'];
 ?>
 <html>
 	<head>
@@ -38,7 +40,7 @@ $uri = $_GET['uri'];
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
 	</head>
-	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$_GET['v']."', ".$config['default map'] ?>)">
+	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
 		<div id="spinner"><img src="img/ajax-loader.gif"></div>
 <?php if(has('openday')) { ?>

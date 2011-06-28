@@ -224,8 +224,9 @@ var removepmarker = function(pc) {
 	pmarkers[pc].setMap(null);
 }
 
-var zoomTo = function(uri, cl) {
+var zoomTo = function(uri, cl, pan) {
 	cl = typeof(cl) != 'undefined' ? cl : true;
+	pan = typeof(pan) != 'undefined' ? pan : true;
 	var bounds = new google.maps.LatLngBounds();
 	if(uri.substring(0,9) == 'postcode:') {
 		var pdata = uri.substring(9).split(',');
@@ -239,7 +240,7 @@ var zoomTo = function(uri, cl) {
 			});
 		}
 		_gaq.push(['_trackEvent', 'JumpTo', 'Postcode', pdata[0]]);
-		map.panTo(latlng);
+		if(pan)map.panTo(latlng);
 	}
 	else if(polygons[uri] !== undefined) {
 		if(polygons[uri].length !== undefined) {
@@ -249,16 +250,16 @@ var zoomTo = function(uri, cl) {
 					bounds.extend(el);
 				});
 			}
-			map.fitBounds(bounds);
+			if(pan)map.fitBounds(bounds);
 			if(cl)google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
 		} else {
 			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-			map.panTo(polygons[uri].getPosition());
+			if(pan)map.panTo(polygons[uri].getPosition());
 			if(cl)google.maps.event.trigger(polygons[uri], 'click');
 		}
 	} else if(markers[uri] !== undefined) {
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-		map.panTo(markers[uri].getPosition());
+		if(pan)map.panTo(markers[uri].getPosition());
 		if(cl)google.maps.event.trigger(markers[uri], 'click');
 	} else if(uri == 'southampton-overview') {
 		bounds.extend(new google.maps.LatLng(50.9667011,-1.4444580));
@@ -266,13 +267,13 @@ var zoomTo = function(uri, cl) {
 		bounds.extend(new google.maps.LatLng(50.8887047,-1.3935115));
 		bounds.extend(new google.maps.LatLng(50.9554826,-1.3560130));
 		bounds.extend(new google.maps.LatLng(50.9667013,-1.4178855));
-		map.fitBounds(bounds);
+		if(pan)map.fitBounds(bounds);
 	} else if(uri == 'southampton-centre') {
 		bounds.extend(new google.maps.LatLng(50.9072471,-1.4186829));
 		bounds.extend(new google.maps.LatLng(50.9111925,-1.4029262));
 		bounds.extend(new google.maps.LatLng(50.9079644,-1.3979205));
 		bounds.extend(new google.maps.LatLng(50.8930407,-1.4004233));
-		map.fitBounds(bounds);
+		if(pan)map.fitBounds(bounds);
 	}
 }
 
@@ -516,7 +517,7 @@ var initmarkers = function(cont) {
 	},'json');
 };
 
-var initialize = function(lat, long, zoom, uri, v, defaultMap) {
+var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap) {
 	version = v;
 	map = new google.maps.Map(document.getElementById('map_canvas'), {
 		zoom: zoom,
@@ -570,7 +571,9 @@ var initialize = function(lat, long, zoom, uri, v, defaultMap) {
 		else
 			hashstring = '';
 		updateFunc();
-		if(uri != '') zoomTo(uri);
+		if(uri != '') zoomTo(uri, true, true);
+		if(zoomuri != '') zoomTo(zoomuri, false, true);
+		if(clickuri != '') zoomTo(clickuri, true, false);
 	});
 
 	var hcf = function() {
