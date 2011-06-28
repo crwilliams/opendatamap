@@ -6,8 +6,8 @@ RewriteRule ^layar-api/?$ extras/layar-api.php
 RewriteRule ^bus-route-finder/?$ extras/bus-route-finder.php
 RewriteRule ^resources/jquery-1.5.min.js$ /js/jquery-1.5.min.js
 
-RewriteRule ^([a-z_-]+)/?$ index.php?v=$1 
-RewriteRule ^([a-z_-]+)/((credits)?)$ $2.php?v=$1
+RewriteRule ^([A-Za-z_-]+)/?$ index.php?v=$1 
+RewriteRule ^([A-Za-z_-]+)/((credits)?)$ $2.php?v=$1
 
 <IfModule mod_deflate.c>
 AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript image/png
