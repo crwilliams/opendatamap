@@ -3,6 +3,18 @@
 <div id='subjects'>
 <ul style='overflow:scroll; position:absolute; top:100px; bottom:0px; width:300px;'>
 <?
+function sortinstances($a, $b)
+{
+	$astart = '24:00';
+	foreach($a as $ac)
+		$astart = min(substr($ac['start'], 11, 5), $astart);
+	$bstart = '24:00';
+	foreach($b as $bc)
+		$bstart = min(substr($bc['start'], 11, 5), $bstart);
+	if($astart != $bstart)
+		return ($astart < $bstart) ? -1 : 1;
+	return 0;
+}
 function sortdate($a, $b)
 {
 	$astart = '24:00';
@@ -57,6 +69,7 @@ function sortdate($a, $b)
 			{
 				$instances = array();
 				$buildings = array();
+				$sites = array();
 				$numbers = array();
 				$names = array();
 				if($subjbroader[$uri] == 'Subject')
@@ -67,9 +80,11 @@ function sortdate($a, $b)
 				{
 					$instances[$eventinstance['placelabel']][] = substr($eventinstance['start'], 11, 5)."-".substr($eventinstance['end'], 11, 5);
 					$buildings[$eventinstance['placelabel']] = $eventinstance['building'];
+					$sites[$eventinstance['placelabel']] = $eventinstance['site'];
 					$numbers[$eventinstance['placelabel']] = $eventinstance['number'];
 					$names[$eventinstance['placelabel']] = $eventinstance['name'];
 				}
+				//usort($instances, 'sortinstances');
 				foreach($instances as $place => $placeinstances)
 				{
 	// onclick='zoomTo(\"".$event['building']."\")'>";
@@ -78,7 +93,7 @@ function sortdate($a, $b)
 					{
 						echo $placeinstance." ";
 					}
-					echo "<div class='clickable' onclick='zoomTo(\"".$buildings[$place]."\")' title='Jump to ".htmlspecialchars($names[$place], ENT_QUOTES)."'><img class='icon' src='resources/numbericon.php?n=".$numbers[$place]."' /><span class='location' style='font-style:italic'>".$place."</span></div>";
+					echo "<div class='clickable' onclick='zoomTo(\"".$sites[$place]."\", false, true); zoomTo(\"".$buildings[$place]."\", true, false)' title='Jump to ".htmlspecialchars($names[$place], ENT_QUOTES)."'><img class='icon' src='resources/numbericon.php?n=".$numbers[$place]."' /><span class='location' style='font-style:italic'>".$place."</span></div>";
 				}
 				echo $eventinstances[0]['desc']."<br/>";
 				echo "</li>";

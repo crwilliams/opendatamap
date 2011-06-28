@@ -344,8 +344,10 @@ SELECT DISTINCT ?uri ?label WHERE {
 		$data = sparql_get(self::$endpoint, "
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+PREFIX org: <http://www.w3.org/ns/org#>
 
-SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?placelabel ?number ?name WHERE {
+SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?placelabel ?number ?name WHERE {
     ?event <http://purl.org/dc/terms/isPartOf> <$uri> .
     ?uri a skos:Concept .
     ?uri skos:broader ?broaderuri .
@@ -359,6 +361,8 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?placela
     ?event <http://purl.org/NET/c4dm/event.owl#place> ?building .
     ?event <http://purl.org/NET/c4dm/event.owl#place> ?place .
     ?building a <http://vocab.deri.ie/rooms#Building> .
+    ?building spacerel:within ?site .
+    ?site a org:Site .
     ?building <http://www.w3.org/2004/02/skos/core#notation> ?number .
     ?building rdfs:label ?name .
     ?place a <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> .
