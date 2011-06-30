@@ -89,13 +89,20 @@ function sortdate($a, $b)
 				{
 	// onclick='zoomTo(\"".$event['building']."\")'>";
 					sort($placeinstances);
+					echo "<div class='dates'>"; 
 					foreach($placeinstances as $placeinstance)
 					{
 						echo $placeinstance." ";
 					}
-					echo "<div class='clickable' onclick='zoomTo(\"".$sites[$place]."\", false, true); zoomTo(\"".$buildings[$place]."\", true, false)' title='Jump to ".htmlspecialchars($names[$place], ENT_QUOTES)."'><img class='icon' src='resources/numbericon.php?n=".$numbers[$place]."' /><span class='location' style='font-style:italic'>".$place."</span></div>";
+					echo "</div>";
+					echo "<div class='location clickable' onclick='zoomTo(\"".$sites[$place]."\", false, true); zoomTo(\"".$buildings[$place]."\", true, false)' title='Jump to ".htmlspecialchars($names[$place], ENT_QUOTES)."'>";
+					echo "<img class='icon' src='resources/numbericon.php?n=".$numbers[$place]."' />";
+					echo $place;
+					echo "</div>";
 				}
+				echo "<div class='description'>"; 
 				echo $eventinstances[0]['desc']."<br/>";
+				echo "</div>";
 				echo "</li>";
 			}
 			echo "</ul>";

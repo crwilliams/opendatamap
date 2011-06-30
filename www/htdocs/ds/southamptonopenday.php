@@ -503,28 +503,14 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	{
 		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
 			return self::processSouthamptonBusStopURI($uri);
-		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/buinding/')) == 'http://id.southampton.ac.uk/building/')
+		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/building/')) == 'http://id.southampton.ac.uk/building/')
 			return self::processSouthamptonBuildingURI($uri);
 		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
-			return self::processSouthamptonURI($uri);
-		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
 			return self::processSouthamptonURI($uri);
 		else
 			return false;
 	}
 
-	static function processSownURI($uri)
-	{
-		return true;
-		echo '<div id="content">';
-		echo '<pre>';
-		$data = simplexml_load_file('https://sown-auth.ecs.soton.ac.uk/status-nagios/generateNodesXML.php');
-		print_r($data);
-		echo '</pre>';
-		echo '</div>';
-		return true;
-	}
-	
 	static function processSouthamptonBusStopURI($uri)
 	{	
 		$allpos = self::getURIInfo($uri);
@@ -541,10 +527,10 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 			$codes[] = $code['code'];
 		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos[0]['name'];
 		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
-		echo "<h3> Served by: (click to filter) </h3>";
+		echo "<h3> Served by: </h3>";
 		echo "<ul class='offers'>"; 
 		foreach($allbus as $code) {
-			echo "<li ".self::routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
+			echo "<li ".self::routestyle($code['code']).">".$code['code']."</li>";
 		}
 		echo "</ul>";
 		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
@@ -576,6 +562,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		echo "<h2><img class='icon' src='resources/numbericon.php?n=".$allpos[0]['number']."' />".$allpos[0]['name'];
 		echo "<a class='odl' href='".$uri."'>Visit page</a>";
 		echo "</h2>";
+		return true;
 	}
 
 	static function processSouthamptonURI($uri)
@@ -672,10 +659,10 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		}
 		if(count($allpos) > 0)
 		{
-			echo "<h3> Offers: (click to filter) </h3>";
+			echo "<h3> Offers:</h3>";
 			echo "<ul class='offers'>"; 
 			foreach($allpos as $point) {
-				echo "<li onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."$'); updateFunc();\">".$point['label']."</li>";
+				echo "<li>".$point['label']."</li>";
 			}
 			echo "</ul>";
 		}
@@ -706,6 +693,8 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 
 		if(count($allpos) > 0)
 		{
+			$today = '2011-07-08';
+
 			//echo "<div id='openings'>";
 			//echo "<h3>Opening detail:</h3>";
 			foreach($allpos as $point)
@@ -746,10 +735,12 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 			//echo "<th>Valid Dates</th>";
 			//echo "</tr>";
 
+			//$now = strtotime($today.' 12:00');
+			$now = mktime();
+			//echo date('Y-m-d H:i:s', $now);
 			foreach($ot as $valid => $otv)
 			{
 				list($from, $to) = explode('-',$valid);
-				$now = mktime();
 				if ($from == '')
 				{
 					$from = $now - 86400;
@@ -785,6 +776,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 						if(array_key_exists('http://purl.org/goodrelations/v1#'.$day, $otv))
 						{
 							foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
+		return true;
 							{
 								if($dot == '00:00-00:00')
 									$dot = '24 hour';

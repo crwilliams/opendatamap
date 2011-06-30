@@ -36,6 +36,7 @@ div#subjects li,div#subjects li h2 {
 	margin-bottom:2px;
 }
 div#subjects li h2 {
+	margin-top:5px;
 	padding:2px;
 }
 div#bookmarks li,div#subjects li h2 {
@@ -50,6 +51,23 @@ div#bookmarks li,div#subjects li h2 {
 div#subjects li.event {
 	border:solid 2px #007C92;
 	padding:5px;
+}
+
+div#subjects li.event .location .icon {
+	top:8px;
+}
+
+div#subjects li.event .location {
+	position:relative;
+	top:-5px;
+	padding-left:30px;
+	text-indent:-30px;
+	font-style:italic;
+}
+
+div#subjects li.event .description {
+	font-size:0.8em;
+	text-align:justify;
 }
 
 a {
