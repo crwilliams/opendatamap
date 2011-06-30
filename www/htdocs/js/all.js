@@ -99,7 +99,7 @@ var initmarkerevents = function() {
 }
 
 var refreshSubjectChoice = function() {
-	var str = inputbox.value.replace(/\/.*/, '');
+	var str = $('#inputbox').value.replace(/\/.*/, '');
 	if(str == '')
 	{
 		$('.General').hide();
@@ -131,7 +131,7 @@ var chooseSubject = function(name) {
 }
 
 var changeSubject = function() {
-	inputbox.value=location.hash.replace(/^#/, '/');
+	$('#inputbox').value=location.hash.replace(/^#/, '/');
 	$('#selectedsubject').removeClass('clickable');
 	$('#selectedsubject').attr('title', null);
 	$('#selectedsubject').css('background-color', 'inherit');
