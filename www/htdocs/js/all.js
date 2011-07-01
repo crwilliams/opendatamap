@@ -1,20 +1,22 @@
 var map;
 var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};
-var markers = new Array();
-var infowindows = new Array();
-var pmarkers = new Array();
-var pinfowindows = new Array();
-var polygons = new Array();
-var polygoninfowindows = new Array();
-var clusterMarkers = new Array();
-var clusterInfowindows = new Array();
+var markers = new Object();
+var infowindows = new Object();
+var pmarkers = new Object();
+var pinfowindows = new Object();
+var polygons = new Object();
+var polygoninfowindows = new Object();
+var clusterMarkers = new Object();
+var clusterInfowindows = new Object();
 
 var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
 var CLEAR_SEARCH_ICON = "img/nt-left.png";
 
 var oldString = null;
 var xmlhttp = undefined;
+
+var selecteddate = null;
 
 var t;
 var selectIndex = -1;
@@ -67,7 +69,7 @@ var reset_search_icon = function() {
 // someone's clicked on something, you need to load the real data into it
 var loadWindow = function(j) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
-	$.get("info.php?v="+version+"&uri="+encodeURI(j), function(data) {
+	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURI(j), function(data) {
 		infowindows[j].setContent(data);
 	});
 }
@@ -282,10 +284,10 @@ var cluster = function() {
 		if(typeof(clusterMarkers[i]) == "object")
 			clusterMarkers[i].setMap(null);
 	}
-	clusterMarkers = new Array();
-	clusterInfowindows = new Array();
-	var positions = new Array();
-	var firstAtPos = new Array();
+	clusterMarkers = new Object();
+	clusterInfowindows = new Object();
+	var positions = new Object();
+	var firstAtPos = new Object();
 	var str = "";
 	var count = 0;
 	var count2 = 0;
@@ -583,7 +585,6 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		$('#link_2011-07-08').removeClass('selected');
 		$('#link_2011-07-09').removeClass('selected');
 		document.title = document.title.replace( / \| .*/, '' );
-		var selecteddate;
 		var fulldate;
 		var d = hashstring.replace(/\/.*/, '');
 		if(d == '') d = 'friday';

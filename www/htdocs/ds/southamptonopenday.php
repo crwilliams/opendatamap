@@ -690,10 +690,11 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 			?time gr:closes ?closes .
 		} ORDER BY ?start ?end ?day ?opens ?closes
 		");
+		//	OPTIONAL { <$uri> <http://purl.org/dc/terms/description> ?desc }
 
 		if(count($allpos) > 0)
 		{
-			$today = '2011-07-08';
+			$today = $_GET['date'];
 
 			//echo "<div id='openings'>";
 			//echo "<h3>Opening detail:</h3>";
@@ -735,9 +736,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 			//echo "<th>Valid Dates</th>";
 			//echo "</tr>";
 
-			//$now = strtotime($today.' 12:00');
-			$now = mktime();
-			//echo date('Y-m-d H:i:s', $now);
+			$now = strtotime($today.' 12:00');
 			foreach($ot as $valid => $otv)
 			{
 				list($from, $to) = explode('-',$valid);
@@ -776,7 +775,6 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 						if(array_key_exists('http://purl.org/goodrelations/v1#'.$day, $otv))
 						{
 							foreach($otv['http://purl.org/goodrelations/v1#'.$day] as $dot)
-		return true;
 							{
 								if($dot == '00:00-00:00')
 									$dot = '24 hour';
@@ -803,7 +801,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 			if($todayopening != null)
 			{
 				echo "<div id='todayopenings'>";
-				echo "<h3>Today's opening hours:</h3>";
+				echo "<h3>Opening hours on ".date('l jS F Y', $now).":</h3>";
 				echo "<ul style='padding-top:8px;'>";
 				foreach($todayopening as $opening)
 				{
@@ -813,6 +811,12 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 				echo "</div>";
 			}
 		}
+
+		//if($allpos[0]['desc'] != null)
+		//{
+		//	echo '<div style="font-size:0.7em; text-align:justify">'.$allpos[0]['desc'].'</div>';
+		//}
+
 		if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
 			self::processSownURI($uri);
 		echo "</div>";
