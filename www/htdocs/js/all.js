@@ -589,8 +589,10 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		document.title = document.title.replace( / \| .*/, '' );
 		var fulldate;
 		var d = hashstring.replace(/\/.*/, '');
-		if(d == '') d = 'friday';
+		if(d == '') {
+			d = 'friday';
 			location.hash = 'friday';
+		}
 		if(d == 'friday') {
 			selecteddate = '2011-07-08';
 			fulldate = 'Friday 8th July 2011';
