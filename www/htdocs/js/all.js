@@ -184,6 +184,7 @@ var updateFunc = function(force) {
 					{
 						var bar = pset[i];
 						if(bar == null || bar == undefined)
+							continue;
 						if(matchesd[uri] !== undefined)
 							bar.setOptions({fillColor : '#0000FF', strokeColor : '#0000FF'});
 						else
