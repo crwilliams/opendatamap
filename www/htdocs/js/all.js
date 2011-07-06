@@ -174,6 +174,7 @@ var updateFunc = function(force) {
 			for (var uri in markers) {
 				markers[uri].setVisible(matchesd[uri] !== undefined);
 			}
+/*
 			if(document.getElementById('selectedsubject')!=null)//Naughty hack to check for openday version
 			{
 				for (var uri in polygons) {
@@ -192,7 +193,7 @@ var updateFunc = function(force) {
 					}
 				}
 			}
-			
+*/			
 			selectIndex = -1;
 			list.innerHTML = "";
 			
