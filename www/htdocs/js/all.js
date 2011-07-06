@@ -174,6 +174,23 @@ var updateFunc = function(force) {
 			for (var uri in markers) {
 				markers[uri].setVisible(matchesd[uri] !== undefined);
 			}
+			if(document.getElementById('selectedsubject')!=null)//Naughty hack to check for openday version
+			{
+				for (var uri in polygons) {
+					if(uri.indexOf('/site/') != -1)
+						continue;
+					var pset = polygons[uri];
+					for (var i = 0; i<pset.length; i++)
+					{
+						var bar = pset[i];
+						if(bar == null || bar == undefined)
+						if(matchesd[uri] !== undefined)
+							bar.setOptions({fillColor : '#0000FF', strokeColor : '#0000FF'});
+						else
+							bar.setOptions({fillColor : '#9999CC', strokeColor : '#9999CC'});
+					}
+				}
+			}
 			
 			selectIndex = -1;
 			list.innerHTML = "";
