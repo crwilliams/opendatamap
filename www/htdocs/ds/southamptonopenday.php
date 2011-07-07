@@ -79,7 +79,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 */
 	static function getAllPointsOfService()
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2011/07/';
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
 		$points = array();
 		$tpoints = sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?id ?lat ?long ?label ?number WHERE {
@@ -180,7 +180,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getPointsOfService($q)
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2011/07/';
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
 		$q = explode('/', $q);
 		$subject = $q[0];
 		if(count($q) > 0)
@@ -340,7 +340,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getAllTimetables()
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2011/07/';
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
 		$data = sparql_get(self::$endpoint, "
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
