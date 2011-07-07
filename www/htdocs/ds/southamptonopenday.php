@@ -218,7 +218,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 			");
 			foreach($tpoints as $point)
 			{
-				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/InformationStand' || $point['l'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/General' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/07\/event\/'.$subject.'-/', $point['s'])))
+				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/InformationStand' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/General' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/07\/event\/'.$subject.'-/', $point['s'])))
 					$points[] = $point;
 			}
 		}
