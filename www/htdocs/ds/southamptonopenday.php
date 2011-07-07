@@ -200,7 +200,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 		if($date != null)
 		{
 			$tpoints = sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?pos ?s ?l ?start WHERE {
+		SELECT DISTINCT ?pos ?s ?l ?start ?b WHERE {
                   ?pos a <http://vocab.deri.ie/rooms#Building> .
                   OPTIONAL { ?id <http://purl.org/dc/terms/spatial> ?outline . }
                   ?pos <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
@@ -209,7 +209,8 @@ SELECT DISTINCT ?uri ?label WHERE {
                   OPTIONAL { ?pos <http://www.w3.org/2004/02/skos/core#notation> ?number . }
                   ?s <http://purl.org/NET/c4dm/event.owl#place> ?pos .
                   ?s <http://purl.org/dc/terms/isPartOf> <$uri> .
-		  OPTIONAL { ?s <http://www.w3.org/2004/02/skos/core#broader> ?b }
+		  ?s <http://purl.org/dc/terms/subject> ?subj .
+		  OPTIONAL { ?subj <http://www.w3.org/2004/02/skos/core#broader> ?b }
 		  ?s <http://www.w3.org/2000/01/rdf-schema#label> ?l .
     		  ?s <http://purl.org/NET/c4dm/event.owl#time> ?time .
     		  ?time <http://purl.org/NET/c4dm/timeline.owl#start> ?start .
@@ -217,7 +218,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 			");
 			foreach($tpoints as $point)
 			{
-				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['l'] == 'General' || $point['l'] == 'Information Stand' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/07\/event\/'.$subject.'-/', $point['s'])))
+				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/InformationStand' || $point['l'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/General' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/07\/event\/'.$subject.'-/', $point['s'])))
 					$points[] = $point;
 			}
 		}
