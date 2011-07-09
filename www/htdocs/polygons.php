@@ -50,6 +50,14 @@ foreach($config['datasource'] as $ds)
 		{
 			echo '['.$building['long'].','.$building['lat'].']]';
 		}
+		if(isset($building['color']))
+		{
+			echo ',"'.$building['color'].'"';
+		}
+		else
+		{
+			echo ',""';
+		}
 		echo '],';
 	}
 }

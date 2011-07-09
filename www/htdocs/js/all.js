@@ -493,6 +493,12 @@ var initmarkers = function(cont) {
 					var pType = 'Site';
 				}
 				
+				if(markpt[4] != '')
+				{
+					fc = markpt[4];
+					sc = markpt[4];
+				}
+
 				if(polygons[pos] === undefined) polygons[pos] = new Array();
 				polygons[pos].push(new google.maps.Polygon({
 					paths: paths,
