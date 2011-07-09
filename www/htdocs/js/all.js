@@ -22,13 +22,13 @@ var t;
 var selectIndex = -1;
 var limit = 0;
 
-var addControl = function(elementID, position) {
-	map.controls[position].push(document.getElementById(elementID));
+var addControl = function(element, position) {
+	map.controls[position].push(element));
 }
 
 var initcredits = function() {
-	addControl('credits', google.maps.ControlPosition.RIGHT_BOTTOM);
-	addControl('credits-small', google.maps.ControlPosition.RIGHT_BOTTOM);
+	addControl($('#credits'), google.maps.ControlPosition.RIGHT_BOTTOM);
+	addControl($('#credits-small'), google.maps.ControlPosition.RIGHT_BOTTOM);
 }
 
 var geoloc = function() {
@@ -51,7 +51,7 @@ var geoloc = function() {
 
 var initgeoloc = function() {
 	if (navigator.geolocation) {
-		addControl('geobutton', google.maps.ControlPosition.TOP_RIGHT);
+		addControl($('#geobutton'), google.maps.ControlPosition.TOP_RIGHT);
 	} else {
 		$('#geobutton').get(0).style.display = 'none';
 	}
@@ -148,8 +148,8 @@ var updateFunc = function(force) {
 	if(force !== true) force = false;
 	var enabledCategories = getSelectedCategories();
 	reset_search_icon();
-	var inputbox = document.getElementById("inputbox");
-	var list = document.getElementById("list");
+	var inputbox = $("#inputbox");
+	var list = $("#list");
 	if(!force && inputbox.value == oldString) return;
 	oldString = inputbox.value;
 
@@ -204,7 +204,6 @@ var updateFunc = function(force) {
 				if (m === undefined) continue;
 				var dispStr;
 				if (labelmatches[m][0] === undefined) {
-					//try {  console.log('warning colin, labelmatches for ',m,' was undefined'); } catch(e) { }
 					continue;	
 				}
 				
@@ -321,7 +320,7 @@ var cluster = function() {
 				if(clusterMarkers[markers[i].getPosition().toString()] === undefined) {
 					clusterMarkers[markers[i].getPosition().toString()] = new google.maps.Marker({
 						position: markers[i].getPosition(),
-						title: 'Cluster',
+						title: 2,
 						map: map,
 						visible: true
 					});
@@ -338,6 +337,7 @@ var cluster = function() {
 					{
 						clusterMarkers[markers[i].getPosition().toString()].setIcon(clusterMarkers[markers[i].getPosition().toString()].getIcon()+'&i[]='+markers[i].getIcon());
 					}
+					clusterInfowindows[markers[i].getPosition().toString()].setTitle(clusterInfowindows[markers[i].getPosition().toString()].getTitle() + 1)
 				}
 				count2 ++;
 			} else {
@@ -355,6 +355,7 @@ var cluster = function() {
 	for(var i in clusterMarkers) {
 		with({i: i})
 		{
+			clusterMarkers[i].setTitle(clusterMarkers[i].getTitle() + ' items');
 			google.maps.event.addListener(clusterMarkers[i], 'click', function() {
 				closeAll();
 				_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', i]);
@@ -366,9 +367,9 @@ var cluster = function() {
 
 var initsearch = function() {
 	$('#search').index = 2;
-	addControl('search', google.maps.ControlPosition.TOP_RIGHT);
+	addControl($('#search'), google.maps.ControlPosition.TOP_RIGHT);
 	$('#search-small').index = 2;
-	addControl('search-small', google.maps.ControlPosition.TOP_RIGHT);
+	addControl($('#search-small'), google.maps.ControlPosition.TOP_RIGHT);
 }
 
 var setInputBox = function(str) {
@@ -540,7 +541,7 @@ var initmarkers = function(cont) {
 
 var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap) {
 	version = v;
-	map = new google.maps.Map(document.getElementById('map_canvas'), {
+	map = new google.maps.Map($('#map_canvas'), {
 		zoom: zoom,
 		center: new google.maps.LatLng(lat, long),
 		mapTypeControlOptions: {
@@ -656,12 +657,12 @@ var getSelectedCategories = function() {
 }
 
 var inittoggle = function() {
-	addControl('toggleicons', google.maps.ControlPosition.RIGHT_TOP);
+	addControl($('#toggleicons'), google.maps.ControlPosition.RIGHT_TOP);
 }
 
 var initbookmarks = function() {
 	if($('#bookmarks')==null)
 		return;
-	addControl('bookmarks', google.maps.ControlPosition.TOP_RIGHT);
+	addControl($('#bookmarks'), google.maps.ControlPosition.TOP_RIGHT);
 	$('#bookmarks').show();
 }
