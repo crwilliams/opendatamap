@@ -85,22 +85,6 @@ class OxfordDataSource extends DataSource
 	}
 			");
 			echo "<h2><img class='icon' src='".self::getIcon($info[0])."' />".$info[0]['label']."<h2>";
-			$info = sparql_get(self::$endpoint, "
-	PREFIX oxp: <http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#>
-	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-	PREFIX dc: <http://purl.org/dc/elements/1.1/>
-	PREFIX dct: <http://purl.org/dc/terms/>
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-
-	SELECT ?label ?type ?addr ?street ?postcode ?locality WHERE {
-	  <$uri> a ?type .
-	  <$uri> dc:title ?label .
-	  <$uri> <http://www.w3.org/2006/vcard/ns#adr> ?addr .
-	  ?addr <http://www.w3.org/2006/vcard/ns#street-address> ?street .
-	  ?addr <http://www.w3.org/2006/vcard/ns#postal-code> ?postcode .
-	  ?addr <http://www.w3.org/2006/vcard/ns#locality> ?locality .
-	}
-	");
 			echo $info[0]['street'].'<br/>';
 			echo $info[0]['locality'].'<br/>';
 			echo $info[0]['postcode'];
@@ -132,7 +116,7 @@ class OxfordDataSource extends DataSource
 			if(!preg_match('/'.$q.'/i', $point['label']) && !preg_match('/'.$q.'/i', $point['poslabel']))// && !preg_match('/'.$q.'/i', $point['hiddenlabel']))
 				continue;
 			$point['icon'] = self::getIcon($point);
-			$point['label'] = 'point';
+			$point['label'] = '';
 			$points[] = $point;
 		}
 		return $points;
