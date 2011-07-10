@@ -56,6 +56,15 @@ class DataSource{
 	static function getAllSites(){}
 	static function getAllBuildings(){}
 	static function processURI($uri){return false;}
+	
+	static function convertIcon($icon)
+	{	
+		$icon = str_replace('http://google-maps-icons.googlecode.com/files/', self::$iconpath, $icon);
+		$icon = str_replace('http://data.southampton.ac.uk/map-icons/lattes.png', self::$iconpath.'Restaurants-and-Hotels/coffee.png', $icon);
+		return $icon;
+	}
+	
+	static $iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
 }
 
 foreach($config['datasource'] as $ds)

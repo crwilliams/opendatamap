@@ -15,7 +15,7 @@ class CambridgeDataSource extends DataSource
 			$point['lat'] = (float)$lib->lat;
 			$point['long'] = (float)$lib->lng;
 			$point['label'] = (string)$lib->name;
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+			$point['icon'] = self::$iconpath.'Education/library.png';
 			$points[] = $point;
 		}
 		return $points;
@@ -31,7 +31,7 @@ class CambridgeDataSource extends DataSource
 		$icon = array();
 		$data = self::getLibraries($q);
 		foreach($data as $point) {
-			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/library.png';
+			$point['icon'] = self::$iconpath.'Education/library.png';
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
@@ -62,7 +62,7 @@ class CambridgeDataSource extends DataSource
 			$point['poslabel'] = (string)$lib->name;
 			$point['pos'] = 'http://www.lib.cam.ac.uk/#'.(string)$lib->code;
 			$point['label'] = 'library';//(string)$lib->name;
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+			$point['icon'] = self::$iconpath.'Education/library.png';
 			$points[] = $point;
 		}
 		return $points;

@@ -3,7 +3,7 @@ include_once "inc/sparqllib.php";
 
 class SouthamptonDataSource extends DataSource
 {
-	static $endpoint = "http://sparql.data.southampton.ac.uk";
+	static $endpoint = 'http://sparql.data.southampton.ac.uk';
 
 	static function getAll()
 	{
@@ -85,8 +85,7 @@ class SouthamptonDataSource extends DataSource
 		{
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
-			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
+			$point['icon'] = self::convertIcon($point['icon']);
 			if($point['icon'] == "")
 				$point['icon'] = "img/blackness.png";
 			$points[] = $point;
@@ -208,7 +207,7 @@ class SouthamptonDataSource extends DataSource
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
+			$point['icon'] = self::$iconpath.'Education/computer.png';
 			$points[] = $point;
 		}
 		return $points;
@@ -304,8 +303,7 @@ class SouthamptonDataSource extends DataSource
 		foreach($data as $point) {
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
-			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
+			$point['icon'] = self::convertIcon($point['icon']);
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
 			{
@@ -350,7 +348,7 @@ class SouthamptonDataSource extends DataSource
 	{
 		$data = self::getWorkstationRooms($q);
 		foreach($data as $point) {
-			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png';
+			$point['icon'] = self::$iconpath.'Education/computer.png';
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
@@ -480,7 +478,7 @@ class SouthamptonDataSource extends DataSource
 		{
 			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
-				$icon = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
+				$icon = self::$iconpath."Education/computer.png";
 				$computer = "true";
 			}
 			else
@@ -490,8 +488,7 @@ class SouthamptonDataSource extends DataSource
 		}
 		else
 			$icon = $allpos[0]['icon'];
-		$icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $icon);
-		$icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $icon);
+		$icon = self::convertIcon($icon);
 
 		$page = sparql_get(self::$endpoint, "
 		PREFIX foaf: <http://xmlns.com/foaf/0.1/>

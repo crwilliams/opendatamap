@@ -3,7 +3,7 @@ include_once "inc/sparqllib.php";
 
 class OxfordDataSource extends DataSource
 {
-	static $endpoint = "http://oxpoints.oucs.ox.ac.uk/sparql";
+	static $endpoint = 'http://oxpoints.oucs.ox.ac.uk/sparql';
 
 	static function getAll()
 	{
@@ -136,25 +136,25 @@ class OxfordDataSource extends DataSource
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Building':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Room':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Site':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
+				return self::$iconpath.'Education/university.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Hall':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#College':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
+				return self::$iconpath.'Education/university.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/school.png";
+				return self::$iconpath.'Education/school.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
+				return self::$iconpath.'Education/library.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Transportation/parking.png";
+				return self::$iconpath.'Transportation/parking.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Tourism/urbanpark.png";
+				return self::$iconpath.'Tourism/urbanpark.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Library':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#SubLibrary':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
+				return self::$iconpath.'Education/library.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Museum':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Culture-and-Entertainment/temple-2.png";
+				return self::$iconpath.'Culture-and-Entertainment/temple-2.png';
 		}
 	}
 }

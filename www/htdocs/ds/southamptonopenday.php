@@ -124,8 +124,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 		{
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
-			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
+			$point['icon'] = self::convertIcon($point['icon']);
 			if($point['icon'] == "")
 				$point['icon'] = "img/blackness.png";
 			$points[] = $point;
@@ -167,8 +166,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 		{
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $point['icon']);
-			$point['icon'] = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $point['icon']);
+			$point['icon'] = self::convertIcon($point['icon']);
 			if($point['icon'] == "")
 				$point['icon'] = "img/blackness.png";
 			$points[] = $point;
@@ -442,7 +440,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	{
 		$data = self::getWorkstationRooms($q);
 		foreach($data as $point) {
-			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png';
+			$point['icon'] = self::$iconpath.'Education/computer.png';
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
@@ -573,7 +571,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		{
 			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
-				$icon = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
+				$icon = self::$iconpath.'Education/computer.png';
 				$computer = "true";
 			}
 			else
@@ -583,8 +581,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		}
 		else
 			$icon = $allpos[0]['icon'];
-		$icon = str_replace("http://google-maps-icons.googlecode.com/files/", "http://opendatamap.ecs.soton.ac.uk/img/icon/", $icon);
-		$icon = str_replace("http://data.southampton.ac.uk/map-icons/lattes.png", "http://opendatamap.ecs.soton.ac.uk/img/icon/coffee.png", $icon);
+		$icon = self::convertIcon($icon);
 
 		$page = sparql_get(self::$endpoint, "
 		PREFIX foaf: <http://xmlns.com/foaf/0.1/>
