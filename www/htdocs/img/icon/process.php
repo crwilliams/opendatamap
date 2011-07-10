@@ -22,6 +22,11 @@ function processFile($color, $file)
 {
 	echo "Processing $file in color $color.\n";
 	global $cat;
+	global $argv;
+	
+	if($argv[3] == 'nt')
+		$notail = true;
+	
 	$category = $cat[$color];
 	@mkdir($category.'/');
 	
@@ -118,8 +123,12 @@ function processFile($color, $file)
 		}
 	}
 	
+	if($notail)
+		$h = 32;
+	else
+		$h = 37;
 	
-	$gs_im = imagecreatetruecolor(32, 37);
+	$gs_im = imagecreatetruecolor(32, $h);
 	/*
 	if($basecolor == 'default')
 	{
@@ -146,7 +155,7 @@ function processFile($color, $file)
 	*/
 	
 	imagealphablending($gs_im,false);
-	imagefilledrectangle($gs_im, 0, 0, 32, 37, imagecolorallocatealpha($gs_im, 255, 255, 255, 127));
+	imagefilledrectangle($gs_im, 0, 0, 32, $h, imagecolorallocatealpha($gs_im, 255, 255, 255, 127));
 	imagealphablending($gs_im, true);
 	
 	$markershape = array(
@@ -166,24 +175,38 @@ function processFile($color, $file)
 		11,32,
 	);
 	imagefilledpolygon($gs_im, $markershape, count($markershape)/2, $basecolorobj);
-	imagefilledpolygon($gs_im, $markershape2, count($markershape2)/2, $basecolorobj);
+	if(!$notail)
+		imagefilledpolygon($gs_im, $markershape2, count($markershape2)/2, $basecolorobj);
 	
 	for($i = 1; $i <= 30; $i++)
 		imageline($gs_im, 1, $i, 30, $i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - $i));
-	for($i = 0; $i < 5; $i++)
-		imageline($gs_im, 11+$i, 31+$i, 20-$i, 31+$i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - (31+$i)));
+	if(!$notail)
+		for($i = 0; $i < 5; $i++)
+			imageline($gs_im, 11+$i, 31+$i, 20-$i, 31+$i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - (31+$i)));
 	
 	$border = imagecolorallocatealpha($gs_im, 0, 0, 0, 64);
 	imageline($gs_im, 1, 0, 30, 0, $border);
 	imageline($gs_im, 0, 1, 0, 30, $border);
 	imageline($gs_im, 31, 1, 31, 30, $border);
-	imageline($gs_im, 1, 31, 10, 31, $border);
-	imageline($gs_im, 21, 31, 30, 31, $border);
-	imageline($gs_im, 11, 32, 15, 36, $border);
-	imageline($gs_im, 20, 32, 16, 36, $border);
+	
+	if(!$notail)
+	{
+		imageline($gs_im, 1, 31, 10, 31, $border);
+		imageline($gs_im, 21, 31, 30, 31, $border);
+		imageline($gs_im, 11, 32, 15, 36, $border);
+		imageline($gs_im, 20, 32, 16, 36, $border);
+	}
+	else
+		imageline($gs_im, 1, 31, 30, 31, $border);
 	
 	imagesavealpha($gs_im, true);
-	imagepng($gs_im, $category.'/blank.png');
+	if($notail)
+	{
+		imagepng($gs_im, $category.'/nt.blank.png');
+		exit;
+	}
+	else
+		imagepng($gs_im, $category.'/blank.png');
 	
 	print_r($sat);
 	for($y = 0; $y < 24; $y++)
