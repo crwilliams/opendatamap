@@ -21,7 +21,23 @@ function sparql_field_name( $result, $i ) { return $result->field_name( $i ); }
 
 function sparql_fetch_all( $result ) { return $result->fetch_all(); }
 
-function sparql_get( $endpoint, $sparql ) 
+function sparql_get( $endpoint, $sparql )
+{
+	$hash = md5($endpoint.$sparql);
+	$filename = 'cache/sparql-'.$hash.'.txt';
+	if(file_exists($filename))
+	{
+		$data = unserialize(file_get_contents($filename));
+	}
+	else
+	{
+		$data = _sparql_get( $endpoint, $sparql );
+		file_put_contents($filename, serialize($data));
+	}
+	return $data;
+}
+
+function _sparql_get( $endpoint, $sparql ) 
 { 
 	$db = sparql_connect( $endpoint );
 	if( !$db ) { return; }
