@@ -59,15 +59,16 @@ class DataSource{
 	
 	static function convertIcon($icon)
 	{	
-		$icon = str_replace('http://google-maps-icons.googlecode.com/files/', self::$iconpath, $icon);
-		$icon = str_replace('http://data.southampton.ac.uk/map-icons/lattes.png', self::$iconpath.'Restaurants-and-Hotels/coffee.png', $icon);
 		global $iconmap;
-		if(!isnull($iconmap[$icon]))
+		if($iconmap == null) include_once "inc/categories.php";
+		if(!is_null($iconmap[$icon]))
 			return $iconmap[$icon];
+		//$icon = str_replace('http://google-maps-icons.googlecode.com/files/', self::$iconpath, $icon);
+		//$icon = str_replace('http://data.southampton.ac.uk/map-icons/lattes.png', self::$iconpath.'Restaurants-and-Hotels/coffee.png', $icon);
 		return $icon;
 	}
 	
-	static $iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
+	static $iconpath = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/';
 }
 
 foreach($config['datasource'] as $ds)
