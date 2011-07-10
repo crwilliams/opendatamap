@@ -39,6 +39,7 @@ $clickuri = $_GET['clickuri'];
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
+		<link rel="stylesheet" href="css/print.css" type="text/css" media="print">
 	</head>
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
@@ -56,15 +57,23 @@ $clickuri = $_GET['clickuri'];
 		<div id="map_canvas" style='<?php echo $config['map style'] ?>'></div>
 		<img id="geobutton" <?php show('geobutton') ?> src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons" <?php show('toggleicons') ?>>
-			<img class="deselected" src="img/transport.png" id="Transport" title="Transport" alt="Transport" onclick="toggle('Transport');" />
-			<img class="deselected" src="img/catering.png" id="Catering" title="Catering and Accommodation" alt="Catering and Accommodation" onclick="toggle('Catering');" />
-			<img class="deselected" src="img/services.png" id="Services" title="Services" alt="Services" onclick="toggle('Services');" />
-			<img class="deselected" src="img/entertainment.png" id="Entertainment" title="Culture and Entertainment" alt="Culture and Entertainment" onclick="toggle('Entertainment');" />
-			<img class="deselected" src="img/health.png" id="Health" title="Sports, Health and Beauty" alt="Sports, Health and Beauty" onclick="toggle('Health');" />
-			<img class="deselected" src="img/religion.png" id="Religion" title="Tourism and Religion" alt="Tourism and Religion" onclick="toggle('Religion');" />
-			<img class="deselected" src="img/retail.png" id="Retail" title="Retail" alt="Retail" onclick="toggle('Retail')" />
-			<img class="deselected" src="img/education.png" id="Education" title="Education" alt="Education" onclick="toggle('Education');" />
-			<img class="deselected" src="img/general.png" id="General" title="General" alt="General" onclick="toggle('General');" />
+<?
+$cats['Transportation'] = 'Transport';
+$cats['Restaurants-and-Hotels'] = 'Catering and Accommodation';
+$cats['Offices'] = 'Services';
+$cats['Culture-and-Entertainment'] = 'Culture and Entertainment';
+$cats['Health'] = 'Health and Beauty';
+$cats['Tourism'] = 'Tourism and Religion';
+$cats['Stores'] = 'Retail';
+$cats['Education'] = 'Education';
+$cats['Sports'] = 'Sports';
+foreach($cats as $catid => $catname)
+{
+?>
+			<img class="deselected" src="img/icon/<?= $catid ?>/blank.png" id="<?= $catid ?>" title="<?= $catname ?>" alt="<?= $catname ?>" onclick="toggle('<?= $catid ?>');" />
+<?
+}
+?>
 		</div>
 		<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
 			<input id="inputbox" style='width:200px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
