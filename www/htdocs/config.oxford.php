@@ -6,4 +6,7 @@ $config['default lat'] = 51.757944;
 $config['default long'] = -1.257778;
 $config['default zoom'] = 14;
 $config['datasource'] = array('oxford', 'postcode');
+$config['categories'] = array();
+$config['categories']['Culture-and-Entertainment'] = 'Culture and Entertainment';
+$config['categories']['Education'] = 'Education';
 ?>

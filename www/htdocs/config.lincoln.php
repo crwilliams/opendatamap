@@ -7,4 +7,5 @@ $config['default lat'] = 53.2277;
 $config['default long'] = -0.5476;
 $config['default zoom'] = 16;
 $config['datasource'] = array('lincoln', 'postcode');
+$config['enabled'] = array('search', 'geobutton');
 ?>
