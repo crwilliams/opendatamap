@@ -61,7 +61,7 @@ $clickuri = $_GET['clickuri'];
 foreach($config['categories'] as $catid => $catname)
 {
 ?>
-			<img class="deselected" src="img/icon/<?= $catid ?>/blank.png" id="<?= $catid ?>" title="<?= $catname ?>" alt="<?= $catname ?>" onclick="toggle('<?= $catid ?>');" />
+			<img class="deselected" src="img/icon/<?= $catid ?>/nt.blank.png" id="<?= $catid ?>" title="<?= $catname ?>" alt="<?= $catname ?>" onclick="toggle('<?= $catid ?>');" />
 <?
 }
 ?>
