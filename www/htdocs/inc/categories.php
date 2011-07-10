@@ -1,8 +1,11 @@
 <?
+$iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
 $file = fopen('catlist.csv', 'r');
 while($row = fgetcsv($file))
 {
 	$iconcats[$row[0]] = $row[1];
+	$iconmap[$row[0]] = $iconpath.$row[2];
+	$iconcats[$iconpath.$row[2]] = $row[1];
 }
 fclose($file);
 

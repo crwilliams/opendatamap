@@ -4,7 +4,7 @@ $filename = 'cache/bi_'.$hash.'.png';
 if(!file_exists($filename))
 {
 	$rs = explode('/', $_GET['r']);
-	$oimg = imagecreatefrompng("../img/icon/Transport/bus.png");
+	$oimg = imagecreatefrompng("../img/icon/Transportation/bus.png");
 	$white = imagecolorallocate($oimg, 255, 255, 255);
 	$color['U1'] = imagecolorallocate($oimg,   0, 142, 207);
 	$color['U2'] = imagecolorallocate($oimg, 226,   2,  20);

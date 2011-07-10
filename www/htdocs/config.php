@@ -61,6 +61,9 @@ class DataSource{
 	{	
 		$icon = str_replace('http://google-maps-icons.googlecode.com/files/', self::$iconpath, $icon);
 		$icon = str_replace('http://data.southampton.ac.uk/map-icons/lattes.png', self::$iconpath.'Restaurants-and-Hotels/coffee.png', $icon);
+		global $iconmap;
+		if(!isnull($iconmap[$icon]))
+			return $iconmap[$icon];
 		return $icon;
 	}
 	

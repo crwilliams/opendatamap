@@ -252,7 +252,7 @@ SELECT ?id ?lat ?long ?label ?type WHERE {
 				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Transport/parking.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Transportation/parking.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
 				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Tourism/urbanpark.png";
