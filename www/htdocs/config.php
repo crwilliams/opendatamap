@@ -10,6 +10,15 @@ $config['default zoom'] = 17;
 $config['default map'] = "'Map2'";
 $config['datasource'] = 'sqldemo';
 $config['enabled'] = array('search', 'geobutton', 'toggleicons');
+$config['categories']['Transportation'] = 'Transport';
+$config['categories']['Restaurants-and-Hotels'] = 'Catering and Accommodation';
+$config['categories']['Offices'] = 'Services';
+$config['categories']['Culture-and-Entertainment'] = 'Culture and Entertainment';
+$config['categories']['Health'] = 'Health and Beauty';
+$config['categories']['Tourism'] = 'Tourism and Religion';
+$config['categories']['Stores'] = 'Retail';
+$config['categories']['Education'] = 'Education';
+$config['categories']['Sports'] = 'Sports';
 
 error_reporting(0);
 if(file_exists('config.local.php'))
@@ -57,6 +66,8 @@ class DataSource{
 	static function getAllBuildings(){}
 	static function processURI($uri){return false;}
 	
+	static $iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
+	
 	static function convertIcon($icon)
 	{	
 		global $iconmap;
@@ -67,8 +78,6 @@ class DataSource{
 		//$icon = str_replace('http://data.southampton.ac.uk/map-icons/lattes.png', self::$iconpath.'Restaurants-and-Hotels/coffee.png', $icon);
 		return $icon;
 	}
-	
-	static $iconpath = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/';
 }
 
 foreach($config['datasource'] as $ds)
