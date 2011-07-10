@@ -32,14 +32,29 @@ function searchyou()
 $handle = opendir('../img/icon/');
 
 while (false !== ($file = readdir($handle))) {
-	if(substr($file, -4, 4) != '.png')
-		continue;
-	$files[] = $file;
+		//echo $file.'<br/>';
+	if(is_dir('../img/icon/'.$file) && $file[0] >= 'A' && $file[0] <= 'Z')
+	{
+		$handle2 = opendir('../img/icon/'.$file.'/');
+		while (false !== ($file2 = readdir($handle2))) {
+			if(substr($file2, -4, 4) != '.png')
+				continue;
+			$files[] =  $file.'/'.$file2;
+		}
+		closedir($handle2);
+	}
 }
 sort($files);
+$head = '';
 foreach($files as $file)
 {
-	$filename = substr($file, 0, -4);
+	list($cat, $filename) = explode('/', $file);
+	$filename = substr($filename, 0, -4);
+	if($cat != $head)
+	{
+		echo '<h3>'.$cat.'</h3>';
+		$head = $cat;
+	}
 	echo "<img id='$filename' src='../img/icon/$file' alt='$filename icon' title='$filename' />";
 }
 ?>
