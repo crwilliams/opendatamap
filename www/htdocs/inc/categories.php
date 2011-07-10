@@ -1,4 +1,6 @@
 <?
+global $iconcats;
+global $iconmap;
 $iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
 $file = fopen('catlist.csv', 'r');
 while($row = fgetcsv($file))
