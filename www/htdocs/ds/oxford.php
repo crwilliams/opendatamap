@@ -136,25 +136,25 @@ class OxfordDataSource extends DataSource
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Building':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Room':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Site':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Hall':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#College':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/school.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/school.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/library-uni.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/parking.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Transportation/parking.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/park-urban.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Tourism/urbanpark.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Library':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#SubLibrary':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Museum':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/museum-historical.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Culture-and-Entertainment/temple-2.png";
 		}
 	}
 }

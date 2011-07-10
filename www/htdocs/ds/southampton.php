@@ -208,7 +208,7 @@ class SouthamptonDataSource extends DataSource
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
 			$points[] = $point;
 		}
 		return $points;
@@ -350,7 +350,7 @@ class SouthamptonDataSource extends DataSource
 	{
 		$data = self::getWorkstationRooms($q);
 		foreach($data as $point) {
-			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png';
+			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png';
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
@@ -480,7 +480,7 @@ class SouthamptonDataSource extends DataSource
 		{
 			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
-				$icon = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+				$icon = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
 				$computer = "true";
 			}
 			else

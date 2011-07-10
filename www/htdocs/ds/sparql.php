@@ -204,7 +204,7 @@ SELECT DISTINCT ?id ?lat ?long ?label WHERE {
 	$points = array();
 	foreach($tpoints as $point)
 	{
-		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
 		$points[] = $point;
 	}
 	return $points;
@@ -237,32 +237,32 @@ SELECT ?id ?lat ?long ?label ?type WHERE {
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Building':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Room':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Site':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Hall':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#College':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/school.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/school.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library-uni.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/parking.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Transport/parking.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/park-urban.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Tourism/urbanpark.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Library':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#SubLibrary':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 				break;
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Museum':
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/museum-historical.png";
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Tourism/temple-2.png";
 				break;
 		}
 		$points[] = $point;
@@ -306,7 +306,7 @@ function getAllLibraries()
 		$point['lat'] = (float)$lib->lat;
 		$point['long'] = (float)$lib->lng;
 		$point['label'] = (string)$lib->name;
-		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 		$points[] = $point;
 	}
 	return $points;
@@ -323,7 +323,7 @@ function getLibraries($q)
 		$point['poslabel'] = (string)$lib->name;
 		$point['pos'] = 'http://www.lib.cam.ac.uk/#'.(string)$lib->code;
 		$point['label'] = 'library';//(string)$lib->name;
-		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png";
 		$points[] = $point;
 	}
 	return $points;
@@ -351,7 +351,7 @@ SELECT ?pos ?poslabel WHERE {
 	{
 		if(!preg_match('/'.$q.'/i', $point['label']) && !preg_match('/'.$q.'/i', $point['poslabel']))
 			continue;
-		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
 		$point['label'] = 'point';
 		$points[] = $point;
 	}
@@ -508,7 +508,7 @@ function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $ca
 {
 	$data = getWorkstationRooms($q);
 	foreach($data as $point) {
-		$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png';
+		$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png';
 		if(!visibleCategory($point['icon'], $cats))
 			continue;
 		$pos[$point['pos']] ++;
@@ -532,7 +532,7 @@ function createLibraryEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 {
 	$data = getLibraries($q);
 	foreach($data as $point) {
-		$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/library.png';
+		$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/Education/library.png';
 		if(!visibleCategory($point['icon'], $cats))
 			continue;
 		$pos[$point['pos']] ++;

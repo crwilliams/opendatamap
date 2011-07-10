@@ -75,8 +75,6 @@ SELECT DISTINCT ?uri ?label WHERE {
 		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
 	}
 
-/*
-*/
 	static function getAllPointsOfService()
 	{
 		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
@@ -444,7 +442,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	{
 		$data = self::getWorkstationRooms($q);
 		foreach($data as $point) {
-			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png';
+			$point['icon'] = 'http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png';
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
@@ -575,7 +573,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		{
 			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
-				$icon = "http://opendatamap.ecs.soton.ac.uk/img/icon/computer.png";
+				$icon = "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/computer.png";
 				$computer = "true";
 			}
 			else
