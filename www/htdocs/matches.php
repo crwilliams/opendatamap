@@ -14,7 +14,7 @@ function getEnabledCategories()
 {
 	if($_GET['ec'] == "")
 	{
-		return array('Transport','Catering','Services','Entertainment', 'Health', 'Religion', 'Retail', 'Education', 'General');
+		return array('Transportation','Restaurants-and-Hotels','Offices','Culture-and-Entertainment', 'Health', 'Tourism', 'Stores', 'Education', 'Sports');
 	}
 	else
 	{
