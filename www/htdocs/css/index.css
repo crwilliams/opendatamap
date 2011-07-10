@@ -312,6 +312,7 @@ h3 {
 
 .toggleicons img {
 	display:block;
+	margin:5px;
 }
 
 @media only screen and (min-device-width: 641px) {
