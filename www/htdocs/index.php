@@ -58,16 +58,7 @@ $clickuri = $_GET['clickuri'];
 		<img id="geobutton" <?php show('geobutton') ?> src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons" <?php show('toggleicons') ?>>
 <?
-$cats['Transportation'] = 'Transport';
-$cats['Restaurants-and-Hotels'] = 'Catering and Accommodation';
-$cats['Offices'] = 'Services';
-$cats['Culture-and-Entertainment'] = 'Culture and Entertainment';
-$cats['Health'] = 'Health and Beauty';
-$cats['Tourism'] = 'Tourism and Religion';
-$cats['Stores'] = 'Retail';
-$cats['Education'] = 'Education';
-$cats['Sports'] = 'Sports';
-foreach($cats as $catid => $catname)
+foreach($config['categories'] as $catid => $catname)
 {
 ?>
 			<img class="deselected" src="img/icon/<?= $catid ?>/blank.png" id="<?= $catid ?>" title="<?= $catname ?>" alt="<?= $catname ?>" onclick="toggle('<?= $catid ?>');" />
