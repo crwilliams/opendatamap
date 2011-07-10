@@ -440,7 +440,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	{
 		$data = self::getWorkstationRooms($q);
 		foreach($data as $point) {
-			$point['icon'] = self::$iconpath.'Education/computer.png';
+			$point['icon'] = self::$iconpath.'Education/computers.png';
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
 			$pos[$point['pos']] ++;
@@ -571,7 +571,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		{
 			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
-				$icon = self::$iconpath.'Education/computer.png';
+				$icon = self::$iconpath.'Education/computers.png';
 				$computer = "true";
 			}
 			else
