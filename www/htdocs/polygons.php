@@ -20,6 +20,14 @@ foreach($config['datasource'] as $ds)
 			echo '],';
 		}
 		echo '[]]';
+		if(isset($site['color']))
+		{
+			echo ',"'.$site['color'].'"';
+		}
+		else
+		{
+			echo ',""';
+		}
 		echo '],';
 	}
 }
