@@ -156,31 +156,10 @@ SELECT ?pos ?lat ?long ?label ?type WHERE {
 	{
 		switch($point['type'])
 		{
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Building':
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Room':
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Site':
 			case 'http://education.data.gov.uk/def/school/TypeOfEstablishment_TERM_Higher_Education_Institutions':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/university.png";
 			case 'http://education.data.gov.uk/def/school/TypeOfEstablishment_TERM_Further_Education':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/school.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Hall':
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#College':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/university.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/school.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/library-uni.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Carpark':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/parking.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#OpenSpace':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/park-urban.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Library':
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#SubLibrary':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/library.png";
-			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Museum':
-				return "http://opendatamap.ecs.soton.ac.uk/img/icon/museum-historical.png";
+				return "http://opendatamap.ecs.soton.ac.uk/img/icon/Education/school.png";
 		}
 		return null;
 	}
