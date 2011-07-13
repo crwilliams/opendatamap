@@ -1,0 +1,2 @@
+rm ../iconset/opendatamap-iconset.local.zip
+zip ../iconset/opendatamap-iconset.local.zip icon/*/*.png icon/README
