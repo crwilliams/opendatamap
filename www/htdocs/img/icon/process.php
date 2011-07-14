@@ -13,21 +13,51 @@ $cat['c259b5'] = 'Culture-and-Entertainment';
 $cat['f34648'] = 'Health'; //Health-and-Education
 $cat['ff8a22'] = 'Sports';
 $cat['ffc11f'] = 'Education'; //Friends-and-Family
+$col['Nature'] = '128e4d';
+$col['Industry'] = '265cb2';
+$col['Offices'] = '3875d7';
+$col['Stores'] = '5ec8bd';
+$col['Tourism'] = '66c547';
+$col['Restaurants-and-Hotels'] = '8c4eb8';
+$col['Transportation'] = '9d7050';
+$col['Media'] = 'a8a8a8';
+$col['Events'] = 'c03638';
+$col['Culture-and-Entertainment'] = 'c259b5';
+$col['Health'] = 'f34648';
+$col['Sports'] = 'ff8a22';
+$col['Education'] = 'ffc11f';
+/*
+$col['Nature'] = 'a3a86b';
+$col['Industry'] = '51626f';
+$col['Offices'] = '005c84';
+$col['Stores'] = '0098c3';
+$col['Tourism'] = 'abc785';
+$col['Restaurants-and-Hotels'] = '6a4061';
+$col['Transportation'] = '9b6e51';
+$col['Media'] = '91baa3';
+$col['Events'] = '983222';
+$col['Culture-and-Entertainment'] = 'd490a8';
+$col['Health'] = 'c60c30';
+$col['Sports'] = 'dd4814';
+$col['Education'] = 'f0ab00';
+*/
 
 //while (false !== ($file = readdir($handle))) {
 //}
+error_reporting(0);
 processFile($argv[1], $argv[2]);
 
-function processFile($color, $file)
+function processFile($category, $file)
 {
-	echo "Processing $file in color $color.\n";
+	echo "Processing $file in category $category.\n";
 	global $cat;
+	global $col;
 	global $argv;
 	
 	if($argv[3] == 'nt')
 		$notail = true;
 	
-	$category = $cat[$color];
+	$color = $col[$category];
 	@mkdir($category.'/');
 	
 	$basecolorarr['r'] = hexdec(substr($color, 0, 2));
@@ -89,9 +119,9 @@ function processFile($color, $file)
 		*/
 		
 		arsort($colors);
-		print_r($colors);
+		//print_r($colors);
 		$color = array_shift(array_keys($colors));
-		echo $color;
+		//echo $color;
 	}
 	$color=1;
 	
@@ -208,7 +238,7 @@ function processFile($color, $file)
 	else
 		imagepng($gs_im, $category.'/blank.png');
 	
-	print_r($sat);
+	//print_r($sat);
 	for($y = 0; $y < 24; $y++)
 	{
 		for($x = 0; $x < 24; $x++)
