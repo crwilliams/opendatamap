@@ -66,7 +66,7 @@ class DataSource{
 	static function getAllBuildings(){}
 	static function processURI($uri){return false;}
 	
-	static $iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
+	static $iconpath = 'http://data.southampton.ac.uk/map-icons/';
 	
 	static function convertIcon($icon)
 	{	
