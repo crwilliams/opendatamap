@@ -1,7 +1,7 @@
 <?
 global $iconcats;
 global $iconmap;
-$iconpath = 'http://opendatamap.ecs.soton.ac.uk/img/icon/';
+$iconpath = 'http://data.southampton.ac.uk/map-icons/';
 $file = fopen('catlist.csv', 'r');
 while($row = fgetcsv($file))
 {
