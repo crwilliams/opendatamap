@@ -9,6 +9,7 @@ var polygons = new Object();
 var polygoninfowindows = new Object();
 var clusterMarkers = new Object();
 var clusterInfowindows = new Object();
+var hashfields = new Object();
 
 var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
 var CLEAR_SEARCH_ICON = "img/nt-left.png";
@@ -134,7 +135,7 @@ var chooseSubject = function(name) {
 }
 
 var changeSubject = function() {
-	$('#inputbox').val(location.hash.replace(/^#/, '/'));
+	$('#inputbox').val('/'+getHash('day'));
 	$('#selectedsubject').removeClass('clickable');
 	$('#selectedsubject').attr('title', null);
 	$('#selectedsubject').css('background-color', 'inherit');
@@ -142,6 +143,7 @@ var changeSubject = function() {
 	$('#selectedsubject').click(null);
 	refreshSubjectChoice();
 	updateFunc();
+	updateHash('subject', '');
 }
 
 var updateFunc = function(force) {
@@ -382,6 +384,11 @@ var show = function(id) {
 	selectIndex = -1;
 	clearTimeout(t);
 	$('#'+id).get(0).style.display = "block";
+	if(id == 'list')
+	{
+		$('#toggleicons').get(0).style.zIndex = 5;
+	}
+	//$('#'+id).get(0).style.zIndex = 2000;
 }
 
 var hide = function(id) {
@@ -483,13 +490,17 @@ var initmarkers = function(cont) {
 			}
 			else
 			{
-				var fc = '#0000FF';
-				var sc = '#0000FF';
+				var fc = '#BF9375';
+				var sc = '#BF9375';
+				var fc = '#694B28';
+				var sc = '#694B28';
 				var pType = 'Building';
 				if(zindex == -10)
 				{
-					fc = '#0099FF';
-					sc = '#0099FF';
+					fc = '#B9DDAD';
+					sc = '#B9DDAD';
+					fc = '#2B7413';
+					sc = '#2B7413';
 					var pType = 'Site';
 				}
 				
@@ -546,6 +557,25 @@ var initmarkers = function(cont) {
 		});
 	},'json');
 };
+
+var updateHash = function(key, value) {
+	if(key != undefined && value != undefined)
+		hashfields[key] = value;
+	var hashstring = '';
+	for(var i in hashfields)
+	{
+		if(hashfields[i] != '' && hashfields[i] != undefined)
+			hashstring += '|'+i+'='+hashfields[i];
+	}
+	location.hash = '#'+hashstring.substring(1);
+}
+
+var getHash = function(key) {
+	if(hashfields[key] == undefined)
+		return '';
+	else
+		return hashfields[key];
+}
 
 var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap) {
 	version = v;
@@ -607,19 +637,29 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 	});
 
 	var hcf = function() {
+		var hashstring = location.hash.replace( /^#/, '' );
+		var hashstringparts = hashstring.split('|');
+		hashfields = new Object();
+		for(var i in hashstringparts)
+		{
+			var hashfield = hashstringparts[i].split('=');
+			hashfields[hashfield[0]] = hashfield[1];
+		}
+
 		if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
 			return;
-		var hashstring = location.hash.replace( /^#/, '' );
 		$('._2011-07-08').hide();
 		$('._2011-07-09').hide();
 		$('#link_2011-07-08').removeClass('selected');
 		$('#link_2011-07-09').removeClass('selected');
 		document.title = document.title.replace( / \| .*/, '' );
+
+		var d = getHash('day');
 		var fulldate;
-		var d = hashstring.replace(/\/.*/, '');
 		if(d == '') {
 			d = 'friday';
-			location.hash = 'friday';
+			hashfields['day'] = d;
+			updateHash();
 		}
 		if(d == 'friday') {
 			selecteddate = '2011-07-08';
@@ -631,6 +671,7 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		}
 		else
 			return;
+
 		document.title += ' | '+fulldate;
 		$('._'+selecteddate).show();
 		$('#link_'+selecteddate).addClass('selected');
@@ -644,22 +685,22 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 
 var toggle = function(category) {
 	var cEl = $('#'+category).get(0);
-	if(cEl.className == "") {
-		cEl.className = "deselected";
+	if(cEl.checked) {
+		cEl.checked = false;
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 0]);
 	} else {
-		cEl.className = "";
+		cEl.checked = true;
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
 	}
 	updateFunc(true);
 }
 
 var getSelectedCategories = function() {
-	var icons = $('#toggleicons').get(0).childNodes;
+	var boxes = $('.togglebox');
 	var selected = "";
-	for(var i in icons) {
-		if(icons[i] !== null && icons[i].className == "")
-			selected += icons[i].id + ",";
+	for(var i in boxes) {
+		if(boxes[i] !== null && boxes[i].checked)
+			selected += boxes[i].id + ",";
 	}
 	return selected;
 }

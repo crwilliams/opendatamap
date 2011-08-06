@@ -1,4 +1,5 @@
 <?
+/*
 switch($versionparts[1])
 {
 	case 'friday':
@@ -19,10 +20,11 @@ while($data = fgetcsv($file))
 	}
 }
 fclose($file);
+*/
 
-$config['Site title'] = "University of Southampton Open Day Map$date";
-if($course)
-	$config['Site title'] .= " | $course";
+$config['Site title'] = "University of Southampton Open Day Map";
+//if($course)
+//	$config['Site title'] .= " | $course";
 $config['Site keywords'] = "University of Southampton,open day,map,Southampton,amenity,bus stop,building,site,campus,interactive";
 $config['Site description'] = "Interactive Open Day Map of the University of Southampton";
 $config['default lat'] = 50.9355;
@@ -38,7 +40,7 @@ if($versionparts[1] == 'iframe')
 }
 else
 {
-	$config['enabled'] = array('openday', 'bookmarks');
+	$config['enabled'] = array('openday', 'bookmarks', 'search');
 	$config['map style'] = 'left:300px;';
 }
 ?>
