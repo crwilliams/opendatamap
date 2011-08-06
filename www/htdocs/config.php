@@ -70,12 +70,6 @@ class DataSource{
 	
 	static function convertIcon($icon)
 	{	
-		global $iconmap;
-		if($iconmap == null) include_once "inc/categories.php";
-		if(!is_null($iconmap[$icon]))
-			return $iconmap[$icon];
-		//$icon = str_replace('http://google-maps-icons.googlecode.com/files/', self::$iconpath, $icon);
-		//$icon = str_replace('http://data.southampton.ac.uk/map-icons/lattes.png', self::$iconpath.'Restaurants-and-Hotels/coffee.png', $icon);
 		return $icon;
 	}
 }
