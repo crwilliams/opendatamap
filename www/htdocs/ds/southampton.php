@@ -85,8 +85,7 @@ class SouthamptonDataSource extends DataSource
 		{
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
-			$point['icon'] = self::convertIcon($point['icon']);
-			if($point['icon'] == "")
+			if(!isset($point['icon']) || $point['icon'] == "")
 				$point['icon'] = "img/blackness.png";
 			$points[] = $point;
 		}
@@ -219,7 +218,7 @@ class SouthamptonDataSource extends DataSource
 			$filter = '';
 		else
 			$filter = "&& ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
-		return sparql_get(self::$endpoint, "
+		$tpoints =  sparql_get(self::$endpoint, "
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -234,6 +233,13 @@ class SouthamptonDataSource extends DataSource
 	  FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') $filter)
 	} ORDER BY ?poslabel
 		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['icon'] = self::$iconpath.'Education/computers.png';
+			$points[] = $point;
+		}
+		return $points;
 	}
 
 	static function getBuildings($q, $qbd)
@@ -303,7 +309,6 @@ class SouthamptonDataSource extends DataSource
 		foreach($data as $point) {
 			if(!self::visibleCategory($point['icon'], $cats))
 				continue;
-			$point['icon'] = self::convertIcon($point['icon']);
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
 			{
@@ -488,7 +493,6 @@ class SouthamptonDataSource extends DataSource
 		}
 		else
 			$icon = $allpos[0]['icon'];
-		$icon = self::convertIcon($icon);
 
 		$page = sparql_get(self::$endpoint, "
 		PREFIX foaf: <http://xmlns.com/foaf/0.1/>
