@@ -20,6 +20,7 @@ $filename = 'cache/ci_'.$hash.'.png';
 if(!file_exists($filename))
 {
 	$imgs = $_GET['i'];
+	$imgs = array_values(array_unique($imgs));
 	/*
 	if(array_key_exists('base', $_GET))
 		$rimg = simagecreatefrompng($_GET['base']);
@@ -28,7 +29,7 @@ if(!file_exists($filename))
 	*/
 	$offsetx = 3;
 	$offsety = 3;
-	$count = min(5, count($imgs));
+	$count = min(10, count($imgs));
 	$oimg = imagecreatetruecolor(32 + $offsetx*count($imgs), 37-$offsety + $offsety*$count);
 	imagealphablending($oimg,false);
 	imagefilledrectangle($oimg, 0, 0, imagesx($oimg), imagesy($oimg), imagecolorallocatealpha($oimg, 255, 255, 255, 127));
