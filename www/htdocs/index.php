@@ -61,13 +61,13 @@ $clickuri = $_GET['clickuri'];
 foreach($config['categories'] as $catid => $catname)
 {
 ?>
-			<img class="deselected" src="img/icon/<?= $catid ?>/nt.blank.png" id="<?= $catid ?>" title="<?= $catname ?>" alt="<?= $catname ?>" onclick="toggle('<?= $catid ?>');" />
+	<div style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png); background-size:100% 100%; padding:5px; text-align:right; margin:5px; width:230px; height:18px; position:relative;' onclick="toggle('<?= $catid ?>')"><label style='margin-right:7px;' for='<?= $catname ?>'><?= str_replace(' and ', ' <span style=\'font-weight:0.5em\'>&amp;</span> ', $catname) ?></label><input class='togglebox' type='checkbox' id='<?= $catid ?>' name='<?= $catname ?>' id='<?= $catname ?>' onclick="toggle('<?= $catid ?>');" /></div>
 <?
 }
 ?>
 		</div>
 		<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
-			<input id="inputbox" style='width:200px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
+			<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
 				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="document.getElementById('inputbox').value=''; updateFunc();" alt="Clear search" title="Clear search" />
 			</input>
 			<ul style='display:none' id="list"></ul>
