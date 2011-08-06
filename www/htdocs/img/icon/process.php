@@ -56,6 +56,11 @@ function processFile($category, $file)
 	
 	if($argv[3] == 'nt')
 		$notail = true;
+	if($argv[3] == 'ntw')
+	{
+		$notail = true;
+		$wide = true;
+	}
 	
 	$color = $col[$category];
 	@mkdir($category.'/');
@@ -153,12 +158,18 @@ function processFile($category, $file)
 		}
 	}
 	
+	$w = 32;
 	if($notail)
 		$h = 32;
 	else
 		$h = 37;
+	if($wide)
+	{
+		$w = 240;
+		$h = 28;
+	}
 	
-	$gs_im = imagecreatetruecolor(32, $h);
+	$gs_im = imagecreatetruecolor($w, $h);
 	/*
 	if($basecolor == 'default')
 	{
@@ -185,17 +196,17 @@ function processFile($category, $file)
 	*/
 	
 	imagealphablending($gs_im,false);
-	imagefilledrectangle($gs_im, 0, 0, 32, $h, imagecolorallocatealpha($gs_im, 255, 255, 255, 127));
+	imagefilledrectangle($gs_im, 0, 0, $w, $h, imagecolorallocatealpha($gs_im, 255, 255, 255, 127));
 	imagealphablending($gs_im, true);
 	
 	$markershape = array(
 		1,0,
-		30,0,
-		31,1,
-		31,30,
-		30,31,
-		1,31,
-		0,30,
+		$w-2,0,
+		$w-1,1,
+		$w-1,$h-2,
+		$w-2,$h-1,
+		1,$h-1,
+		0,$h-2,
 		0,1,
 	);
 	$markershape2 = array(
@@ -208,31 +219,49 @@ function processFile($category, $file)
 	if(!$notail)
 		imagefilledpolygon($gs_im, $markershape2, count($markershape2)/2, $basecolorobj);
 	
-	for($i = 1; $i <= 30; $i++)
-		imageline($gs_im, 1, $i, 30, $i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - $i));
+	if($notail)
+	{
+		$stoph = $h-2;
+		$stopw = $w-2;
+	}
+	else
+	{
+		$stoph = 30;
+		$stopw = 30;
+	}
+	for($i = 1; $i <= $stoph; $i++)
+		imageline($gs_im, 1, $i, $stopw, $i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - $i));
 	if(!$notail)
 		for($i = 0; $i < 5; $i++)
 			imageline($gs_im, 11+$i, 31+$i, 20-$i, 31+$i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - (31+$i)));
 	
 	$border = imagecolorallocatealpha($gs_im, 0, 0, 0, 64);
-	imageline($gs_im, 1, 0, 30, 0, $border);
-	imageline($gs_im, 0, 1, 0, 30, $border);
-	imageline($gs_im, 31, 1, 31, 30, $border);
 	
 	if(!$notail)
 	{
+		imageline($gs_im, 1, 0, 30, 0, $border);
+		imageline($gs_im, 0, 1, 0, 30, $border);
+		imageline($gs_im, 31, 1, 31, 30, $border);
 		imageline($gs_im, 1, 31, 10, 31, $border);
 		imageline($gs_im, 21, 31, 30, 31, $border);
 		imageline($gs_im, 11, 32, 15, 36, $border);
 		imageline($gs_im, 20, 32, 16, 36, $border);
 	}
 	else
-		imageline($gs_im, 1, 31, 30, 31, $border);
+	{
+		imageline($gs_im, 1, 0, $w-2, 0, $border);
+		imageline($gs_im, 0, 1, 0, $h-2, $border);
+		imageline($gs_im, $w-1, 1, $w-1, $h-2, $border);
+		imageline($gs_im, 1, $h-1, $w-2, $h-1, $border);
+	}
 	
 	imagesavealpha($gs_im, true);
 	if($notail)
 	{
-		imagepng($gs_im, $category.'/nt.blank.png');
+		if($wide)
+			imagepng($gs_im, $category.'/ntw.blank.png');
+		else
+			imagepng($gs_im, $category.'/nt.blank.png');
 		exit;
 	}
 	else
