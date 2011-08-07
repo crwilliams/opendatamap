@@ -214,8 +214,13 @@ form ul {
 	margin-bottom:5px;
 }
 #list {
-	padding:0px;
-	margin:0px;
+	position:absolute;
+	margin-left:-3px;
+	margin-top:2px;
+	padding:5px;
+	background-color:rgba(255,255,255,0.8);
+	border-radius:3px;
+	border:solid 1px black;
 	list-style: none;
 	overflow-y:auto;
 	overflow-x:hidden;
