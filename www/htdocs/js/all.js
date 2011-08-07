@@ -457,8 +457,6 @@ var initmarkers = function(cont) {
 		cont();
 	},'json');
 	$.get('polygons.php?v='+version, function(data,textstatus,xhr) {
-		// do party!!!!
-		// clear em out, babes. 
 		window.polygons = {};
 		window.polygoninfowindows = {};
 		var buildingIcon = new google.maps.MarkerImage('img/building.png',
@@ -466,7 +464,6 @@ var initmarkers = function(cont) {
 			new google.maps.Point(0, 0),
 			new google.maps.Point(10, 10)
 		);
-		// refill ...
 		data.map(function(markpt) {
 			if (markpt.length == 0) return;
 			var pos = markpt[0];
@@ -482,7 +479,7 @@ var initmarkers = function(cont) {
 				if(polygons[pos] === undefined) polygons[pos] = new Array();
 				polygons[pos] = new google.maps.Marker({
 					position: new google.maps.LatLng(points[i][1], points[i][0]),
-					title: new String(poslabel).replace("'", "&apos;"),
+					//title: new String(poslabel).replace("'", "&apos;"),
 					icon: buildingIcon,
 					map: window.map,
 					visible: true
