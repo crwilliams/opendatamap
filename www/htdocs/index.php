@@ -43,7 +43,7 @@ $clickuri = $_GET['clickuri'];
 	</head>
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
-		<div id="spinner"><img src="img/ajax-loader.gif"></div>
+		<div id="spinner"><img src="img/ajax-loader.gif"><br/><br/>Please wait while the map loads...</div>
 <?php if(has('openday')) { ?>
 		<div id="openday">
 			<?php include 'resources/opendaysubjects.php' ?>
