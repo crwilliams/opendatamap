@@ -585,7 +585,7 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		mapTypeControlOptions: {
 			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
 		        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-		        position: google.maps.ControlPosition.RIGHT_TOP
+		        position: google.maps.ControlPosition.TOP_LEFT
 		},
 		
 		mapTypeId: defaultMap
