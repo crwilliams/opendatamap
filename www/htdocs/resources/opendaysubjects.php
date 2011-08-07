@@ -1,4 +1,4 @@
-<div id='day'><a title='Show Friday&apos;s events (8th July 2011)' id='link_2011-07-08' href="#friday">Friday</a><a title='Show Saturday&apos;s events (9th July 2011)' id='link_2011-07-09' href="#saturday">Saturday</a></div>
+<div id='day'><a title='Show Friday&apos;s events (8th July 2011)' id='link_2011-07-08' onclick="updateHash('day', 'friday')">Friday</a><a title='Show Saturday&apos;s events (9th July 2011)' id='link_2011-07-09' onclick="updateHash('day', 'saturday');">Saturday</a></div>
 <div id='selectedsubject'>Choose a subject:</div>
 <div id='subjects'>
 <ul style='overflow:scroll; position:absolute; top:100px; bottom:0px; width:300px;'>
@@ -56,7 +56,7 @@ function sortdate($a, $b)
 	{
 		$short = str_replace('http://id.southampton.ac.uk/opendays/2011/07/subject/', '', $uri);
 		if($subjbroader[$uri] == 'Subject')
-			echo "<li class='".$subjbroader[$uri]." subj_".$short."'><h2 id='subj_".$short."' class='clickable' onclick='setInputBox(\"".$short."\"+(location.hash.replace(/^#/, \"/\"))); chooseSubject(\"".$name."\"); updateFunc();' title='Select ".htmlspecialchars($name, ENT_QUOTES)."'>".$name."</h2>";
+			echo "<li class='".$subjbroader[$uri]." subj_".$short."'><h2 id='subj_".$short."' class='clickable' onclick='chooseSubject(\"".$name."\"); updateHash(\"subject\", \"".$short."\")' title='Select ".htmlspecialchars($name, ENT_QUOTES)."'>".$name."</h2>";
 		else
 			echo "<li style='display:none' class='".str_replace(' ', '', $subjbroader[$uri])."'><h2>".$name."</h2>";
 		foreach(array('2011-07-08', '2011-07-09') as $date)

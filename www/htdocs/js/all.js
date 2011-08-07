@@ -103,7 +103,8 @@ var initmarkerevents = function() {
 }
 
 var refreshSubjectChoice = function() {
-	var str = $('#inputbox').val().replace(/\/.*/, '');
+	//var str = $('#inputbox').val().replace(/\/.*/, '');
+	var str = getHash('subject');
 	if(str == '')
 	{
 		$('.General').hide();
@@ -562,7 +563,10 @@ var updateHash = function(key, value) {
 	for(var i in hashfields)
 	{
 		if(hashfields[i] != '' && hashfields[i] != undefined)
-			hashstring += '|'+i+'='+hashfields[i];
+		{
+			hashstring += ','+i+'='+hashfields[i];
+			//hashvals += '/'+hashfields[i];
+		}
 	}
 	location.hash = '#'+hashstring.substring(1);
 }
@@ -612,8 +616,10 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		initbookmarks();
 		initcredits();
 		initsearch();
-//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
-//georssLayer.setMap(map);
+		//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
+		//georssLayer.setMap(map);
+		//var pathLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/paths.2.kml');
+		//pathLayer.setMap(map);
 		
 		$('#inputbox').keydown(keypress);
 		$('#inputbox').keyup(updateFunc);
@@ -635,7 +641,7 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 
 	var hcf = function() {
 		var hashstring = location.hash.replace( /^#/, '' );
-		var hashstringparts = hashstring.split('|');
+		var hashstringparts = hashstring.split(',');
 		hashfields = new Object();
 		for(var i in hashstringparts)
 		{
@@ -672,6 +678,17 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		document.title += ' | '+fulldate;
 		$('._'+selecteddate).show();
 		$('#link_'+selecteddate).addClass('selected');
+
+		var s = getHash('subject');
+		chooseSubject($('#subj_'+s).get(0).innerHTML);
+	
+		var hashvals = '';
+		if(hashfields['subject'] != undefined)
+			hashvals += '/'+hashfields['subject'];
+		if(hashfields['day'] != undefined)
+			hashvals += '/'+hashfields['day'];
+		$('#inputbox').val(hashvals.substring(1));
+		updateFunc();
 	};
 
 	$(window).bind('hashchange', hcf);
