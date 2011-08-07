@@ -44,8 +44,8 @@ SELECT ?id ?lat ?long ?label ?type WHERE {
 		$icon = array();
 		$data = self::getMatches($q);
 		foreach($data as $point) {
-			if(!self::visibleCategory($point['icon'], $cats))
-				continue;
+			//if(!self::visibleCategory($point['icon'], $cats))
+			//	continue;
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
 			{
