@@ -61,10 +61,12 @@ $clickuri = $_GET['clickuri'];
 foreach($config['categories'] as $catid => $catname)
 {
 ?>
-	<div style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png); background-size:100% 100%; padding:5px; text-align:right; margin:5px; width:230px; height:18px; position:relative;' onclick="toggle('<?= $catid ?>')"><label style='margin-right:7px;' for='<?= $catname ?>'><?= str_replace(' and ', ' <span style=\'font-weight:0.5em\'>&amp;</span> ', $catname) ?></label><input class='togglebox' type='checkbox' id='<?= $catid ?>' name='<?= $catname ?>' id='<?= $catname ?>' onclick="toggle('<?= $catid ?>');" /></div>
+	<div title='<?= $catname ?>' class='togglebutton' style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')"><label for='<?= $catname ?>'><?= str_replace(' and ', ' <span style=\'font-weight:0.5em\'>&amp;</span> ', $catname) ?></label><input class='togglebox' style='cursor:pointer' type='checkbox' id='<?= $catid ?>' name='<?= $catname ?>' id='<?= $catname ?>' onclick="toggle('<?= $catid ?>');" /></div>
 <?
 }
 ?>
+		<img src='img/left.png' id='iconexpand' onclick='$("#toggleicons").removeClass("offset")' title='Expand' />
+		<img src='img/right.png' id='iconcollapse' onclick='$("#toggleicons").addClass("offset")' title='Collapse' />
 		</div>
 		<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
 			<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="show('list');" onBlur="delayHide('list', 1000);">
