@@ -354,7 +354,7 @@ var cluster = function() {
 	for(var i in clusterInfowindows) {
 		with({i: i})
 		{
-			clusterInfowindows[i].setContent('<div id="content">'+clusterInfowindows[i].getContent()+'</div>');
+			clusterInfowindows[i].setContent('<div id="content">'+clusterInfowindows[i].getContent()+'<div style="font-size:0.8em; padding-top:15px; font-style:italic">click icon for more information</div></div>');
 		}
 	}
 	for(var i in clusterMarkers) {
@@ -618,7 +618,7 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 		initsearch();
 		//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
 		//georssLayer.setMap(map);
-		//var pathLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/paths.2.kml');
+		//var pathLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/paths.kml');
 		//pathLayer.setMap(map);
 		
 		$('#inputbox').keydown(keypress);
