@@ -20,10 +20,10 @@ $config['categories']['Stores'] = 'Retail';
 $config['categories']['Education'] = 'Education';
 $config['categories']['Sports'] = 'Sports';
 
+error_reporting(0);
 $version = $_GET['v'];
 $versionparts = explode('_', $version);
 
-error_reporting(0);
 if(file_exists('config.local.php'))
 {
 	include 'config.local.php';
