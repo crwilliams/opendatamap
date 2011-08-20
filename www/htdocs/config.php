@@ -20,6 +20,9 @@ $config['categories']['Stores'] = 'Retail';
 $config['categories']['Education'] = 'Education';
 $config['categories']['Sports'] = 'Sports';
 
+$version = $_GET['v'];
+$versionparts = explode('_', $version);
+
 error_reporting(0);
 if(file_exists('config.local.php'))
 {
@@ -29,8 +32,6 @@ if(file_exists('config.local.php'))
 $path = '.';
 if(preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['v']))
 {
-	$version = $_GET['v'];
-	$versionparts = explode('_', $version);
 	$version = $versionparts[0];
 	$path = $version;
 	if(file_exists('config.'.$version.'.php'))

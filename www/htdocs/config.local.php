@@ -6,4 +6,10 @@ $config['default lat'] = 50.9355;
 $config['default long'] = -1.39595;
 $config['default zoom'] = 17;
 $config['datasource'] = array('southamptoncached', 'postcode', /*'oxford', 'cambridge'*/);
+
+if($versionparts[1] == 'embed')
+{
+	$config['Site title'] = "embed";
+	$config['enabled'] = array();
+}
 ?>
