@@ -85,7 +85,7 @@ else
 	echo "</p>";
 ?>
 <h3>Icons</h3>
-	<p>The opendatamap <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>iconset</a> is available under the <a href='http://creativecommons.org/licenses/by-sa/3.0/' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap iconset</em>, with a link provided to <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>http://opendatamap.ecs.soton.ac.uk/iconset</a>.  Is is based on the <a href='http://code.google.com/p/google-maps-icons/'>Map Icons Collection</a> which is also available under the same licence.
+	<p>The opendatamap <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>iconset</a> is available under the <a href='http://creativecommons.org/licenses/by-sa/3.0/' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap iconset</em>, with a link provided to <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>http://opendatamap.ecs.soton.ac.uk/iconset</a>.  Is is based on the <a href='http://mapicons.nicolasmollet.com'>Map Icons Collection</a> which is also available under the same licence.
 	</p>
 <h3>Libraries</h3>
 <?
