@@ -61,9 +61,9 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?uri ?label WHERE {
-  GRAPH <http://id.southampton.ac.uk/dataset/opendays-july-2011/latest> {
+  GRAPH <http://id.southampton.ac.uk/dataset/opendays-september-2011/latest> {
     ?uri a skos:Concept .
-    ?uri skos:broader <http://id.southampton.ac.uk/opendays/2011/07/subject/Subject> .
+    ?uri skos:broader <http://id.southampton.ac.uk/opendays/2011/09/subject/Subject> .
     ?uri rdfs:label ?label .
   }
 } ORDER BY ?label
@@ -77,7 +77,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getAllPointsOfService()
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/09';
 		$points = array();
 		$tpoints = sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?id ?lat ?long ?label ?number WHERE {
@@ -117,7 +117,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 	             ?id geo:long ?long .
 	           }
 	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
-	  FILTER ( BOUND(?long) && BOUND(?lat) && !BOUND(?s) && ?icon != <http://google-maps-icons.googlecode.com/files/gazstation.png> && (?icon != <http://google-maps-icons.googlecode.com/files/parking.png> || ?id = <http://id.southampton.ac.uk/point-of-service/parking-7326>) )
+	  FILTER ( BOUND(?long) && BOUND(?lat) && !BOUND(?s) && ?icon != <http://data.southampton.ac.uk/map-icons/Transportation/fillingstation.png> && (?icon != <http://data.southampton.ac.uk/map-icons/Transportation/parking.png> || ?id = <http://id.southampton.ac.uk/point-of-service/parking-7326>) )
 	} ORDER BY ?label
 		");
 		foreach($tpoints as $point)
@@ -152,7 +152,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 	  } .
 	  ?s a org:Site .
 	  {
-	    ?id <http://purl.org/openorg/mapIcon> <http://google-maps-icons.googlecode.com/files/convenience.png>
+	    ?id <http://purl.org/openorg/mapIcon> <http://data.southampton.ac.uk/map-icons/Stores/convenience.png>
 	  } UNION {
 	    ?id <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Catering>
 	  } .
@@ -176,7 +176,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getPointsOfService($q)
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/09';
 		$q = explode('/', $q);
 		$subject = $q[0];
 		if(count($q) > 0)
@@ -184,10 +184,10 @@ SELECT DISTINCT ?uri ?label WHERE {
 			switch($q[1])
 			{
 				case 'friday':
-					$date = '2011-07-08';
+					$date = '2011-09-02';
 					break;
 				case 'saturday':
-					$date = '2011-07-09';
+					$date = '2011-09-03';
 					break;
 				default:
 					$date = null;;
@@ -214,7 +214,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 			");
 			foreach($tpoints as $point)
 			{
-				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/InformationStand' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/07/subject/General' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/07\/event\/'.$subject.'-/', $point['s'])))
+				if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/09/subject/InformationStand' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/09/subject/General' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/09\/event\/'.$subject.'-/', $point['s'])))
 					$points[] = $point;
 			}
 		}
@@ -232,7 +232,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 		     ?s a org:Site .
 		   }
 	  OPTIONAL { ?pos <http://purl.org/openorg/mapIcon> ?icon . }
-	  FILTER ( !BOUND(?s) && ?icon != <http://google-maps-icons.googlecode.com/files/gazstation.png> && (?icon != <http://google-maps-icons.googlecode.com/files/parking.png> || ?pos = <http://id.southampton.ac.uk/point-of-service/parking-7326>) )
+	  FILTER ( !BOUND(?s) && ?icon != <http://data.southampton.ac.uk/map-icons/Transportation/fillingstation.png> && (?icon != <http://data.southampton.ac.uk/map-icons/Transportation/parking.png> || ?pos = <http://id.southampton.ac.uk/point-of-service/parking-7326>) )
 	}
 		");
 		foreach($tpoints as $point)
@@ -256,7 +256,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 	  } .
 	  ?s a org:Site .
 	  {
-	    ?pos <http://purl.org/openorg/mapIcon> <http://google-maps-icons.googlecode.com/files/convenience.png>
+	    ?pos <http://purl.org/openorg/mapIcon> <http://data.southampton.ac.uk/map-icons/Stores/convenience.png>
 	  } UNION {
 	    ?pos <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Catering>
 	  } .
@@ -337,7 +337,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getAllTimetables()
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2011/07';
+		$uri = 'http://id.southampton.ac.uk/opendays/2011/09';
 		$data = sparql_get(self::$endpoint, "
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>

@@ -40,7 +40,7 @@ if($versionparts[1] == 'iframe')
 }
 else
 {
-	$config['enabled'] = array('openday', 'bookmarks', 'search');
+	$config['enabled'] = array('openday', 'bookmarks'/*, 'search'*/);
 	$config['map style'] = 'left:300px;';
 }
 ?>

@@ -651,10 +651,10 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 
 		if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
 			return;
-		$('._2011-07-08').hide();
-		$('._2011-07-09').hide();
-		$('#link_2011-07-08').removeClass('selected');
-		$('#link_2011-07-09').removeClass('selected');
+		$('._2011-09-02').hide();
+		$('._2011-09-03').hide();
+		$('#link_2011-09-02').removeClass('selected');
+		$('#link_2011-09-03').removeClass('selected');
 		document.title = document.title.replace( / \| .*/, '' );
 
 		var d = getHash('day');
@@ -665,12 +665,12 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 			updateHash();
 		}
 		if(d == 'friday') {
-			selecteddate = '2011-07-08';
-			fulldate = 'Friday 8th July 2011';
+			selecteddate = '2011-09-02';
+			fulldate = 'Friday 2nd September 2011';
 		}
 		else if(d == 'saturday') {
-			selecteddate = '2011-07-09';
-			fulldate = 'Saturday 9th July 2011';
+			selecteddate = '2011-09-03';
+			fulldate = 'Saturday 3rd September 2011';
 		}
 		else
 			return;
