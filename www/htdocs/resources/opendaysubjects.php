@@ -1,4 +1,4 @@
-<div id='day'><a title='Show Friday&apos;s events (8th July 2011)' id='link_2011-07-08' onclick="updateHash('day', 'friday')">Friday</a><a title='Show Saturday&apos;s events (9th July 2011)' id='link_2011-07-09' onclick="updateHash('day', 'saturday');">Saturday</a></div>
+<div id='day'><a title='Show Friday&apos;s events (2nd September 2011)' id='link_2011-09-02' onclick="updateHash('day', 'friday')">Friday</a><a title='Show Saturday&apos;s events (3rd September 2011)' id='link_2011-09-03' onclick="updateHash('day', 'saturday');">Saturday</a></div>
 <div id='selectedsubject'>Choose a subject:</div>
 <div id='subjects'>
 <ul style='overflow:scroll; position:absolute; top:100px; bottom:0px; width:300px;'>
@@ -54,12 +54,12 @@ function sortdate($a, $b)
 	//print_r($timetable);
 	foreach($subjname as $uri => $name)
 	{
-		$short = str_replace('http://id.southampton.ac.uk/opendays/2011/07/subject/', '', $uri);
+		$short = str_replace('http://id.southampton.ac.uk/opendays/2011/09/subject/', '', $uri);
 		if($subjbroader[$uri] == 'Subject')
 			echo "<li class='".$subjbroader[$uri]." subj_".$short."'><h2 id='subj_".$short."' class='clickable' onclick='chooseSubject(\"".$name."\"); updateHash(\"subject\", \"".$short."\")' title='Select ".htmlspecialchars($name, ENT_QUOTES)."'>".$name."</h2>";
 		else
 			echo "<li style='display:none' class='".str_replace(' ', '', $subjbroader[$uri])."'><h2>".$name."</h2>";
-		foreach(array('2011-07-08', '2011-07-09') as $date)
+		foreach(array('2011-09-02', '2011-09-03') as $date)
 		{
 			echo "<div class='_$date'>";
 			$events = $timetable[$uri][$date];
