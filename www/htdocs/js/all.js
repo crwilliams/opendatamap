@@ -23,6 +23,10 @@ var t;
 var selectIndex = -1;
 var limit = 0;
 
+var zoomuri;
+var clickuri;
+var uri;
+
 var addControl = function(elementID, position) {
 	var element = document.getElementById(elementID);
 	map.controls[position].push(element);
@@ -432,7 +436,49 @@ var delayHide = function(id, delay) {
 	t = setTimeout("hide('"+id+"');", delay);
 }
 
-var initmarkers = function(cont) {
+var contcount = 0;
+
+var cont = function() {
+	contcount++;
+	if(contcount != 2) return;
+	initmarkerevents();
+	initgeoloc();
+	inittoggle();
+	initbookmarks();
+	initcredits();
+	initsearch();
+	//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
+	//georssLayer.setMap(map);
+	//var pathLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/paths.kml');
+	//pathLayer.setMap(map);
+	
+	$('#inputbox').keydown(keypress);
+	$('#inputbox').keyup(updateFunc);
+	var hashstring = location.hash.replace( /^#/, '' );
+	location.hash = location.hash.replace(/\/.*/, '');
+	hashstring = hashstring.split('/');
+	if(hashstring.length > 1)
+	{
+		hashstring = hashstring[1];
+		$('#subj_'+hashstring).click();
+	}
+	else
+		hashstring = '';
+	updateFunc();
+	if(uri != '') zoomTo(uri, true, true);
+	if(zoomuri != '')
+	{
+		//alert(zoomuri);
+		zoomTo(zoomuri, false, true);
+	}
+	if(clickuri != '')
+	{
+		//alert(clickuri);
+		zoomTo(clickuri, true, false);
+	}
+}
+
+var initmarkers = function() {
 	$.get('alldata.php?v='+version, function(data,textstatus,xhr) {
 		// do party!!!!
 		// clear em out, babes. 
@@ -553,6 +599,7 @@ var initmarkers = function(cont) {
 				}
 			});
 		});
+		cont();
 	},'json');
 };
 
@@ -578,8 +625,11 @@ var getHash = function(key) {
 		return hashfields[key];
 }
 
-var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap) {
-	version = v;
+var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
+	zoomuri = pzoomuri;
+	clickuri = pclickuri;
+	uri = puri;
+	version = pversion;
 	map = new google.maps.Map($('#map_canvas').get(0), {
 		zoom: zoom,
 		center: new google.maps.LatLng(lat, long),
@@ -609,35 +659,7 @@ var initialize = function(lat, long, zoom, uri, zoomuri, clickuri, v, defaultMap
 ], {name: 'Map'});
 	map.mapTypes.set('Map2', styledMapType);
 
-	initmarkers(function() {
-		initmarkerevents();
-		initgeoloc();
-		inittoggle();
-		initbookmarks();
-		initcredits();
-		initsearch();
-		//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
-		//georssLayer.setMap(map);
-		//var pathLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/paths.kml');
-		//pathLayer.setMap(map);
-		
-		$('#inputbox').keydown(keypress);
-		$('#inputbox').keyup(updateFunc);
-		var hashstring = location.hash.replace( /^#/, '' );
-		location.hash = location.hash.replace(/\/.*/, '');
-		hashstring = hashstring.split('/');
-		if(hashstring.length > 1)
-		{
-			hashstring = hashstring[1];
-			$('#subj_'+hashstring).click();
-		}
-		else
-			hashstring = '';
-		updateFunc();
-		if(uri != '') zoomTo(uri, true, true);
-		if(zoomuri != '') zoomTo(zoomuri, false, true);
-		if(clickuri != '') zoomTo(clickuri, true, false);
-	});
+	initmarkers();
 
 	var hcf = function() {
 		var hashstring = location.hash.replace( /^#/, '' );
