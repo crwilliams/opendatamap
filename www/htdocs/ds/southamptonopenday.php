@@ -152,7 +152,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 	  } .
 	  ?s a org:Site .
 	  {
-	    ?id <http://purl.org/openorg/mapIcon> <http://data.southampton.ac.uk/map-icons/Stores/convenience.png>
+	    ?id <http://purl.org/openorg/mapIcon> <http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png>
 	  } UNION {
 	    ?id <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Catering>
 	  } .
@@ -256,7 +256,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 	  } .
 	  ?s a org:Site .
 	  {
-	    ?pos <http://purl.org/openorg/mapIcon> <http://data.southampton.ac.uk/map-icons/Stores/convenience.png>
+	    ?pos <http://purl.org/openorg/mapIcon> <http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png>
 	  } UNION {
 	    ?pos <http://purl.org/dc/terms/subject> <http://id.southampton.ac.uk/point-of-interest-category/Catering>
 	  } .
