@@ -222,7 +222,7 @@ form ul {
 	border-radius:3px;
 	border:solid 1px black;
 	list-style: none;
-	overflow-y:auto;
+	overflow-y:hidden;
 	overflow-x:hidden;
 	max-width:200px;
 	max-height:497px;
