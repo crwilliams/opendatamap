@@ -231,6 +231,8 @@ var updateFunc = function(force) {
 				} 
 				limit++;
 			}
+			if(limit == 0)
+				list.innerHTML += '<li><i>No results found</i></li>';
 			cluster();
 			
 			if ($("#spinner").is(":visible")) {
