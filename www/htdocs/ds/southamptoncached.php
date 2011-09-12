@@ -7,7 +7,7 @@ class SouthamptoncachedDataSource extends DataSource
 
 	static function getEntries($q, $cats)
 	{
-		$q = str_replace("\\", "\\\\\\\\\\\\\\", trim($q));
+		$q = trim($q);
 		
 		$pos = array();
 		$label = array();
