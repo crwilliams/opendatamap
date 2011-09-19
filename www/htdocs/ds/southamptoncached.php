@@ -325,7 +325,7 @@ class SouthamptoncachedDataSource extends DataSource
 		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 		PREFIX org: <http://www.w3.org/ns/org#>
 
-		SELECT DISTINCT ?name ?icon ?type WHERE {
+		SELECT DISTINCT ?name ?icon ?type ?label WHERE {
 		    OPTIONAL { <$uri> rdfs:label ?name . }
 		    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
 		    OPTIONAL { <$uri> <http://purl.org/openorg/hasFeature> ?feature . 
@@ -346,19 +346,25 @@ class SouthamptoncachedDataSource extends DataSource
 			if($allpos[0]['type'] == "http://id.southampton.ac.uk/location-feature/Shower")
 			{
 				$icon = self::$iconpath."Offices/shower.png";
+				$name = $allpos[0]['label'];
 			}
 			else if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
 				$icon = self::$iconpath."Education/computers.png";
+				$name = $allpos[0]['name'];
 				$computer = "true";
 			}
 			else
 			{
 				$icon = "";
+				$name = $allpos[0]['name'];
 			}
 		}
 		else
+		{
 			$icon = $allpos[0]['icon'];
+			$name = $allpos[0]['name'];
+		}
 		$icon = self::convertIcon($icon);
 
 		$page = sparql_get(self::$endpoint, "
@@ -370,7 +376,7 @@ class SouthamptoncachedDataSource extends DataSource
 		");
 
 		//if(count($page) > 0)
-		echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$allpos[0]['name'];
+		echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$name;
 		if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri))
 		{
 			//print_r($page[0]);
