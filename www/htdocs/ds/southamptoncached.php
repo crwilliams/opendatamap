@@ -325,9 +325,13 @@ class SouthamptoncachedDataSource extends DataSource
 		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 		PREFIX org: <http://www.w3.org/ns/org#>
 
-		SELECT DISTINCT ?name ?icon WHERE {
-		    <$uri> rdfs:label ?name .
+		SELECT DISTINCT ?name ?icon ?type WHERE {
+		    OPTIONAL { <$uri> rdfs:label ?name . }
 		    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
+		    OPTIONAL { <$uri> <http://purl.org/openorg/hasFeature> ?feature . 
+		        OPTIONAL { ?feature a ?type . }
+		        OPTIONAL { ?feature rdfs:label ?label . }
+		    }
 		}
 		");
 	}
@@ -339,7 +343,11 @@ class SouthamptoncachedDataSource extends DataSource
 		$computer = false;
 		if(!isset($allpos[0]['icon']))
 		{
-			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
+			if($allpos[0]['type'] == "http://id.southampton.ac.uk/location-feature/Shower")
+			{
+				$icon = self::$iconpath."Offices/shower.png";
+			}
+			else if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
 				$icon = self::$iconpath."Education/computers.png";
 				$computer = "true";

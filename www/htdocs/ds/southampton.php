@@ -11,6 +11,7 @@ class SouthamptonDataSource extends DataSource
 		foreach(self::getAllPointsOfService()	as $point) $points[] = $point;
 		foreach(self::getAllBusStops()	 	as $point) $points[] = $point;
 		foreach(self::getAllWorkstationRooms()	as $point) $points[] = $point;
+		foreach(self::getAllShowers()		as $point) $points[] = $point;
 		return $points;
 	}
 
@@ -26,6 +27,7 @@ class SouthamptonDataSource extends DataSource
 		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		return array($pos, $label, $type, $url, $icon);
@@ -242,6 +244,75 @@ class SouthamptonDataSource extends DataSource
 		return $points;
 	}
 
+	static function getAllShowers()
+	{
+		$tpoints = sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX gr: <http://purl.org/goodrelations/v1#>
+	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+	SELECT DISTINCT ?id ?lat ?long ?label WHERE {
+	  ?id <http://purl.org/openorg/hasFeature> ?f .
+	  ?f a <http://id.southampton.ac.uk/location-feature/Shower> .
+	  ?f rdfs:label ?label .
+	  OPTIONAL { ?id spacerel:within ?b .
+	             ?b geo:lat ?lat . 
+	             ?b geo:long ?long .
+	             ?b a <http://vocab.deri.ie/rooms#Building> .
+	           }
+	  OPTIONAL { ?id spacerel:within ?s .
+	             ?s geo:lat ?lat . 
+	             ?s geo:long ?long .
+	             ?s a org:Site .
+	           }
+	  OPTIONAL { ?id geo:lat ?lat .
+	             ?id geo:long ?long .
+	           }
+	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
+	} ORDER BY ?label
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['icon'] = self::$iconpath.'Offices/shower.png';
+			$points[] = $point;
+		}
+		return $points;
+	}
+
+	static function getShowers($q)
+	{
+		if($q == '')
+			$filter = '';
+		else
+			$filter = "FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
+		$tpoints =  sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+	SELECT DISTINCT ?poslabel ?pos ?icon WHERE {
+	  ?pos <http://purl.org/openorg/hasFeature> ?f .
+	  ?f a <http://id.southampton.ac.uk/location-feature/Shower> .
+	  ?f rdfs:label ?poslabel .
+	  $filter
+	} ORDER BY ?poslabel
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['label'] = 'Shower';
+			$point['icon'] = self::$iconpath.'Offices/shower.png';
+			$points[] = $point;
+		}
+		return $points;
+	}
+
 	static function getBuildings($q, $qbd)
 	{
 		return sparql_get(self::$endpoint, "
@@ -372,6 +443,30 @@ class SouthamptonDataSource extends DataSource
 		}
 	}
 
+	// Process shower data
+	static function createShowerEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
+	{
+		$data = self::getShowers($q);
+		foreach($data as $point) {
+			$point['icon'] = self::$iconpath.'Offices/shower.png';
+			if(!self::visibleCategory($point['icon'], $cats))
+				continue;
+			$pos[$point['pos']] ++;
+			if(preg_match('/'.$q.'/i', $point['label']))
+			{
+				$label[$point['label']] ++;
+				$type[$point['label']] = "offering";
+			}
+			if(preg_match('/'.$q.'/i', $point['poslabel']))
+			{
+				$label[$point['poslabel']] += 10;
+				$type[$point['poslabel']] = "workstation";
+				$url[$point['poslabel']] = $point['pos'];
+				$icon[$point['poslabel']] = $point['icon'];
+			}
+		}
+	}
+
 	// Process building data
 	static function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
@@ -467,9 +562,13 @@ class SouthamptonDataSource extends DataSource
 		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 		PREFIX org: <http://www.w3.org/ns/org#>
 
-		SELECT DISTINCT ?name ?icon WHERE {
-		    <$uri> rdfs:label ?name .
+		SELECT DISTINCT ?name ?icon ?type WHERE {
+		    OPTIONAL { <$uri> rdfs:label ?name . }
 		    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
+		    OPTIONAL { <$uri> <http://purl.org/openorg/hasFeature> ?feature . 
+		        OPTIONAL { ?feature a ?type . }
+		        OPTIONAL { ?feature rdfs:label ?label . }
+		    }
 		}
 		");
 	}
@@ -481,7 +580,11 @@ class SouthamptonDataSource extends DataSource
 		$computer = false;
 		if(!isset($allpos[0]['icon']))
 		{
-			if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
+			if($allpos[0]['type'] == "http://id.southampton.ac.uk/location-feature/Shower")
+			{
+				$icon = self::$iconpath."Offices/shower.png";
+			}
+			else if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
 				$icon = self::$iconpath."Education/computers.png";
 				$computer = "true";
