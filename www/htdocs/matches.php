@@ -93,7 +93,11 @@ function getAllMatches($q, $cats)
 			$icon[$k] = $v;
 	}
 	
-	arsort($label);
+	foreach($label as $k => $v)
+	{
+		$label[$k] = (1000000-$v).'/'.$k;
+	}
+	asort($label);
 	if(count($label) > $labellimit)
 		$label = array_slice($label, 0,$labellimit);
 
