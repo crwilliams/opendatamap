@@ -14,11 +14,11 @@ class SouthamptoncachedDataSource extends DataSource
 		$type = array();
 		$url = array();
 		$icon = array();
+		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		return array($pos, $label, $type, $url, $icon);
 	}
 
@@ -239,14 +239,20 @@ class SouthamptoncachedDataSource extends DataSource
 			$pos[$point['url']] += 100;
 			if(preg_match('/'.$q.'/i', $point['name']))
 			{
-				$label[$point['name']] += 100;
+				if($point['number'] < 100)
+					$label[$point['name']] += 1000;
+				else
+					$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
 				$url[$point['name']] = $point['url'];
 				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
 			}
 			if(preg_match('/'.$qbd.'/i', $point['number']))
 			{
-				$label['Building '.$point['number']] += 100;
+				if($point['number'] < 100)
+					$label['Building '.$point['number']] += 1000;
+				else
+					$type['Building '.$point['number']] = "building";
 				$type['Building '.$point['number']] = "building";
 				$url['Building '.$point['number']] = $point['url'];
 				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
@@ -259,8 +265,13 @@ class SouthamptoncachedDataSource extends DataSource
 	{
 		$data = self::getSites($q);
 		foreach($data as $point) {
-			$pos[$point['url']] += 1000;
-			$label[$point['name']] += 1000;
+			$pos[$point['url']] += 100000;
+			$label[$point['name']] += 100000;
+			if(preg_match('/Campus/i', $point['name']))
+			{
+				$pos[$point['url']] += 100000;
+				$label[$point['name']] += 100000;
+			}
 			$type[$point['name']] = "site";
 			$url[$point['name']] = $point['url'];
 			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
@@ -351,10 +362,16 @@ class SouthamptoncachedDataSource extends DataSource
 	static function processSouthamptonURI($uri)
 	{
 		$wifi = false;
+		$res = false;
 		if(substr($uri, strlen($uri)-5, 5) == '#wifi')
 		{
 			$uri = substr($uri, 0, strlen($uri)-5);
 			$wifi = true;
+		}
+		if(substr($uri, strlen($uri)-12, 12) == '#residential')
+		{
+			$uri = substr($uri, 0, strlen($uri)-12);
+			$res = true;
 		}
 		$allpos = self::getURIInfo($uri);
 		echo "<div id='content'>";
@@ -365,6 +382,11 @@ class SouthamptoncachedDataSource extends DataSource
 			{
 				$icon = self::$iconpath."Offices/wifi.png";
 				$name = 'Wi-Fi Internet Access in Building '.$allpos['notation'];
+			}
+			else if($res)
+			{
+				$icon = self::$iconpath."Restaurants-and-Hotels/lodging_0star.png";
+				$name = $allpos['name'];
 			}
 			else if($allpos['ftype'] == "http://id.southampton.ac.uk/location-feature/Shower")
 			{

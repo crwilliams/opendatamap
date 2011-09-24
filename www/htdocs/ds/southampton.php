@@ -12,6 +12,7 @@ class SouthamptonDataSource extends DataSource
 		foreach(self::getAllBusStops()	 		as $point) $points[] = $point;
 		foreach(self::getAllWorkstationRooms()		as $point) $points[] = $point;
 		foreach(self::getAllISolutionsWifiPoints()	as $point) $points[] = $point;
+		foreach(self::getAllResidences()		as $point) $points[] = $point;
 		foreach(self::getAllShowers()			as $point) $points[] = $point;
 		return $points;
 	}
@@ -313,6 +314,75 @@ class SouthamptonDataSource extends DataSource
 		return $points;
 	}
 
+	static function getAllResidences()
+	{
+		$tpoints = sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX gr: <http://purl.org/goodrelations/v1#>
+	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+	SELECT DISTINCT ?id ?lat ?long ?label WHERE {
+	  ?b rdfs:label ?label .
+	  ?b <http://purl.org/openorg/hasFeature> ?id .
+	  ?id a <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> .
+	  OPTIONAL { ?b geo:lat ?lat . 
+	             ?b geo:long ?long .
+	             ?b a <http://vocab.deri.ie/rooms#Building> .
+	           }
+	  OPTIONAL { ?id spacerel:within ?s .
+	             ?s geo:lat ?lat . 
+	             ?s geo:long ?long .
+	             ?s a org:Site .
+	           }
+	  OPTIONAL { ?id geo:lat ?lat .
+	             ?id geo:long ?long .
+	           }
+	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
+	  FILTER ( BOUND(?long) && BOUND(?lat) )
+	} ORDER BY ?label
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['icon'] = self::$iconpath.'Restaurants-and-Hotels/lodging_0star.png';
+			$points[] = $point;
+		}
+		return $points;
+	}
+
+	static function getResidences($q)
+	{
+		if($q == '')
+			$filter = '';
+		else
+			$filter = "FILTER ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
+		$tpoints =  sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+	SELECT DISTINCT ?poslabel ?pos WHERE {
+	  ?b rdfs:label ?poslabel .
+	  ?b <http://purl.org/openorg/hasFeature> ?pos .
+	  ?pos a <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> .
+	  $filter
+	} ORDER BY ?poslabel
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['label'] = 'Accommodation';
+			$point['icon'] = self::$iconpath.'Restaurants-and-Hotels/lodging_0star.png';
+			$points[] = $point;
+		}
+		return $points;
+	}
+
 	static function getAllShowers()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
@@ -571,15 +641,20 @@ class SouthamptonDataSource extends DataSource
 			$pos[$point['url']] += 100;
 			if(preg_match('/'.$q.'/i', $point['name']))
 			{
-				$label[$point['name']] += 100;
+				if($point['number'] < 100)
+					$label[$point['name']] += 1000;
+				else
+					$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
 				$url[$point['name']] = $point['url'];
 				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
 			}
-			if(preg_match('/'.$qbd.'/i', $point['number']))
+			if(preg_match('/^'.$qbd.'/i', $point['number']))
 			{
-				$label['Building '.$point['number']] += 100;
-				$type['Building '.$point['number']] = "building";
+				if($point['number'] < 100)
+					$label['Building '.$point['number']] += 1000;
+				else
+					$type['Building '.$point['number']] = "building";
 				$url['Building '.$point['number']] = $point['url'];
 				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
 			}
@@ -591,8 +666,13 @@ class SouthamptonDataSource extends DataSource
 	{
 		$data = self::getSites($q);
 		foreach($data as $point) {
-			$pos[$point['url']] += 1000;
-			$label[$point['name']] += 1000;
+			$pos[$point['url']] += 100000;
+			$label[$point['name']] += 100000;
+			if(preg_match('/Campus/i', $point['name']))
+			{
+				$pos[$point['url']] += 100000;
+				$label[$point['name']] += 100000;
+			}
 			$type[$point['name']] = "site";
 			$url[$point['name']] = $point['url'];
 			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);

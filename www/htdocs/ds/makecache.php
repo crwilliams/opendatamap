@@ -53,6 +53,8 @@ $ds = SouthamptonDataSource::getWorkstationRooms('');
 processMatches($ds, 'workstation');
 $ds = SouthamptonDataSource::getISolutionsWifiPoints('');
 processMatches($ds, 'workstation');
+//$ds = SouthamptonDataSource::getResidences('');
+//processMatches($ds, 'workstation');
 $ds = SouthamptonDataSource::getShowers('');
 processMatches($ds, 'workstation');
 
