@@ -305,7 +305,7 @@ class SouthamptoncachedDataSource extends DataSource
 		$codes = array();
 		foreach($allbus as $code)
 			$codes[] = $code['code'];
-		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos[0]['name'];
+		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos['name'];
 		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
 		echo "<h3> Served by: (click to filter) </h3>";
 		echo "<ul class='offers'>"; 
@@ -319,7 +319,7 @@ class SouthamptoncachedDataSource extends DataSource
 
 	static function getURIInfo($uri)
 	{
-		return sparql_get(self::$endpoint, "
+		$info = sparql_get(self::$endpoint, "
 		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
@@ -334,6 +334,16 @@ class SouthamptoncachedDataSource extends DataSource
 		    }
 		}
 		");
+		$res = array('name' => '', 'icon' => '', 'type' => '', 'label' => '');
+		foreach($info as $infoline)
+		{
+			foreach(array_keys($res) as $key)
+			{
+				if($res[$key] =='' && isset($infoline[$key]))
+					$res[$key] = $infoline[$key];
+			}
+		}
+		return $res;
 	}
 
 	static function processSouthamptonURI($uri)
@@ -341,29 +351,29 @@ class SouthamptoncachedDataSource extends DataSource
 		$allpos = self::getURIInfo($uri);
 		echo "<div id='content'>";
 		$computer = false;
-		if(!isset($allpos[0]['icon']))
+		if($allpos['icon'] == '')
 		{
-			if($allpos[0]['type'] == "http://id.southampton.ac.uk/location-feature/Shower")
+			if($allpos['type'] == "http://id.southampton.ac.uk/location-feature/Shower")
 			{
 				$icon = self::$iconpath."Offices/shower.png";
-				$name = $allpos[0]['label'];
+				$name = $allpos['label'];
 			}
 			else if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
 			{
 				$icon = self::$iconpath."Education/computers.png";
-				$name = $allpos[0]['name'];
+				$name = $allpos['name'];
 				$computer = "true";
 			}
 			else
 			{
 				$icon = "";
-				$name = $allpos[0]['name'];
+				$name = $allpos['name'];
 			}
 		}
 		else
 		{
-			$icon = $allpos[0]['icon'];
-			$name = $allpos[0]['name'];
+			$icon = $allpos['icon'];
+			$name = $allpos['name'];
 		}
 		$icon = self::convertIcon($icon);
 
