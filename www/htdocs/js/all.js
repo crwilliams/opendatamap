@@ -75,7 +75,7 @@ var reset_search_icon = function() {
 // someone's clicked on something, you need to load the real data into it
 var loadWindow = function(j) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
-	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURI(j), function(data) {
+	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURIComponent(j), function(data) {
 		infowindows[j].setContent(data);
 	});
 }
