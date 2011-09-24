@@ -143,6 +143,7 @@ class OxfordDataSource extends DataSource
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Department':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Unit':
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Division':
+			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#Faculty':
 				return self::$iconpath.'Education/school.png';
 			case 'http://ns.ox.ac.uk/namespace/oxpoints/2009/02/owl#StudentGroup':
 				return self::$iconpath.'Education/library.png';
