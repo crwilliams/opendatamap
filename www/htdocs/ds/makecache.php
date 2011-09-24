@@ -1,7 +1,7 @@
 <?
 $_GET['v'] = 'cache';
 include 'config.php';
-//error_reporting(E_ALL);
+error_reporting(E_ERROR);
 include '/home/opendatamap/mysql.inc.php';
 
 //runQuery('BEGIN TRANSACTION');
@@ -11,11 +11,11 @@ runQuery('TRUNCATE points');
 
 
 $ds = SouthamptonDataSource::getAll();
-	foreach($ds as $d)
-	{
-		$q = "INSERT INTO points (uri, lat, lng, label, icon, category) VALUES ('".mysql_real_escape_string($d['id'])."', ".((float)$d['lat']).", ".((float)$d['long']).", '".mysql_real_escape_string($d['label'])."', '".mysql_real_escape_string($d['icon'])."', '".mysql_real_escape_string(getCategory($d['icon']))."')";
-		runQuery($q);
-	}
+foreach($ds as $d)
+{
+	$q = "INSERT INTO points (uri, lat, lng, label, icon, category) VALUES ('".mysql_real_escape_string($d['id'])."', ".((float)$d['lat']).", ".((float)$d['long']).", '".mysql_real_escape_string($d['label'])."', '".mysql_real_escape_string($d['icon'])."', '".mysql_real_escape_string(getCategory($d['icon']))."')";
+	runQuery($q);
+}
 
 function getCategory($icon)
 {
@@ -50,6 +50,8 @@ processMatches($ds, 'point-of-service');
 $ds = SouthamptonDataSource::getBusStops('');
 processMatches($ds, 'bus-stop');
 $ds = SouthamptonDataSource::getWorkstationRooms('');
+processMatches($ds, 'workstation');
+$ds = SouthamptonDataSource::getISolutionsWifiPoints('');
 processMatches($ds, 'workstation');
 $ds = SouthamptonDataSource::getShowers('');
 processMatches($ds, 'workstation');

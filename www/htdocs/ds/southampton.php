@@ -8,13 +8,15 @@ class SouthamptonDataSource extends DataSource
 	static function getAll()
 	{
 		$points = array();
-		foreach(self::getAllPointsOfService()	as $point) $points[] = $point;
-		foreach(self::getAllBusStops()	 	as $point) $points[] = $point;
-		foreach(self::getAllWorkstationRooms()	as $point) $points[] = $point;
-		foreach(self::getAllShowers()		as $point) $points[] = $point;
+		foreach(self::getAllPointsOfService()		as $point) $points[] = $point;
+		foreach(self::getAllBusStops()	 		as $point) $points[] = $point;
+		foreach(self::getAllWorkstationRooms()		as $point) $points[] = $point;
+		foreach(self::getAllISolutionsWifiPoints()	as $point) $points[] = $point;
+		foreach(self::getAllShowers()			as $point) $points[] = $point;
 		return $points;
 	}
 
+	/*
 	static function getEntries($q, $cats)
 	{
 		$q = str_replace("\\", "\\\\\\\\\\\\\\", trim($q));
@@ -27,11 +29,13 @@ class SouthamptonDataSource extends DataSource
 		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		self::createISolutionsWifiPointEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		return array($pos, $label, $type, $url, $icon);
 	}
+	*/
 
 	static function getDataSets()
 	{
@@ -244,6 +248,71 @@ class SouthamptonDataSource extends DataSource
 		return $points;
 	}
 
+	static function getAllISolutionsWifiPoints()
+	{
+		$tpoints = sparql_get(self::$endpoint, "
+        PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+        PREFIX org: <http://www.w3.org/ns/org#>
+        PREFIX gr: <http://purl.org/goodrelations/v1#>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+        SELECT DISTINCT ?id ?lat ?long ?label WHERE {
+          ?fid <http://purl.org/openorg/hasFeature> ?f .
+          ?f a <http://id.southampton.ac.uk/syllabus/feature/RSC-_WIRELESS_NETWORK> .
+          ?fid spacerel:within ?id .
+          ?id geo:lat ?lat . 
+          ?id geo:long ?long .
+          ?id skos:notation ?label .
+          ?id a <http://vocab.deri.ie/rooms#Building> .
+          FILTER ( BOUND(?long) && BOUND(?lat) )
+        } ORDER BY ?label
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['id'] = $point['id'].'#wifi';
+			$point['label'] = 'Wi-Fi Internet Access Points in Building '.$point['label'];
+			$point['icon'] = self::$iconpath.'Offices/wifi.png';
+			$points[] = $point;
+		}
+		return $points;
+	}
+
+	static function getISolutionsWifiPoints($q)
+	{
+		if($q == '')
+			$filter = '';
+		else
+			$filter = "&& ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
+		$tpoints =  sparql_get(self::$endpoint, "
+	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+	SELECT DISTINCT ?poslabel ?pos WHERE {
+          ?fid <http://purl.org/openorg/hasFeature> ?f .
+          ?f a <http://id.southampton.ac.uk/syllabus/feature/RSC-_WIRELESS_NETWORK> .
+          ?fid spacerel:within ?pos .
+          ?pos skos:notation ?poslabel .
+          ?pos a <http://vocab.deri.ie/rooms#Building> .
+        } ORDER BY ?poslabel
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$point['pos'] = $point['pos'].'#wifi';
+			$point['poslabel'] = 'Wi-Fi Internet Access Points in Building '.$point['poslabel'];
+			$point['label'] = 'Wi-Fi Access';
+			$point['icon'] = self::$iconpath.'Offices/wifi.png';
+			$points[] = $point;
+		}
+		return $points;
+	}
+
 	static function getAllShowers()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
@@ -373,6 +442,7 @@ class SouthamptonDataSource extends DataSource
 		return in_cat($iconcats, $icon, $cats);
 	}
 
+	/*
 	// Process point of service data
 	static function createPointOfServiceEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
@@ -443,6 +513,30 @@ class SouthamptonDataSource extends DataSource
 		}
 	}
 
+	// Process wifi data
+	static function createISolutionsWifiPointEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
+	{
+		$data = self::getISolutionsWifiPoints($q);
+		foreach($data as $point) {
+			$point['icon'] = self::$iconpath.'Offices/wifi.png';
+			if(!self::visibleCategory($point['icon'], $cats))
+				continue;
+			$pos[$point['pos']] ++;
+			if(preg_match('/'.$q.'/i', $point['label']))
+			{
+				$label[$point['label']] ++;
+				$type[$point['label']] = "offering";
+			}
+			if(preg_match('/'.$q.'/i', $point['poslabel']))
+			{
+				$label[$point['poslabel']] += 10;
+				$type[$point['poslabel']] = "wifi";
+				$url[$point['poslabel']] = $point['pos'];
+				$icon[$point['poslabel']] = $point['icon'];
+			}
+		}
+	}
+
 	// Process shower data
 	static function createShowerEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
@@ -466,6 +560,7 @@ class SouthamptonDataSource extends DataSource
 			}
 		}
 	}
+	*/
 
 	// Process building data
 	static function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
