@@ -211,7 +211,7 @@ class SouthamptoncachedDataSource extends DataSource
 	{
 		$data = self::getWorkstationRooms($q, $cats);
 		foreach($data as $point) {
-			$point['icon'] = self::$iconpath.'Education/computers.png';
+			//$point['icon'] = self::$iconpath.'Education/computers.png';
 //			if(!self::visibleCategory($point['icon'], $cats))
 //				continue;
 			$pos[$point['pos']] ++;
