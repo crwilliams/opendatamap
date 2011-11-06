@@ -58,6 +58,45 @@ function show($id) {
 	}
 }
 
+function getAllMatches($q, $cats)
+{
+	global $config;
+	
+	$labellimit = 100;
+
+	$pos = array();
+	$label = array();
+	$type = array();
+	$url = array();
+	$icon = array();
+
+	foreach($config['datasource'] as $ds)
+	{
+		$dsclass = ucwords($ds).'DataSource';
+		list($npos, $nlabel, $ntype, $nurl, $nicon) = call_user_func(array($dsclass, 'getEntries'), $q, $cats);
+		foreach($npos as $k => $v)
+			$pos[$k] += $v;
+		foreach($nlabel as $k => $v)
+			$label[$k] += $v;
+		foreach($ntype as $k => $v)
+			$type[$k] = $v;
+		foreach($nurl as $k => $v)
+			$url[$k] = $v;
+		foreach($nicon as $k => $v)
+			$icon[$k] = $v;
+	}
+	
+	foreach($label as $k => $v)
+	{
+		$label[$k] = (1000000-$v).'/'.$k;
+	}
+	asort($label);
+	if(count($label) > $labellimit)
+		$label = array_slice($label, 0,$labellimit);
+
+	return array($pos, $label, $type, $url, $icon);
+}
+
 class DataSource{
 	static function getAll(){}
 	static function getEntries($q, $cats){}
@@ -72,6 +111,18 @@ class DataSource{
 	static function convertIcon($icon)
 	{	
 		return $icon;
+	}
+}
+
+function getEnabledCategories()
+{
+	if($_GET['ec'] == "")
+	{
+		return array('Transportation','Restaurants-and-Hotels','Offices','Culture-and-Entertainment', 'Health', 'Tourism', 'Stores', 'Education', 'Sports');
+	}
+	else
+	{
+		return explode(',', $_GET['ec']);
 	}
 }
 
