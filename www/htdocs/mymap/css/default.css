@@ -1,0 +1,42 @@
+body{
+	background-color:#FFFFFF;
+	color:#3D5A6B;
+}
+
+.sidebar{
+	background-color:#005A87;
+	border:solid 1px #3D5A6B;
+}
+
+.sidebarlink{
+	background-color:#00A6CE;
+}
+
+a:link,
+a:visited,
+a:hover{
+	color:#00A6CE;
+}
+
+.dates{
+	border:solid 5px #005A87;
+}
+
+.header{
+	color:#FFFFFF;
+}
+
+.header,.footer{
+	background-color:#008A9B;
+	border:solid 1px #3D5A6B;
+}
+
+hr {
+	background-color:#008A9B;
+	border:solid 1px #008A9B;
+}
+
+table{
+	margin-left:auto;
+	margin-right:auto;
+}
