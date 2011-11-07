@@ -104,6 +104,16 @@ function process($ds)
 	print_r($c);
 }
 
+$equivs[] = array('Wi-Fi Access', 'Wifi Internet Access');
+$equivs[] = array('Wi-Fi Access', 'Wireless Internet Access');
+
+foreach($equivs as $equiv)
+{
+	$oldlabel = $equiv[0];
+	$newlabel = $equiv[1];
+	runQuery('INSERT INTO matches (uri, poslabel, label, icon, type, category) SELECT uri, poslabel, "'.$newlabel.'" as label, icon, type, category FROM matches WHERE label = "'.$oldlabel.'"');
+}
+
 runQuery('DELETE FROM points WHERE uri LIKE "http://id.southampton.ac.uk/vending-machine/%"');
 runQuery('DELETE FROM matches WHERE uri LIKE "http://id.southampton.ac.uk/vending-machine/%"');
 runQuery('UPDATE points SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" where icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"');
