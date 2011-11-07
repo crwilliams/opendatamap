@@ -24,8 +24,8 @@ function sparql_fetch_all( $result ) { return $result->fetch_all(); }
 function sparql_get( $endpoint, $sparql )
 {
 	$hash = md5($endpoint.$sparql);
-	$filename = 'cache/sparql-'.$hash.'.txt';
-	if(file_exists($filename))
+	$filename = '../cache/sparql-'.$hash.'.txt';
+	if(file_exists($filename) && filemtime($filename)+(60*60) > time())
 	{
 		$data = unserialize(file_get_contents($filename));
 	}
