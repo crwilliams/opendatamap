@@ -99,10 +99,11 @@ class IsleOfWightBusDataSource extends DataSource
 
 	static function processBusURI($uri)
 	{	
-		$uri = mysql_real_escape_string($uri);
+		include_once('/home/opendatamap/mysql.inc.php');
+		$uri = mysql_real_escape_string((string)$uri);
 		$q = "SELECT name FROM bus WHERE AtcoCode = '$uri'";
-		$data = perform_query($q);
-		echo $data['name'];
+		$data = self::perform_query($q);
+		echo $data[0]['name'];
 		return true;
 	}
 
