@@ -64,7 +64,7 @@ else
 	require_once('/home/opendatamap/mysql.inc.php');
 	$params[] = mysql_real_escape_string($_REQUEST['u']);
 	$params[] = mysql_real_escape_string($_REQUEST['m']);
-	$q = 'SELECT uri, lat, lon, \'OS\' as source FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
+	$q = 'SELECT uri, lat, lon, source FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
 	$res = mysql_query($q);
 	while($row = mysql_fetch_assoc($res))
 	{
