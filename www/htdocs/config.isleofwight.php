@@ -11,6 +11,9 @@ $config['categories'] = array();
 $config['categories']['Education'] = 'Education';
 $config['categories']['Transportation'] = 'Transportation';
 $config['categories']['Offices'] = 'Services';
+$config['categories']['Tourism'] = 'Tourism and Religion';
 $config['selected']['Education'] = true;
 $config['selected']['Offices'] = true;
+$config['selected']['Tourism'] = true;
+
 ?>
