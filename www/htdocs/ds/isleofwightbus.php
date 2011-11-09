@@ -101,13 +101,7 @@ class IsleOfWightBusDataSource extends DataSource
 
 	static function processURI($uri)
 	{
-		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
-			return self::processSouthamptonBusStopURI($uri);
-		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
-			return self::processSouthamptonURI($uri);
-		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
-			return self::processSouthamptonURI($uri);
-		else if(substr($uri, 0, strlen('bus-stop:')) == 'bus-stop:')
+		if(substr($uri, 0, strlen('bus-stop:')) == 'bus-stop:')
 			return self::processBusURI(substr($uri, strlen('bus-stop:')));
 		else
 			return false;
