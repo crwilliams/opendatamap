@@ -32,10 +32,15 @@ function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $l
 					'lat' => $row[$colnames[$latcolname]],
 					'lon' => $row[$colnames[$loncolname]],
 				);
+				if(isset($data[$base.$row[$colnames[$idcolname]]]['lat']) && isset($data[$base.$row[$colnames[$idcolname]]]['lon']))
+				{
+					$data[$base.$row[$colnames[$idcolname]]]['source'] = 'CSV';
+				}
 				if(isset($location[$row[$colnames[$idcolname]]]))
 				{
 					$data[$row[$colnames[$idcolname]]]['lat'] = $location[$row[$colnames[$idcolname]]][0];
 					$data[$row[$colnames[$idcolname]]]['lon'] = $location[$row[$colnames[$idcolname]]][1];
+					$data[$row[$colnames[$idcolname]]]['source'] = $location[$row[$colnames[$idcolname]]][2];
 				}
 			}
 		}
@@ -59,11 +64,11 @@ else
 	require_once('/home/opendatamap/mysql.inc.php');
 	$params[] = mysql_real_escape_string($_REQUEST['u']);
 	$params[] = mysql_real_escape_string($_REQUEST['m']);
-	$q = 'SELECT uri, lat, lon FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
+	$q = 'SELECT uri, lat, lon, \'OS\' as source FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
 	$res = mysql_query($q);
 	while($row = mysql_fetch_assoc($res))
 	{
-		$location[$row['uri']] = array($row['lat'], $row['lon']);
+		$location[$row['uri']] = array($row['lat'], $row['lon'], $row['source']);
 	}
 	$q = 'SELECT source FROM maps WHERE username = \''.$params[0].'\' AND mapid = \''.$params[1].'\'';
 	$res = mysql_query($q);
@@ -117,19 +122,38 @@ else
 		width: 200px;
 		height: 90%;
 		top: 5%;
-		right: 5%;
+		right: 2%;
 		z-index: 1000;
 		background-color:white;
+		overflow:hidden;
 	}
 
 	#list {
 		overflow: scroll;
-		height: 90%;
+		height: 89%;
+		margin: 0;
+		padding: 0;
 	}
 	
-	#actionText {
-		padding: 5px;
+	#listheader {
 		height: 10%;
+		margin: 0;
+		padding: 0;
+		border: none;
+	}
+
+	#actionText,#save,#list {
+	}
+
+	#actionText {
+		margin: 5px;
+		height: 60%;
+	}
+
+	#save {
+		margin: 5px;
+		height: 30%;
+		text-align: right;
 	}
 
 	span.small {
@@ -148,6 +172,11 @@ else
 		border: solid 1px black;
 		margin: 3px;
 	}
+
+	a:link, a:hover, a:visited {
+		text-decoration: none;
+		color: blue;
+	}
     </style>
 
     <script src="../../OpenLayers-2.11/OpenLayers.js"></script>
@@ -159,6 +188,7 @@ var map;
 var vector;
 var markers;
 var p = new Array();
+var changed = new Array();
 var ll = new Array();
 var wgs84 = new OpenLayers.Projection("EPSG:4326");
 var positionUri;
@@ -208,10 +238,12 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 			p[positionUri] = new OpenLayers.Marker(lonlat, icon);
 			markers.addMarker(p[positionUri]);
 		    //}
+		    changed[positionUri] = true;
 	            llc.transform(map.getProjectionObject(), wgs84);
 		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
 		    positionUri = undefined;
 		    document.getElementById('actionText').innerHTML = 'Please select an item...';
+		    document.getElementById('save_link').innerHTML = 'Save';
                 }
 
             });
@@ -219,7 +251,7 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 function save(){
 	var str = '';
 	var i = 0;
-	for (var q in p)
+	for (var q in changed)
 	{
 		var llc = p[q].lonlat.clone();
 		llc.transform(map.getProjectionObject(), wgs84);
@@ -229,7 +261,15 @@ function save(){
 	OpenLayers.Request.POST( {
 		url : 'http://opendatamap.ecs.soton.ac.uk/dev/colin/edit/save.php?map=<?php echo $_GET['m'] ?>',
 		data : str,
-		success : function(response) { alert(response.responseText) },
+		success : function(response) {
+			alert(response.responseText);
+			for (var q in changed)
+			{
+				document.getElementById('loc_'+q).innerHTML += ' (OS)';
+			}
+			changed = new Array();
+			document.getElementById('save_link').innerHTML = '';
+		},
 		failure : function(response) { alert(response.responseText) },
 	} );
 	return i;
@@ -358,7 +398,10 @@ function position(uri)
   </head>
   <body onload="init()">
     <div id="controls">
-	<div id='actionText'>Please select an item...</div>
+	<div id='listheader'>
+		<div id='actionText'>Please select an item...</div>
+		<div id='save'><a id='save_link' href='#' onclick='save();'></a></div>
+	</div>
 	<div id='list'>
 	<ul>
 <?php
@@ -366,7 +409,7 @@ foreach($data as $uri => $item)
 {
 	echo "<li onclick='position(\"$uri\")'><img style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
 	if(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != '')
-		echo round($item['lat'], 6).'/'.round($item['lon'], 6);
+		echo round($item['lat'], 6).'/'.round($item['lon'], 6).' ('.$item['source'].')';
 	else
 		echo "Location not set.";
 	echo "</span></li>";
