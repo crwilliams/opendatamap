@@ -9,15 +9,6 @@ class IsleOfWightDataSource extends DataSource
 
 	static function getDataSets()
 	{
-		$uri = "http://opendatamap.ecs.soton.ac.uk";
-		$ds = sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?name ?uri ?l {
-		  ?app <http://xmlns.com/foaf/0.1/homepage> <$uri> .
-		  ?app <http://purl.org/dc/terms/requires> ?uri .
-		  ?uri <http://purl.org/dc/terms/title> ?name .
-		  OPTIONAL { ?uri <http://purl.org/dc/terms/license> ?l . }
-		} ORDER BY ?name
-		");
 		$ds[] = array('name' => 'Ordnance Survey Linked Data', 'uri' => 'http://data.ordnancesurvey.co.uk', 'l' => 'http://reference.data.gov.uk/id/open-government-licence');
 		return $ds;
 	}
