@@ -101,9 +101,11 @@ class IsleOfWightBusDataSource extends DataSource
 	{	
 		include_once('/home/opendatamap/mysql.inc.php');
 		$uri = mysql_real_escape_string((string)$uri);
-		$q = "SELECT name FROM bus WHERE AtcoCode = '$uri'";
+		$q = "SELECT name, code2 as naptan FROM transport WHERE Code = '$uri' AND Type = 'bus'";
 		$data = self::perform_query($q);
-		echo $data[0]['name'];
+		echo $data[0]['name'].'<br/>';
+		echo '<a href="http://www.nextbuses.mobi/WebView/BusStopSearch/BusStopSearchResults/'.$data[0]['naptan'].'">Live bus times</a><br/>';
+		//echo '<iframe src="http://www.nextbuses.mobi/WebView/BusStopSearch/BusStopSearchResults/'.$data[0]['naptan'].'" />';
 		return true;
 	}
 
