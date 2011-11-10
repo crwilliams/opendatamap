@@ -82,17 +82,29 @@ class IsleOfWightDataSource extends DataSource
 		$points = array();
 		foreach($graph->allOfType('http://purl.org/goodrelations/v1#LocationOfSalesOrServiceProvisioning') as $point)
 		{
-			foreach($point->all('-http://purl.org/goodrelations/v1#availableAtOrFrom') as $offering)
+			if($point->has('-http://purl.org/goodrelations/v1#availableAtOrFrom'))
 			{
-				foreach($offering->all('http://purl.org/goodrelations/v1#includes') as $include)
+				foreach($point->all('-http://purl.org/goodrelations/v1#availableAtOrFrom') as $offering)
 				{
-					$p['label'] = ($include->getString('rdfs:label'));
-					$p['pos'] = $point->toString();
-					$p['poslabel'] = ($point->getString('rdfs:label'));
-					$p['icon'] = ($point->getString('http://purl.org/openorg/mapIcon'));
-					if($q == '' || preg_match(strtolower('/'.$q.'/'), strtolower($p['label'])) || preg_match(strtolower('/'.$q.'/'), strtolower($p['poslabel'])))
-						$points[] = $p;
+					foreach($offering->all('http://purl.org/goodrelations/v1#includes') as $include)
+					{
+						$p['label'] = ($include->getString('rdfs:label'));
+						$p['pos'] = $point->toString();
+						$p['poslabel'] = ($point->getString('rdfs:label'));
+						$p['icon'] = ($point->getString('http://purl.org/openorg/mapIcon'));
+						if($q == '' || preg_match(strtolower('/'.$q.'/'), strtolower($p['label'])) || preg_match(strtolower('/'.$q.'/'), strtolower($p['poslabel'])))
+							$points[] = $p;
+					}
 				}
+			}
+			else
+			{
+				$p['label'] = null;
+				$p['pos'] = $point->toString();
+				$p['poslabel'] = ($point->getString('rdfs:label'));
+				$p['icon'] = ($point->getString('http://purl.org/openorg/mapIcon'));
+				if($q == '' || preg_match(strtolower('/'.$q.'/'), strtolower($p['poslabel'])))
+					$points[] = $p;
 			}
 		}
 		return $points;
