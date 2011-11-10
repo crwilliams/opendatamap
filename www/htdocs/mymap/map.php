@@ -66,6 +66,7 @@ else
 	$params[] = mysql_real_escape_string($_REQUEST['m']);
 	$q = 'SELECT uri, lat, lon, source FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
 	$res = mysql_query($q);
+	$location = array();
 	while($row = mysql_fetch_assoc($res))
 	{
 		$location[$row['uri']] = array($row['lat'], $row['lon'], $row['source']);
