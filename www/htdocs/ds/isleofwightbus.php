@@ -103,7 +103,7 @@ class IsleOfWightBusDataSource extends DataSource
 		$uri = mysql_real_escape_string((string)$uri);
 		$q = "SELECT name, code2 as naptan FROM transport WHERE Code = '$uri' AND Type = 'bus'";
 		$data = self::perform_query($q);
-		echo $data[0]['name'].'<br/>';
+		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/img/icon/Transportation/bus.png' />".$data[0]['name'].'</h2>';
 		echo '<a href="http://www.nextbuses.mobi/WebView/BusStopSearch/BusStopSearchResults/'.$data[0]['naptan'].'">Live bus times</a><br/>';
 		//echo '<iframe src="http://www.nextbuses.mobi/WebView/BusStopSearch/BusStopSearchResults/'.$data[0]['naptan'].'" />';
 		return true;
