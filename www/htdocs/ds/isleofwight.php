@@ -200,6 +200,25 @@ class IsleOfWightDataSource extends DataSource
 		echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$name;
 		echo "</h2>";
 
+		if($res->has('foaf:phone'))
+		{
+			$phone = $res->getString('foaf:phone');
+			if(substr($phone, 0, 8) == 'tel:+442')
+			{
+				echo '(0'.substr($phone, 7, 2).') '.substr($phone, 9, 4).' '.substr($phone, 13);
+			}
+			elseif(substr($phone, 0, 7) == 'tel:+44')
+			{
+				echo '(0'.substr($phone, 7, 4).') '.substr($phone, 11, 3).' '.substr($phone, 14);
+			}
+			else
+			{
+				echo substr($phone, 4);
+			}
+			//foreach($res->all('foaf:phone') as $phone)
+			//	echo $phone.'<br/>';
+		}
+
 		$allpos = array();
 		foreach($res->all('-http://purl.org/goodrelations/v1#availableAtOrFrom') as $offering)
 		{
