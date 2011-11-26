@@ -36,7 +36,7 @@ if(!$post || count($errors) > 0)
 		<tr><td colspan='2'><hr /></td></tr>
 		<tr class='comp <?= $post && $bad['title'] ? "bad" : "" ?>'><td><label for='title'>Map title:</label></td><td><input id='title' name='title' style='width:60em' value='<?= $_POST['title'] ?>' /></td></tr>
 		<tr class='comp <?= $post && $bad['source'] ? "bad" : "" ?>'><td><label for='source'>Map source:</label></td><td><input id='source' name='source' style='width:60em' value='<?= $_POST['source'] ?>' /></td></tr>
-		<tr class='comp <?= $post && $bad['base'] ? "bad" : "" ?>'><td><label for='base'>URL base:</label></td><td><input id='base' name='base' style='width:60em' value='<?= $_POST['base'] ?>' /></td></tr>
+		<tr class='comp <?= $post && $bad['base'] ? "bad" : "" ?>'><td><label for='base'>Base URI:</label></td><td><input id='base' name='base' style='width:60em' value='<?= $_POST['base'] ?>' /></td></tr>
 		<tr><td /><td><input type='submit' /></td></tr>
 	</table>
 </form>
