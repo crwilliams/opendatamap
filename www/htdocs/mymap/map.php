@@ -131,29 +131,29 @@ else
 
 	#list {
 		overflow: scroll;
-		height: 89%;
+		height: 84%;
 		margin: 0;
 		padding: 0;
 	}
 	
 	#listheader {
-		height: 10%;
+		height: 15%;
 		margin: 0;
 		padding: 0;
 		border: none;
 	}
 
-	#actionText,#save,#list {
+	#links,#actionText,#save,#list {
 	}
 
 	#actionText {
 		margin: 5px;
-		height: 60%;
+		height: 50%;
 	}
 
-	#save {
+	#links,#save {
 		margin: 5px;
-		height: 30%;
+		height: 20%;
 		text-align: right;
 	}
 
@@ -400,6 +400,7 @@ function position(uri)
   <body onload="init()">
     <div id="controls">
 	<div id='listheader'>
+		<div id='links'><a href='../../<?= $_REQUEST['u'] ?>'>Back to map list</a> | <a href='../<?= $_REQUEST['m'] ?>'>View RDF</a></div>
 		<div id='actionText'>Please select an item...</div>
 		<div id='save'><a id='save_link' href='#' onclick='save();'></a></div>
 	</div>
