@@ -57,7 +57,7 @@ if($_REQUEST['m'] == 'iss-wifi')
 }
 elseif($_REQUEST['m'] == 'amenities')
 {
-	$data = loadCSV('https://spreadsheets.google.com/pub?hl=en&hl=en&key=0AqodCQwjuWZXdDhaVzVrWVlfMGNfUmFrTW5nZmRyVHc&output=csv', 'http://id.southampton.ac.uk/point-of-service/', 'code', 'name', 'icon', 'latitude', 'longitude');
+	$data = loadCSV('https://spreadsheets.google.com/pub?hl=en&hl=en&key=0AqodCQwjuWZXdDhaVzVrWVlfMGNfUmFrTW5nZmRyVHc&output=csv', 'http://id.southampton.ac.uk/point-of-service/', 'code', 'name', 'icon', 'latitude', 'longitude', array());
 }
 else
 {
@@ -408,11 +408,19 @@ function position(uri)
 <?php
 foreach($data as $uri => $item)
 {
-	echo "<li onclick='position(\"$uri\")'><img style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
 	if(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != '')
-		echo round($item['lat'], 6).'/'.round($item['lon'], 6).' ('.$item['source'].')';
-	else
-		echo "Location not set.";
+		continue;
+	echo "<li onclick='position(\"$uri\")'><img style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
+	echo "Location not set.";
+	echo "</span></li>";
+}
+
+foreach($data as $uri => $item)
+{
+	if(!(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != ''))
+		continue;
+	echo "<li onclick='position(\"$uri\")'><img style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
+	echo round($item['lat'], 6).'/'.round($item['lon'], 6).' ('.$item['source'].')';
 	echo "</span></li>";
 }
 ?>
