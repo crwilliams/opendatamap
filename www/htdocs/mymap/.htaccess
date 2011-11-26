@@ -4,5 +4,6 @@ RewriteRule ^register$ register.php
 RewriteRule ^login$ login.php
 RewriteRule ^logout$ logout.php
 RewriteRule ^new$ new.php
+RewriteRule ^([A-Za-z0-9]+)$ index.php?username=$1
 RewriteRule ^([A-Za-z0-9]+)/([A-Za-z0-9]+)$ rdf.php?u=$1&m=$2
 RewriteRule ^([A-Za-z0-9]+)/([A-Za-z0-9]+)/edit$ map.php?u=$1&m=$2
