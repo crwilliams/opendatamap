@@ -31,15 +31,20 @@ else
   </rdf:Description>
 */ ?>
 <?php
-$q = 'SELECT uri, md5(uri) as name, lat, lon FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\' order by `name`';
+$q = 'SELECT uri, name, icon, lat, lon FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\' order by `name`';
 $res = mysql_query($q);
 while($row = mysql_fetch_assoc($res))
 {
 ?>
     <Placemark>
-<?php /*
       <name><?php echo $row['name'] ?></name>
-*/ ?>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href><?php echo $row['icon'] ?></href>
+          </Icon>
+        </IconStyle>
+      </Style>
       <Point>
         <coordinates><?php echo $row['lon'] ?>,<?php echo $row['lat'] ?></coordinates>
       </Point>

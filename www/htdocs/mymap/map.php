@@ -256,7 +256,7 @@ function save(){
 	{
 		var llc = p[q].lonlat.clone();
 		llc.transform(map.getProjectionObject(), wgs84);
-		str += q + '|' + llc.lat + '|' + llc.lon + '||';
+		str += q + '|' + llc.lat + '|' + llc.lon + '|' + label[q] + '|' + icons[q] + '||';
 		i++;
 	}
 	OpenLayers.Request.POST( {

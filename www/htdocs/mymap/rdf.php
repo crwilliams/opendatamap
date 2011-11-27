@@ -35,15 +35,14 @@ else
 */ ?>
   </rdf:Description>
 <?php
-$q = 'SELECT uri, md5(uri) as name, lat, lon FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\' order by `name`';
+$q = 'SELECT uri, name, icon, lat, lon FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\' order by `name`';
 $res = mysql_query($q);
 while($row = mysql_fetch_assoc($res))
 {
 ?>
   <rdf:Description rdf:about="<?php echo $base.$row['uri'] ?>">
-<?php /*
     <rdfs:label><?php echo $row['name'] ?></rdfs:label>
-*/ ?>
+    <oo:mapIcon rdf:resource="<?php echo $row['icon'] ?>" />
     <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#float"><?php echo $row['lat'] ?></geo:lat>
     <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#float"><?php echo $row['lon'] ?></geo:long>
   </rdf:Description>
