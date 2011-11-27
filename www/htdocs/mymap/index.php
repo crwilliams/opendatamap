@@ -40,9 +40,10 @@ echo '<ul>';
 while($row = mysql_fetch_assoc($res))
 {
 	echo '<li>'.$row['name'];
-	echo ' <a href=\''.$username.'/'.$row['mapid'].'\'>(View RDF)</a>';
+	echo ' | <a href=\''.$username.'/'.$row['mapid'].'.rdf\'>(View RDF)</a>';
+	echo ' | <a href=\''.$username.'/'.$row['mapid'].'.kml\'>(View KML)</a>';
 	if($editmode)
-		echo ' <a href=\''.$username.'/'.$row['mapid'].'/edit\'>(Edit)</a>';
+		echo ' | <a href=\''.$username.'/'.$row['mapid'].'/edit\'>(Edit)</a>';
 	echo '</li>';
 }
 echo '</ul>';
