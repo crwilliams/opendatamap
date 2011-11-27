@@ -356,24 +356,27 @@ function init(){
 
     var size = new OpenLayers.Size(32,37);
     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-
-    var bounds = new OpenLayers.Bounds();
 <?
 foreach($data as $uri => $point)
 {
 	if($point['lat'] == '' || $point['lon'] == '')
 		continue;
 	echo "ll['$uri'] = new OpenLayers.LonLat(".$point['lon'].", ".$point['lat'].");\n";
-	echo "bounds.extend(ll['$uri']);\n";
 	echo "ll['$uri'].transform(wgs84, map.getProjectionObject());\n";
 	echo "p['$uri'] = new OpenLayers.Marker(ll['$uri'], new OpenLayers.Icon(icons['$uri'], size, offset));\n";
 	echo "markers.addMarker(p['$uri']);\n";
 }
 ?>
     if (!map.getCenter()) {
-	if(markers.length == 0)
+	if(markers.markers.length == 0)
+	{
 		bounds = new OpenLayers.Bounds(-6.379880, 49.871159, 1.768960, 55.811741);
-        bounds.transform(wgs84, map.getProjectionObject());
+        	bounds.transform(wgs84, map.getProjectionObject());
+	}
+	else
+	{
+		bounds = markers.getDataExtent();
+	}
         map.zoomToExtent(bounds);
         if (map.getZoom() < 6) map.zoomTo(6);
     }
