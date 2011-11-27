@@ -43,7 +43,7 @@ if($error != "")
 ?>
 <form action='login' method='post'>
 	<table>
-		<tr class='comp'><td><label for='username'>Username or E-mail Address:</label></td><td><input id='username' name='username' style='width:10em' /></td></tr>
+		<tr class='comp'><td><label for='username'>Username or E-mail Address:</label></td><td><input id='username' name='username' style='width:20em' /></td></tr>
 		<tr class='comp'><td><label for='password'>Password:</label></td><td><input type='password' id='password' name='password' style='width:10em' /></td></tr>
 		<tr><td /><td><input type='submit' /></td></tr>
 	</table>
