@@ -32,11 +32,25 @@ if(!$post || count($errors) > 0)
 ?>
 <form action='new' method='post'>
 	<table>
-		<tr class='comp <?= $post && $bad['mapname'] ? "bad" : "" ?>'><td><label for='mapname'>Map short name:</label></td><td><input id='mapname' name='mapname' style='width:20em' value='<?= $_POST['mapname'] ?>' /></td></tr>
-		<tr><td colspan='2'><hr /></td></tr>
-		<tr class='comp <?= $post && $bad['title'] ? "bad" : "" ?>'><td><label for='title'>Map title:</label></td><td><input id='title' name='title' style='width:60em' value='<?= $_POST['title'] ?>' /></td></tr>
-		<tr class='comp <?= $post && $bad['source'] ? "bad" : "" ?>'><td><label for='source'>Map source:</label></td><td><input id='source' name='source' style='width:60em' value='<?= $_POST['source'] ?>' /></td></tr>
-		<tr class='comp <?= $post && $bad['base'] ? "bad" : "" ?>'><td><label for='base'>Base URI:</label></td><td><input id='base' name='base' style='width:60em' value='<?= $_POST['base'] ?>' /></td></tr>
+		<tr class='comp <?= $post && $bad['mapname'] ? "bad" : "" ?>'><td class='label'><label for='mapname'>Map URL:</label></td><td class='field'>http://<?= $_SERVER['SERVER_NAME'] ?>/mymap/<?= $_SESSION['username'] ?>/<input id='mapname' name='mapname' style='width:9em' value='<?= $_POST['mapname'] ?>' /></td><td class='desc'>This is the URL that the RDF for the map will become available at.</tr>
+		<tr><td colspan='3'><hr /></td></tr>
+		<tr class='comp <?= $post && $bad['title'] ? "bad" : "" ?>'><td class='label'><label for='title'>Map title:</label></td><td><input id='title' name='title' style='width:35em' value='<?= $_POST['title'] ?>' /></td><td class='desc'>This is the title of your map.</td></tr>
+		<tr class='comp <?= $post && $bad['source'] ? "bad" : "" ?>'><td class='label'><label for='source'>Map source:</label></td><td><input id='source' name='source' style='width:35em' value='<?= $_POST['source'] ?>' /></td><td class='desc'>This is the source CSV file for your map.  The CSV file should begin with a header row identifying the following columns (case insensitive):
+			<dl>
+				<dt>code</dt>
+				<dd>Unique code for the location (will be appended to the <i>base URI</i> below to create the location's URI).</dd>
+				<dt>name</dt>
+				<dd>Name of the location.</dd>
+				<dt>icon</dt>
+				<dd>URL of the icon used to represent the location on the map.</dd>
+				<dt>latitude</dt>
+				<dd>(optional) The latitude of the location.</dd>
+				<dt>longitude</dt>
+				<dd>(optional) The longitude of the location.</dd>
+			</dl>
+			Rows which begin with the string '*COMMENT' will be treated as comment lines and not processed further.
+		</td></tr>
+		<tr class='comp <?= $post && $bad['base'] ? "bad" : "" ?>'><td class='label'><label for='base'>Base URI:</label></td><td><input id='base' name='base' style='width:35em' value='<?= $_POST['base'] ?>' /></td><td class='desc'>This is the base URI that is used as a prefix to the unique codes in the source file in order to generate a full URI for each location.</td></tr>
 		<tr><td /><td><input type='submit' /></td></tr>
 	</table>
 </form>
