@@ -652,6 +652,12 @@ var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, 
       { visibility: "off" }
     ]
   },{
+    featureType: "landscape.man_made",
+    elementType: "all",
+    stylers: [
+      { visibility: "off" }
+    ]
+  },{
     featureType: "transit.station",
     elementType: "all",
     stylers: [
