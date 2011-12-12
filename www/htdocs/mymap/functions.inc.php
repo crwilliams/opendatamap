@@ -128,7 +128,7 @@ function outputFooter()
 	?>
 </div>
 <div class="footer">
-&copy; Colin Williams, 2011<!---<?= date('Y')?>-->.
+<a href='/mymap/about'>About this tool</a> | &copy; Colin Williams, 2011<!---<?= date('Y')?>-->.
 </div>
 </body>
 </html>
