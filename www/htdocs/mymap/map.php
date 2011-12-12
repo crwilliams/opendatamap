@@ -125,24 +125,27 @@ else
 	#controls {
 		position: absolute;
 		width: 18%;
-		height: 90%;
-		top: 5%;
+		height: 100%;
+		top: 1%;
 		right: 1%;
 		z-index: 1000;
 		background-color:white;
 	}
 
 	#list {
-		height: 84%;
 		margin: 0;
 		padding: 0;
 	}
 	
 	#listheader {
-		height: 15%;
+		position: fixed;
+		right: 21%;
+		top: 1%;
+		z-index: 1000;
 		margin: 0;
 		padding: 0;
 		border: none;
+		background-color: white;
 	}
 
 	#links,#actionText,#save,#list {
@@ -164,7 +167,7 @@ else
 		color: gray;
 	}
 
-	#list ul {
+	ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -249,7 +252,7 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 	            llc.transform(map.getProjectionObject(), wgs84);
 		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
 		    positionUri = undefined;
-		    document.getElementById('save_link').innerHTML = 'Save';
+		    document.getElementById('save_link').style.display = "block";
                 }
 
             });
@@ -275,7 +278,7 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 	            llc.transform(map.getProjectionObject(), wgs84);
 		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
 		    positionUri = undefined;
-		    document.getElementById('save_link').innerHTML = 'Save';
+		    document.getElementById('save_link').style.display = "block";
                 }
 
 function save(){
@@ -292,13 +295,12 @@ function save(){
 		url : 'http://opendatamap.ecs.soton.ac.uk/dev/colin/edit/save.php?map=<?php echo $_GET['m'] ?>',
 		data : str,
 		success : function(response) {
-			alert(response.responseText);
 			for (var q in changed)
 			{
 				document.getElementById('loc_'+q).innerHTML += ' (OS)';
 			}
 			changed = new Array();
-			document.getElementById('save_link').innerHTML = '';
+			document.getElementById('save_link').style.display = 'none';
 		},
 		failure : function(response) { alert(response.responseText) },
 	} );
@@ -315,7 +317,7 @@ function init(){
     });
 
     $("#map").droppable({
-	drop: function(event, ui) {var id = lastevent.currentTarget.parentElement.id; lastevent = event; drop(id, event.pageX-window.pageXOffset, event.pageY-window.pageYOffset); lastevent = event },
+	drop: function(event, ui) {var id = lastevent.currentTarget.parentElement.id; lastevent = event; drop(id, event.pageX-window.pageXOffset-1, event.pageY-window.pageYOffset-2); lastevent = event },
     });
 
     var maxExtent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
@@ -439,11 +441,15 @@ foreach($data as $uri => $item)
     </script>
   </head>
   <body onload="init()">
-    <div id="controls">
-	<div id='listheader'>
-		<div id='links'><a href='../../<?= $_REQUEST['u'] ?>'>Back to map list</a> | <a href='../<?= $_REQUEST['m'] ?>'>View RDF</a></div>
-		<div id='save'><a id='save_link' href='#' onclick='save();'></a></div>
+    <div id='listheader'>
+	<ul id='links'>
+		<li><a href='../../<?= $_REQUEST['u'] ?>'>Back to map list <img src='../../icons/map.png' /></a></li>
+		<li><a href='../<?= $_REQUEST['m'] ?>.rdf'>View RDF <img src='../../icons/page_white_code.png' /></a></li>
+		<li><a href='../<?= $_REQUEST['m'] ?>.kml'>View KML <img src='../../icons/page_white_code.png' /></a></li>
+		<li id='save_link' style='display: none'><a href='#' onclick='save();'>Save <img src='../../icons/disk.png' /></a></li>
 	</div>
+    </div>
+    <div id="controls">
 	<div id='list'>
 	<ul>
 <?php

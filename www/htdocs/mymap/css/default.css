@@ -12,6 +12,12 @@ body{
 	background-color:#00A6CE;
 }
 
+.footer a:link,
+.footer a:visited,
+.footer a:hover{
+	color:#FFFFFF;
+}
+
 a:link,
 a:visited,
 a:hover{

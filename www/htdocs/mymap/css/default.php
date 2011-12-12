@@ -45,6 +45,12 @@ a:hover{
 	color:<?= $c['cyan'] ?>;
 }
 
+.footer a:link,
+.footer a:visited,
+.footer a:hover{
+	color:<?= $c['white'] ?>;
+}
+
 .dates{
 	border:solid 5px <?= $c['blue'] ?>;
 }
