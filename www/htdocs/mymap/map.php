@@ -110,6 +110,10 @@ else
 
 	#map {
 		z-index: 0;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 80%;
 	}
         .olControlAttribution { bottom: 0px!important }
 
@@ -120,17 +124,15 @@ else
 
 	#controls {
 		position: absolute;
-		width: 200px;
+		width: 18%;
 		height: 90%;
 		top: 5%;
-		right: 2%;
+		right: 1%;
 		z-index: 1000;
 		background-color:white;
-		overflow:hidden;
 	}
 
 	#list {
-		overflow: scroll;
 		height: 84%;
 		margin: 0;
 		padding: 0;
@@ -182,7 +184,11 @@ else
 
     <script src="../../OpenLayers-2.11/OpenLayers.js"></script>
     <script src="../../OS.js"></script>
+    <script src="../../jquery-1.6.2.min.js"></script>
+    <script src="../../jquery-ui-1.8.16.custom.min.js"></script>
     <script type="text/javascript">
+$(function() {
+});
 
 // make map available for easy debugging
 var map;
@@ -243,11 +249,34 @@ OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 	            llc.transform(map.getProjectionObject(), wgs84);
 		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
 		    positionUri = undefined;
-		    document.getElementById('actionText').innerHTML = 'Please select an item...';
 		    document.getElementById('save_link').innerHTML = 'Save';
                 }
 
             });
+
+                function drop(positionUri, x, y) {
+		    if(positionUri == undefined)
+			return;
+                    var lonlat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(x, y));
+		    var llc = lonlat.clone();
+		    var size = new OpenLayers.Size(32,37);
+ 		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+		    var icon = new OpenLayers.Icon(icons[positionUri], size, offset);
+		    if(p[positionUri] != undefined)
+		    {
+		    	markers.removeMarker(p[positionUri]);
+		    }
+		    //else
+		    //{
+			p[positionUri] = new OpenLayers.Marker(lonlat, icon);
+			markers.addMarker(p[positionUri]);
+		    //}
+		    changed[positionUri] = true;
+	            llc.transform(map.getProjectionObject(), wgs84);
+		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
+		    positionUri = undefined;
+		    document.getElementById('save_link').innerHTML = 'Save';
+                }
 
 function save(){
 	var str = '';
@@ -276,7 +305,19 @@ function save(){
 	return i;
 }
 
+var lastevent;
+
 function init(){
+    $(".draggable").draggable({
+	cursorAt: {cursor: "crosshair", top: 39, left: 17},
+	helper: function(event) {lastevent = event; return $("<img src='"+event.currentTarget.src+"' />")},
+	revert: "invalid"
+    });
+
+    $("#map").droppable({
+	drop: function(event, ui) {var id = lastevent.currentTarget.parentElement.id; lastevent = event; drop(id, event.pageX-window.pageXOffset, event.pageY-window.pageYOffset); lastevent = event },
+    });
+
     var maxExtent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
         restrictedExtent = maxExtent.clone(),
         maxResolution = 156543.0339;
@@ -395,18 +436,12 @@ foreach($data as $uri => $item)
 }
 ?>
 
-function position(uri)
-{
-	document.getElementById('actionText').innerHTML = 'Setting location of '+label[uri];
-	positionUri = uri;
-}
     </script>
   </head>
   <body onload="init()">
     <div id="controls">
 	<div id='listheader'>
 		<div id='links'><a href='../../<?= $_REQUEST['u'] ?>'>Back to map list</a> | <a href='../<?= $_REQUEST['m'] ?>'>View RDF</a></div>
-		<div id='actionText'>Please select an item...</div>
 		<div id='save'><a id='save_link' href='#' onclick='save();'></a></div>
 	</div>
 	<div id='list'>
@@ -416,7 +451,7 @@ foreach($data as $uri => $item)
 {
 	if(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != '')
 		continue;
-	echo "<li onclick='position(\"$uri\")'><img style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
+	echo "<li id='$uri'><img class='draggable' style='z-index:1000; float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
 	echo "Location not set.";
 	echo "</span></li>";
 }
@@ -425,7 +460,7 @@ foreach($data as $uri => $item)
 {
 	if(!(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != ''))
 		continue;
-	echo "<li onclick='position(\"$uri\")'><img style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
+	echo "<li id='$uri'><img class='draggable' style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
 	echo round($item['lat'], 6).'/'.round($item['lon'], 6).' ('.$item['source'].')';
 	echo "</span></li>";
 }
