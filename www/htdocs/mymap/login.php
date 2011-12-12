@@ -7,10 +7,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 	require_once('/home/opendatamap/mysql.inc.php');
 	$params[] = mysql_real_escape_string($_POST['username']);
 	$params[] = md5($_POST['password']);
-	if(strpos($_POST['username'], '@') !== 0)
-		$q = 'SELECT * FROM users WHERE email = \''.$params[0].'\' AND password = \''.$params[1].'\'';
-	else
+	if(strpos($_POST['username'], '@') === false)
 		$q = 'SELECT * FROM users WHERE username = \''.$params[0].'\' AND password = \''.$params[1].'\'';
+	else
+		$q = 'SELECT * FROM users WHERE email = \''.$params[0].'\' AND password = \''.$params[1].'\'';
 	$res = mysql_query($q);
 	$row = mysql_fetch_assoc($res);
 	if($row)
