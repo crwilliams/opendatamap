@@ -1,7 +1,11 @@
 RewriteEngine on
 RewriteRule ^bus-stop/(.*)\. http://data.southampton.ac.uk/bus-stop/$1.html?view=ajax [P]
 RewriteRule ^credits$ credits.php
+RewriteRule ^opening-times$ opening-times.php
 RewriteRule ^source/?$ source/index.php [L]
+RewriteRule ^brf/?$ extras/bus-route-finder.php [L]
+RewriteRule ^edit/?(.*)$ mymap/$1
+RewriteRule ^mymap/?$ mymap/ [L]
 RewriteRule ^m/?$ extras/m.php
 RewriteRule ^layar-api/?$ extras/layar-api.php
 RewriteRule ^bus-route-finder/?$ extras/bus-route-finder.php
