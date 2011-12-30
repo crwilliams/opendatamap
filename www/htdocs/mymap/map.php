@@ -237,6 +237,14 @@ var icons = new Array();
 // increase reload attempts 
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
+function focusPoint(positionUri) {
+	var existingMarker = markers.getFeatureByFid(positionUri);
+	if(existingMarker != null)
+	{
+        	map.panTo(new OpenLayers.LonLat(existingMarker.geometry.x, existingMarker.geometry.y));
+	}
+}
+
 function drop(positionUri, pixel, requireUpdateFeature) {
     if(positionUri == undefined)
 	return;
@@ -388,18 +396,18 @@ foreach($data as $uri => $item)
 {
 	if(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != '')
 		continue;
-	echo "<li id='$uri'><img class='draggable' style='z-index:1000; float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
+	echo "<li id='$uri' onclick=\"focusPoint('$uri');\"><img class='draggable' style='z-index:1000; float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
 	echo "Location not set.";
-	echo "</span></li>";
+	echo "</span></li>\n";
 }
 
 foreach($data as $uri => $item)
 {
 	if(!(isset($item['lat']) && isset($item['lon']) && $item['lat'] != '' && $item['lon'] != ''))
 		continue;
-	echo "<li id='$uri'><img class='draggable' style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
+	echo "<li id='$uri' onclick=\"focusPoint('$uri');\"><img class='draggable' style='float:left; margin-right:5px' src='".$item['icon']."' />".$item['label']."<br/><span class='small' id='loc_$uri'>";
 	echo round($item['lat'], 6).'/'.round($item['lon'], 6).' ('.$item['source'].')';
-	echo "</span></li>";
+	echo "</span></li>\n";
 }
 ?>
 	</ul>
