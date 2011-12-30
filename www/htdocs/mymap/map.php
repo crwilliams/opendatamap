@@ -10,7 +10,20 @@ session_start();
     <title>OpenDataMap mymap: Geo Data Set Editor</title>
 <?php
 
-function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $latcolname, $loncolname, $location)
+function getLatLongFromPostcode($postcode)
+{
+	require_once('/home/opendatamap/mysql.inc.php');
+	$params[] = mysql_real_escape_string(str_replace(' ', '', $postcode));
+	$q = 'SELECT latitude AS lat, longitude AS lon FROM postcode WHERE code = \''.$params[0].'\'';
+	$res = mysql_query($q);
+	if($row = mysql_fetch_assoc($res))
+	{
+		return $row;
+	}
+	return null;
+}
+
+function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $latcolname, $loncolname, $pccolname, $location)
 {
 	$colnames = null;
 	if (($handle = fopen($filename, "r")) !== FALSE) {
@@ -26,21 +39,37 @@ function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $l
 			}
 			else
 			{
-				$data[$base.$row[$colnames[$idcolname]]] = array(
+				@$data[$base.$row[$colnames[$idcolname]]] = array(
 					'label' => str_replace('\'', '&apos;', $row[$colnames[$namecolname]]),
 					'icon' => $row[$colnames[$iconcolname]],
 					'lat' => $row[$colnames[$latcolname]],
 					'lon' => $row[$colnames[$loncolname]],
+					'pc' => $row[$colnames[$pccolname]],
 				);
-				if(isset($data[$base.$row[$colnames[$idcolname]]]['lat']) && isset($data[$base.$row[$colnames[$idcolname]]]['lon']))
+				if(
+					isset($data[$base.$row[$colnames[$idcolname]]]['lat']) &&
+					'' != $data[$base.$row[$colnames[$idcolname]]]['lat'] &&
+					isset($data[$base.$row[$colnames[$idcolname]]]['lon']) &&
+					'' != $data[$base.$row[$colnames[$idcolname]]]['lon']
+				)
 				{
 					$data[$base.$row[$colnames[$idcolname]]]['source'] = 'CSV';
 				}
+				else if(isset($data[$base.$row[$colnames[$idcolname]]]['pc']) && '' != $data[$base.$row[$colnames[$idcolname]]]['pc'])
+				{
+					$ll = getLatLongFromPostcode($data[$base.$row[$colnames[$idcolname]]]['pc']);
+					if(!is_null($ll))
+					{
+						$data[$base.$row[$colnames[$idcolname]]]['lat'] = $ll['lat'];
+						$data[$base.$row[$colnames[$idcolname]]]['lon'] = $ll['lon'];
+						$data[$base.$row[$colnames[$idcolname]]]['source'] = 'Postcode: '.$data[$base.$row[$colnames[$idcolname]]]['pc'];
+					}
+				}
 				if(isset($location[$row[$colnames[$idcolname]]]))
 				{
-					$data[$row[$colnames[$idcolname]]]['lat'] = $location[$row[$colnames[$idcolname]]][0];
-					$data[$row[$colnames[$idcolname]]]['lon'] = $location[$row[$colnames[$idcolname]]][1];
-					$data[$row[$colnames[$idcolname]]]['source'] = $location[$row[$colnames[$idcolname]]][2];
+					$data[$base.$row[$colnames[$idcolname]]]['lat'] = $location[$row[$colnames[$idcolname]]][0];
+					$data[$base.$row[$colnames[$idcolname]]]['lon'] = $location[$row[$colnames[$idcolname]]][1];
+					$data[$base.$row[$colnames[$idcolname]]]['source'] = $location[$row[$colnames[$idcolname]]][2];
 				}
 			}
 		}
@@ -57,7 +86,7 @@ if($_REQUEST['m'] == 'iss-wifi')
 }
 elseif($_REQUEST['m'] == 'amenities')
 {
-	$data = loadCSV('https://spreadsheets.google.com/pub?hl=en&hl=en&key=0AqodCQwjuWZXdDhaVzVrWVlfMGNfUmFrTW5nZmRyVHc&output=csv', 'http://id.southampton.ac.uk/point-of-service/', 'code', 'name', 'icon', 'latitude', 'longitude', array());
+	$data = loadCSV('https://spreadsheets.google.com/pub?hl=en&hl=en&key=0AqodCQwjuWZXdDhaVzVrWVlfMGNfUmFrTW5nZmRyVHc&output=csv', 'http://id.southampton.ac.uk/point-of-service/', 'code', 'name', 'icon', 'latitude', 'longitude', 'postcode', array());
 }
 else
 {
@@ -77,7 +106,7 @@ else
 	{
 		if(substr($row['source'], 0, 7) == 'http://' || substr($row['source'], 0, 8) == 'https://')
 		{
-			$data = loadCSV($row['source'], '', 'code', 'name', 'icon', 'latitude', 'longitude', $location);
+			$data = loadCSV($row['source'], '', 'code', 'name', 'icon', 'latitude', 'longitude', 'postcode', $location);
 		}
 		else
 			$data = null;

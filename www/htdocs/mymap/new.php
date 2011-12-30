@@ -47,6 +47,8 @@ if(!$post || count($errors) > 0)
 				<dd>(optional) The latitude of the location.</dd>
 				<dt>longitude</dt>
 				<dd>(optional) The longitude of the location.</dd>
+				<dt>postcode</dt>
+				<dd>(optional) The postcode of the location.</dd>
 			</dl>
 			Rows which begin with the string '*COMMENT' will be treated as comment lines and not processed further.
 		</td></tr>
