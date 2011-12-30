@@ -208,87 +208,39 @@ var icons = new Array();
 // increase reload attempts 
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
-            OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {                
-                defaultHandlerOptions: {
-                    'single': true,
-                    'double': false,
-                    'pixelTolerance': 0,
-                    'stopSingle': false,
-                    'stopDouble': false
-                },
+function drop(positionUri, pixel, requireUpdateFeature) {
+    if(positionUri == undefined)
+	return;
+    var lonlat = map.getLonLatFromViewPortPx(pixel);
+    var llc = lonlat.clone();
 
-                initialize: function(options) {
-                    this.handlerOptions = OpenLayers.Util.extend(
-                        {}, this.defaultHandlerOptions
-                    );
-                    OpenLayers.Control.prototype.initialize.apply(
-                        this, arguments
-                    ); 
-                    this.handler = new OpenLayers.Handler.Click(
-                        this, {
-                            'click': this.trigger
-                        }, this.handlerOptions
-                    );
-                }, 
+    if(requireUpdateFeature)
+    {
+	var existingMarker = markers.getFeatureByFid(positionUri);
+	if(existingMarker != null)
+	{
+	    markers.removeFeatures(existingMarker);
+	}
 
-                trigger: function(e) {
-		    if(positionUri == undefined)
-			return;
-                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
-		    var llc = lonlat.clone();
-		    var size = new OpenLayers.Size(32,37);
- 		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		    var icon = new OpenLayers.Icon(icons[positionUri], size, offset);
-		    if(p[positionUri] != undefined)
-		    {
-		    	markers.removeMarker(p[positionUri]);
-		    }
-		    //else
-		    //{
-			p[positionUri] = new OpenLayers.Marker(lonlat, icon);
-			markers.addMarker(p[positionUri]);
-		    //}
-		    changed[positionUri] = true;
-	            llc.transform(map.getProjectionObject(), wgs84);
-		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
-		    positionUri = undefined;
-		    document.getElementById('save_link').style.display = "block";
-                }
-
-            });
-
-                function drop(positionUri, x, y) {
-		    if(positionUri == undefined)
-			return;
-                    var lonlat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(x, y));
-		    var llc = lonlat.clone();
-		    var size = new OpenLayers.Size(32,37);
- 		    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		    var icon = new OpenLayers.Icon(icons[positionUri], size, offset);
-		    if(p[positionUri] != undefined)
-		    {
-		    	markers.removeMarker(p[positionUri]);
-		    }
-		    //else
-		    //{
-			p[positionUri] = new OpenLayers.Marker(lonlat, icon);
-			markers.addMarker(p[positionUri]);
-		    //}
-		    changed[positionUri] = true;
-	            llc.transform(map.getProjectionObject(), wgs84);
-		    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
-		    positionUri = undefined;
-		    document.getElementById('save_link').style.display = "block";
-                }
+	p[positionUri] = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(llc.lon, llc.lat), positionUri, { externalGraphic: icons[positionUri], graphicWidth: 32, graphicHeight: 37, graphicXOffset: -16, graphicYOffset: -37, graphicTitle: label[positionUri] });
+	p[positionUri].fid = positionUri;
+	markers.addFeatures(p[positionUri]);
+    }
+    changed[positionUri] = true;
+    llc.transform(map.getProjectionObject(), wgs84);
+    document.getElementById('loc_'+positionUri).innerHTML = Math.round(llc.lat*1000000)/1000000+'/'+Math.round(llc.lon*1000000)/1000000;
+    positionUri = undefined;
+    document.getElementById('save_link').style.display = "block";
+}
 
 function save(){
 	var str = '';
 	var i = 0;
 	for (var q in changed)
 	{
-		var llc = p[q].lonlat.clone();
+		var llc = p[q].geometry.clone();
 		llc.transform(map.getProjectionObject(), wgs84);
-		str += q + '|' + llc.lat + '|' + llc.lon + '|' + label[q] + '|' + icons[q] + '||';
+		str += q + '|' + llc.y + '|' + llc.x + '|' + label[q] + '|' + icons[q] + '||';
 		i++;
 	}
 	OpenLayers.Request.POST( {
@@ -317,7 +269,7 @@ function init(){
     });
 
     $("#map").droppable({
-	drop: function(event, ui) {var id = lastevent.currentTarget.parentElement.id; lastevent = event; drop(id, event.pageX-window.pageXOffset-1, event.pageY-window.pageYOffset-2); lastevent = event },
+	drop: function(event, ui) {var id = lastevent.currentTarget.parentElement.id; lastevent = event; drop(id, new OpenLayers.Pixel(event.pageX-window.pageXOffset-1, event.pageY-window.pageYOffset-2), true); lastevent = event },
     });
 
     var maxExtent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
@@ -335,70 +287,13 @@ function init(){
     };
     map = new OpenLayers.Map('map', options);
 
-/*
-    // create OSM layer
-    var mapnik = new OpenLayers.Layer.OSM();
-
-    // create OSM layer
-    var osmarender = new OpenLayers.Layer.OSM(
-        "OpenStreetMap (Tiles@Home)",
-        "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png"
-    );
-*/
-
-
-    // create WMS layer
-/*
-    var wms = new OpenLayers.Layer.WMS(
-        "World Map",
-        "http://world.freemap.in/tiles/",
-        {'layers': 'factbook-overlay', 'format':'png'},
-        {
-            'opacity': 0.4, visibility: false,
-            'isBaseLayer': false,'wrapDateLine': true
-        }
-    );
-*/
-    
     var streetview = new OpenLayers.Layer.StreetView("OS StreetView (1:10000)");
 
-    // create a vector layer for drawing
-/*
-    vector = new OpenLayers.Layer.Vector("Editable Vectors",
-	{
-	onFeatureInsert: function (foo) {
-		alert(vector.features.length);
-		for(var f in vector.features)
-		{
-			alert(f.lonlat);
-		}
-	},
-	style: {externalGraphic: 'http://opendatamap.ecs.soton.ac.uk/img/icon/Offices/wifi.png', graphicWidth: 32, graphicHeight:37, graphicOpacity:1, graphicYOffset: -37},
-	}
-    );
-*/
-
-    markers = new OpenLayers.Layer.Markers("Editable Markers"/*,
-	{
-	onFeatureInsert: function (foo) {
-		alert(markers.markers.length);
-		for(var f in markers.markers)
-		{
-			alert(f.lonlat);
-		}
-	},
-	style: {externalGraphic: 'http://opendatamap.ecs.soton.ac.uk/img/icon/Offices/wifi.png', graphicWidth: 32, graphicHeight:37, graphicOpacity:1, graphicYOffset: -37},
-	}*/
-    );
+    markers = new OpenLayers.Layer.Vector("Editable Markers");
 
     map.addLayers([streetview, markers]);
-    //map.addControl(new OpenLayers.Control.LayerSwitcher());
-    //map.addControl(new OpenLayers.Control.EditingToolbar(markers));
-    //map.addControl(new OpenLayers.Control.Permalink());
-    //map.addControl(new OpenLayers.Control.MousePosition());
 
-    var size = new OpenLayers.Size(32,37);
-    var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+    var features = new Array();
 <?
 foreach($data as $uri => $point)
 {
@@ -406,12 +301,14 @@ foreach($data as $uri => $point)
 		continue;
 	echo "ll['$uri'] = new OpenLayers.LonLat(".$point['lon'].", ".$point['lat'].");\n";
 	echo "ll['$uri'].transform(wgs84, map.getProjectionObject());\n";
-	echo "p['$uri'] = new OpenLayers.Marker(ll['$uri'], new OpenLayers.Icon(icons['$uri'], size, offset));\n";
-	echo "markers.addMarker(p['$uri']);\n";
+	echo "p['$uri'] = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(ll['$uri'].lon, ll['$uri'].lat), '$uri', { externalGraphic: icons['$uri'], graphicWidth: 32, graphicHeight: 37, graphicXOffset: -16, graphicYOffset: -37, graphicTitle: label['$uri'] });\n";
+	echo "p['$uri'].fid = '$uri';\n";
+	echo "features.push(p['$uri']);\n";
 }
 ?>
+    markers.addFeatures(features);
     if (!map.getCenter()) {
-	if(markers.markers.length == 0)
+	if(markers.features.length == 0)
 	{
 		bounds = new OpenLayers.Bounds(-6.379880, 49.871159, 1.768960, 55.811741);
         	bounds.transform(wgs84, map.getProjectionObject());
@@ -424,9 +321,14 @@ foreach($data as $uri => $point)
         if (map.getZoom() < 6) map.zoomTo(6);
     }
 
-                var click = new OpenLayers.Control.Click();
-                map.addControl(click);
-                click.activate();
+                var drag = new OpenLayers.Control.DragFeature(markers, {
+		    onComplete : function(feature, pixel)
+		    {
+			drop(feature.fid, pixel, false);
+		    }
+		});
+                map.addControl(drag);
+                drag.activate();
 }
 
 
