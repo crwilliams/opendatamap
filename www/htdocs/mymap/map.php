@@ -62,7 +62,7 @@ function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $l
 					{
 						$data[$base.$row[$colnames[$idcolname]]]['lat'] = $ll['lat'];
 						$data[$base.$row[$colnames[$idcolname]]]['lon'] = $ll['lon'];
-						$data[$base.$row[$colnames[$idcolname]]]['source'] = 'Postcode: '.$data[$base.$row[$colnames[$idcolname]]]['pc'];
+						$data[$base.$row[$colnames[$idcolname]]]['source'] = '<em>'.$data[$base.$row[$colnames[$idcolname]]]['pc'].'</em>';
 					}
 				}
 				if(isset($location[$row[$colnames[$idcolname]]]))
