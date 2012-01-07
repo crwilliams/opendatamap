@@ -4,13 +4,20 @@ require_once('/home/opendatamap/mysql.inc.php');
 $items = explode('||', $HTTP_RAW_POST_DATA);
 $i = 0;
 
-$username = mysql_real_escape_string($_SESSION['username']);
-if($username != $_GET['username'])
+if(!isset($_SESSION['username']))
 {
 	header("HTTP/1.0 403 Forbidden");
-	echo "Failed to save.";
+	echo "Failed to save as you are not logged in.";
 	die();
 }
+else if($_SESSION['username'] != $_GET['username'])
+{
+	header("HTTP/1.0 403 Forbidden");
+	echo "Failed to save at this map belongs to ".$_GET['username']." whilst you are logged in as ".$_SESSION['username'].".";
+	die();
+}
+
+$username = mysql_real_escape_string($_SESSION['username']);
 $map = mysql_real_escape_string($_GET['map']);
 
 foreach($items as $item)
