@@ -13,7 +13,7 @@ if(!isset($_SESSION['username']))
 else if($_SESSION['username'] != $_GET['username'])
 {
 	header("HTTP/1.0 403 Forbidden");
-	echo "Failed to save at this map belongs to ".$_GET['username']." whilst you are logged in as ".$_SESSION['username'].".";
+	echo "Failed to save as this map belongs to ".$_GET['username']." whilst you are logged in as ".$_SESSION['username'].".";
 	die();
 }
 
