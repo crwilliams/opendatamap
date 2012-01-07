@@ -8,7 +8,7 @@ $username = mysql_real_escape_string($_SESSION['username']);
 if($username != $_GET['username'])
 {
 	header("HTTP/1.0 403 Forbidden");
-	echo "Failed to save."
+	echo "Failed to save.";
 	die();
 }
 $map = mysql_real_escape_string($_GET['map']);
