@@ -281,7 +281,7 @@ function save(){
 		i++;
 	}
 	OpenLayers.Request.POST( {
-		url : 'http://opendatamap.ecs.soton.ac.uk/dev/colin/edit/save.php?map=<?php echo $_GET['m'] ?>',
+		url : 'http://opendatamap.ecs.soton.ac.uk/dev/colin/edit/save.php?username=<?php echo $_REQUEST['u'] ?>map=<?php echo $_REQUEST['m'] ?>',
 		data : str,
 		success : function(response) {
 			for (var q in changed)
