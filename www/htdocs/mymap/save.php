@@ -5,6 +5,11 @@ $items = explode('||', $HTTP_RAW_POST_DATA);
 $i = 0;
 
 $username = mysql_real_escape_string($_SESSION['username']);
+if($username == $_GET['username'])
+{
+	header("HTTP/1.0 403 Forbidden");
+	echo "Failed to save."
+}
 $map = mysql_real_escape_string($_GET['map']);
 
 foreach($items as $item)
