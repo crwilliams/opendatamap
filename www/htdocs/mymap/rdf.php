@@ -9,6 +9,8 @@ if($row = mysql_fetch_assoc($res))
 	$name = $row['name'];
 	$corrections = $row['corrections'];
 	$base = $row['base'];
+	if($base == '')
+		$base = "http://opendatamap.ecs.soton.ac.uk/mymap/".$_GET['u']."/".$_GET['m']."#";
 	header('Content-Type: text/xml');
 	echo '<?xml version="1.0" encoding="UTF-8"?>';
 }
