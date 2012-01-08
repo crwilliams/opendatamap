@@ -8,6 +8,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>OpenDataMap mymap: Geo Data Set Editor</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jquery-ui.css" />
 <?php
 
 function getLatLongFromPostcode($postcode)
@@ -75,6 +76,15 @@ function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $l
 		}
 		fclose($handle);
 	}
+	
+	foreach($location as $id => $r)
+	{
+		if(!isset($data[$id]))
+		{
+			$data[$id] = array('label' => $r[3], 'icon' => $r[4], 'lat' => $r[0], 'lon' => $r[1], 'source' => $r[2]);
+		}
+	}
+
 	return $data;
 }
 
@@ -93,12 +103,12 @@ else
 	require_once('/home/opendatamap/mysql.inc.php');
 	$params[] = mysql_real_escape_string($_REQUEST['u']);
 	$params[] = mysql_real_escape_string($_REQUEST['m']);
-	$q = 'SELECT uri, lat, lon, source FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
+	$q = 'SELECT uri, lat, lon, source, name, icon FROM mappoints WHERE username = \''.$params[0].'\' AND map = \''.$params[1].'\'';
 	$res = mysql_query($q);
 	$location = array();
 	while($row = mysql_fetch_assoc($res))
 	{
-		$location[$row['uri']] = array($row['lat'], $row['lon'], $row['source']);
+		$location[$row['uri']] = array($row['lat'], $row['lon'], $row['source'], $row['name'], $row['icon']);
 	}
 	$q = 'SELECT source FROM maps WHERE username = \''.$params[0].'\' AND mapid = \''.$params[1].'\'';
 	$res = mysql_query($q);
@@ -208,16 +218,75 @@ else
 		margin: 3px;
 	}
 
+	#icon-classes {
+		font-size: 0.5em;
+	}
+
+	#icon-classes img {
+		padding: 1px;
+	}
+
+	#dialog-modal td {
+		vertical-align: top;
+	}
+
+	#dialog-modal label {
+		top: 5px;
+		position: relative;
+	}
+
+	#dialog-modal input {
+		width: 35em;
+	}
+
+<?php
+$col['Nature'] = '128e4d';
+$col['Industry'] = '265cb2';
+$col['Offices'] = '3875d7';
+$col['Stores'] = '5ec8bd';
+$col['Tourism'] = '66c547';
+$col['Restaurants-and-Hotels'] = '8c4eb8';
+$col['Transportation'] = '9d7050';
+$col['Media'] = 'a8a8a8';
+$col['Events'] = 'c03638';
+$col['Culture-and-Entertainment'] = 'c259b5';
+$col['Health'] = 'f34648';
+$col['Sports'] = 'ff8a22';
+$col['Education'] = 'ffc11f';
+$col['Suggestions'] = '333333';
+foreach($col as $name => $colour)
+{
+?>
+	li#tab-<?php echo $name ?> {
+		background:#<?php echo $colour ?>;
+	}
+	#tab-<?php echo $name ?> span {
+		color:white;
+	}
+<?
+}
+?>
+
 	a:link, a:hover, a:visited {
 		text-decoration: none;
 		color: blue;
 	}
+
+/* Vertical Tabs
+----------------------------------*/
+.ui-tabs-vertical { width: 55em; }
+.ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 15em; }
+.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+.ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 37em;}
+
     </style>
 
     <script src="../../OpenLayers-2.11/OpenLayers.js"></script>
     <script src="../../OS.js"></script>
     <script src="../../jquery-1.6.2.min.js"></script>
-    <script src="../../jquery-ui-1.8.16.custom.min.js"></script>
+    <script src="../../jquery-ui-1.8.16.min.js"></script>
     <script type="text/javascript">
 $(function() {
 });
@@ -233,6 +302,7 @@ var wgs84 = new OpenLayers.Projection("EPSG:4326");
 var positionUri;
 var label = new Array();
 var icons = new Array();
+var iconCounts = new Array();
 
 // increase reload attempts 
 OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
@@ -243,6 +313,11 @@ function focusPoint(positionUri) {
 	{
         	map.panTo(new OpenLayers.LonLat(existingMarker.geometry.x, existingMarker.geometry.y));
 	}
+}
+
+function selectIcon(uri) {
+	$('#icon')[0].value = uri;
+	$('#selected-icon')[0].src = uri;
 }
 
 function drop(positionUri, pixel, requireUpdateFeature) {
@@ -297,6 +372,54 @@ function save(){
 }
 
 var lastevent;
+var prevname = '';
+
+function processName() {
+	if(prevname != $('#name')[0].value)
+		$('#uri')[0].value = $('#name')[0].value.toLowerCase().replace(/[^a-z0-9]/g, '-');
+	prevname = $('#name')[0].value;
+}
+
+function newDialog(pixel){
+	$('#name')[0].value = '';
+	$('#uri')[0].value = '';
+	$('#dialog-modal').dialog({
+		width: '40em',
+		modal: true,
+		buttons: {
+			Ok: function() {
+				var uri = $('#uri')[0].value;
+				if($('#name')[0].value == '')
+					alert('Title not set.');
+				else if(uri == '')
+					alert('ID not set.');
+				else if(uri != uri.toLowerCase().replace(/[^a-z0-9]/g, '-'))
+				{
+					alert('ID does not meet requirements.  Updating ID...');
+					$('#uri')[0].value = uri.toLowerCase().replace(/[^a-z0-9]/g, '-');
+				}
+				else if($('#icon')[0].value == '')
+					alert('Icon not set.');
+				else if(p[uri] != undefined)
+					alert('Point with this ID already exists.  Please choose a new ID.');
+				else
+				{
+					$( this ).dialog( "close" );
+					icons[uri] = $('#icon')[0].value;
+					label[uri] = $('#name')[0].value;
+					var newli = "<li id='" + uri + "' onclick=\"focusPoint('" + uri + "');\"><img class='draggable' style='z-index:1000; float:left; margin-right:5px' src='" + icons[uri] + "' />" + label[uri] + "<br/><span class='small' id='loc_" + uri + "'>Location not set</span></li>";
+					$("#points").append(newli);
+    					$("#" + uri + " .draggable").draggable({
+						cursorAt: {cursor: "crosshair", top: 39, left: 17},
+						helper: function(event) {lastevent = event; return $("<img src='"+event.currentTarget.src+"' />")},
+						revert: "invalid"
+					});
+					drop(uri, pixel, true);
+				}
+			}
+		}
+	});
+}
 
 function init(){
     $(".draggable").draggable({
@@ -305,8 +428,30 @@ function init(){
 	revert: "invalid"
     });
 
+    $('#icon-classes').tabs({
+			ajaxOptions: {
+				error: function( xhr, status, index, anchor ) {
+					$( anchor.hash ).html("Failed");
+				}
+			}
+    }).addClass('ui-tabs-vertical ui-helper-clearfix');
+    $('#icon-classes li').removeClass('ui-corner-top').addClass('ui-corner-left');
+
     $("#map").droppable({
-	drop: function(event, ui) {var id = lastevent.currentTarget.parentElement.id; lastevent = event; drop(id, new OpenLayers.Pixel(event.pageX-window.pageXOffset-1, event.pageY-window.pageYOffset-2), true); lastevent = event },
+	drop: function(event, ui) {
+		var id = lastevent.currentTarget.parentElement.id;
+		lastevent = event;
+		var pixel = new OpenLayers.Pixel(event.pageX-window.pageXOffset-1, event.pageY-window.pageYOffset-2);
+		if(id == '_new_')
+		{
+			newDialog(pixel);
+		}
+		else
+		{
+			drop(id, pixel, true);
+		}
+		lastevent = event;
+	 },
     });
 
     var maxExtent = new OpenLayers.Bounds(-20037508, -20037508, 20037508, 20037508),
@@ -374,6 +519,11 @@ foreach($data as $uri => $item)
 {
 	echo "label['$uri'] = '".$item['label']."';\n";
 	echo "icons['$uri'] = '".$item['icon']."';\n";
+	@$iconcounts[$item['icon']]++;
+}
+foreach($iconcounts as $k => $v)
+{
+	echo "iconCounts['$k'] = $v;\n";
 }
 ?>
 
@@ -390,7 +540,8 @@ foreach($data as $uri => $item)
     </div>
     <div id="controls">
 	<div id='list'>
-	<ul>
+	<ul id='points'>
+		<li id='_new_'><img class='draggable' style='z-index:1000; float:left; margin-right:5px' src='http://opendatamap.ecs.soton.ac.uk/img/icon/Media/blank.png' />New Point<br /><span class='small'>Drag to location to add new point.</span></li>
 <?php
 foreach($data as $uri => $item)
 {
@@ -412,6 +563,43 @@ foreach($data as $uri => $item)
 ?>
 	</ul>
     	</div>
+    </div>
+    <div id="dialog-modal" style="display:none" title="Add Location">
+	<form>
+		<table style='margin-left:auto; margin-right:auto;'>
+			<tr><td><label for='name'>Title:</label></td><td><input id='name' name='name' onchange='processName()' onkeyup='processName()' /></td></tr>
+			<tr><td><label for='uri'>ID:</label></td><td><input id='uri' name='uri' /></td></tr>
+			<tr><td><label for='icon'>Icon:</label></td><td><img id='selected-icon' src='' title='Selected icon' style='width:32px; height:37px;'/><br /><input id='icon' name='icon' style='display:none'/>
+				<div id="icon-classes">
+					<ul>
+						<li id="tab-Suggestions"><a href="#suggestions"><span>Suggestions</span></a></li>
+<?php
+ksort($col);
+foreach(array_keys($col) as $cat)
+{
+	if($cat == 'Suggestions')
+		continue;
+	echo '<li id="tab-'.$cat.'"><a href="../../icons.php?cat='.$cat.'"><span>'.$cat.'</span></a></li>';
+}
+?>
+					</ul>
+					<div id='suggestions'>
+<?
+	arsort($iconcounts);
+	foreach($iconcounts as $file => $count)
+	{
+		echo '<!-- '.$file.' -->';
+		$parts = explode('/', $file);
+		$filename = array_pop($parts);
+		$filename = substr($filename, 0, -4);
+		echo "<img id='img-$filename' src='$file' alt='$filename icon' title='$filename' onclick='selectIcon(\"$file\")' />";
+	}
+?>						
+					</div>
+				</div>
+			</td></tr>
+		</table>
+	</form>
     </div>
     <div id="map" class="smallmap"></div>
   </body>
