@@ -27,7 +27,8 @@ function getLatLongFromPostcode($postcode)
 function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $latcolname, $loncolname, $pccolname, $location)
 {
 	$colnames = null;
-	if (($handle = fopen($filename, "r")) !== FALSE) {
+	$data = array();
+	if ($filename != '' && ($handle = fopen($filename, "r")) !== FALSE) {
 		while (($row = @fgetcsv($handle, 1000, ",")) !== FALSE) {
 			if($row[0] == '*COMMENT' || $row[0] == '')
 				continue;
@@ -114,12 +115,14 @@ else
 	$res = mysql_query($q);
 	if($row = mysql_fetch_assoc($res))
 	{
-		if(substr($row['source'], 0, 7) == 'http://' || substr($row['source'], 0, 8) == 'https://')
+		if(substr($row['source'], 0, 7) == 'http://' || substr($row['source'], 0, 8) == 'https://' || $row['source'] == '')
 		{
 			$data = loadCSV($row['source'], '', 'code', 'name', 'icon', 'latitude', 'longitude', 'postcode', $location);
 		}
 		else
+		{
 			$data = null;
+		}
 	}
 	else
 	{
@@ -515,6 +518,7 @@ foreach($data as $uri => $point)
 
 
 <?php
+$iconcounts = array();
 foreach($data as $uri => $item)
 {
 	echo "label['$uri'] = '".$item['label']."';\n";

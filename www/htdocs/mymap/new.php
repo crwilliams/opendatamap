@@ -17,11 +17,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 		$errors[] = 'Map title not set';
 		$bad['title'] = true;
 	}
-	if(trim($_POST['source']) == "")
-	{
-		$errors[] = 'Map source not set';
-		$bad['source'] = true;
-	}
 	foreach($errors as $error)
 	{
 		echo $error.'<br />';
