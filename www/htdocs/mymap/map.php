@@ -333,7 +333,7 @@ function drop(positionUri, pixel, requireUpdateFeature) {
 	    markers.removeFeatures(existingMarker);
 	}
 
-	p[positionUri] = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(llc.lon, llc.lat), positionUri, { externalGraphic: icons[positionUri], graphicWidth: 32, graphicHeight: 37, graphicXOffset: -16, graphicYOffset: -37, graphicTitle: label[positionUri] });
+	p[positionUri] = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(llc.lon, llc.lat), positionUri, { externalGraphic: icons[positionUri], graphicWidth: 32, graphicHeight: 37, graphicXOffset: -16, graphicYOffset: -37, graphicTitle: label[positionUri], graphicOpacity: 0.7 });
 	p[positionUri].fid = positionUri;
 	markers.addFeatures(p[positionUri]);
     }
@@ -361,7 +361,9 @@ function save(){
 			for (var q in changed)
 			{
 				document.getElementById('loc_'+q).innerHTML += ' (OS)';
+				markers.getFeatureByFid(q).style.graphicOpacity = 1.0;
 			}
+			markers.redraw();
 			changed = new Array();
 			document.getElementById('save_link').style.display = 'none';
 		},
@@ -482,7 +484,10 @@ foreach($data as $uri => $point)
 		continue;
 	echo "ll['$uri'] = new OpenLayers.LonLat(".$point['lon'].", ".$point['lat'].");\n";
 	echo "ll['$uri'].transform(wgs84, map.getProjectionObject());\n";
-	echo "p['$uri'] = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(ll['$uri'].lon, ll['$uri'].lat), '$uri', { externalGraphic: icons['$uri'], graphicWidth: 32, graphicHeight: 37, graphicXOffset: -16, graphicYOffset: -37, graphicTitle: label['$uri'] });\n";
+	$opacity = 0.5;
+	if($point['source'] == 'OS')
+		$opacity = 1.0;
+	echo "p['$uri'] = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(ll['$uri'].lon, ll['$uri'].lat), '$uri', { externalGraphic: icons['$uri'], graphicWidth: 32, graphicHeight: 37, graphicXOffset: -16, graphicYOffset: -37, graphicTitle: label['$uri'], graphicOpacity : $opacity });\n";
 	echo "p['$uri'].fid = '$uri';\n";
 	echo "features.push(p['$uri']);\n";
 }
@@ -506,6 +511,8 @@ foreach($data as $uri => $point)
 		    onComplete : function(feature, pixel)
 		    {
 			drop(feature.fid, pixel, false);
+			feature.style.graphicOpacity = 0.7;
+			markers.redraw();
 		    }
 		});
                 map.addControl(drag);
