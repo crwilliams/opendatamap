@@ -95,10 +95,6 @@ if($_REQUEST['m'] == 'iss-wifi')
 	foreach(array('A', 'B', 'C', 'D', 'E', 'F', 'G') as $l)
 		$data[$l] = array('label' => 'Access Point '.$l, 'icon' => 'http://data.southampton.ac.uk/map-icons/Offices/wifi.png');
 }
-elseif($_REQUEST['m'] == 'amenities')
-{
-	$data = loadCSV('https://spreadsheets.google.com/pub?hl=en&hl=en&key=0AqodCQwjuWZXdDhaVzVrWVlfMGNfUmFrTW5nZmRyVHc&output=csv', 'http://id.southampton.ac.uk/point-of-service/', 'code', 'name', 'icon', 'latitude', 'longitude', 'postcode', array());
-}
 else
 {
 	require_once('/home/opendatamap/mysql.inc.php');
