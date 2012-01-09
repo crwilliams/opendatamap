@@ -101,7 +101,7 @@ class SouthamptoncachedDataSource extends DataSource
 	{
 		return sparql_get(self::$endpoint, "
 	SELECT DISTINCT ?url ?name ?number WHERE {
-	  ?url a <http://vocab.deri.ie/rooms#Building> .
+	  ?url a <http://id.southampton.ac.uk/ns/UoSBuilding> .
 	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 	  ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
 	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
@@ -124,7 +124,7 @@ class SouthamptoncachedDataSource extends DataSource
 	{
 		return sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
-		  ?url a <http://vocab.deri.ie/rooms#Building> .
+		  ?url a <http://id.southampton.ac.uk/ns/UoSBuilding> .
 		  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
 		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
 		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
