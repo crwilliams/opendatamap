@@ -24,7 +24,22 @@ function getLatLongFromPostcode($postcode)
 	return null;
 }
 
-function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $latcolname, $loncolname, $pccolname, $location)
+function getLatLongFromBuildingNumber($bno)
+{
+	require_once('../inc/sparqllib.php');
+	$data = sparql_get("http://sparql.data.southampton.ac.uk", "
+	SELECT ?lat ?lon WHERE {
+		<http://id.southampton.ac.uk/building/$bno> <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+		<http://id.southampton.ac.uk/building/$bno> <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lon .
+	}
+	", '../');
+	if(count($data) == 1)
+		return $data[0];
+	else
+		return null;
+}
+
+function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $latcolname, $loncolname, $pccolname, $bnocolname, $location)
 {
 	$colnames = null;
 	$data = array();
@@ -47,6 +62,7 @@ function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $l
 					'lat' => $row[$colnames[$latcolname]],
 					'lon' => $row[$colnames[$loncolname]],
 					'pc' => $row[$colnames[$pccolname]],
+					'bno' => $row[$colnames[$bnocolname]],
 				);
 				if(
 					isset($data[$base.$row[$colnames[$idcolname]]]['lat']) &&
@@ -65,6 +81,16 @@ function loadCSV($filename, $base="", $idcolname, $namecolname, $iconcolname, $l
 						$data[$base.$row[$colnames[$idcolname]]]['lat'] = $ll['lat'];
 						$data[$base.$row[$colnames[$idcolname]]]['lon'] = $ll['lon'];
 						$data[$base.$row[$colnames[$idcolname]]]['source'] = '<em>'.$data[$base.$row[$colnames[$idcolname]]]['pc'].'</em>';
+					}
+				}
+				else if(isset($data[$base.$row[$colnames[$idcolname]]]['bno']) && '' != $data[$base.$row[$colnames[$idcolname]]]['bno'])
+				{
+					$ll = getLatLongFromBuildingNumber($data[$base.$row[$colnames[$idcolname]]]['bno']);
+					if(!is_null($ll))
+					{
+						$data[$base.$row[$colnames[$idcolname]]]['lat'] = $ll['lat'];
+						$data[$base.$row[$colnames[$idcolname]]]['lon'] = $ll['lon'];
+						$data[$base.$row[$colnames[$idcolname]]]['source'] = '<em>B'.$data[$base.$row[$colnames[$idcolname]]]['bno'].'</em>';
 					}
 				}
 				if(isset($location[$row[$colnames[$idcolname]]]))
@@ -113,7 +139,7 @@ else
 	{
 		if(substr($row['source'], 0, 7) == 'http://' || substr($row['source'], 0, 8) == 'https://' || $row['source'] == '')
 		{
-			$data = loadCSV($row['source'], '', 'code', 'name', 'icon', 'latitude', 'longitude', 'postcode', $location);
+			$data = loadCSV($row['source'], '', 'code', 'name', 'icon', 'latitude', 'longitude', 'postcode', 'building', $location);
 		}
 		else
 		{
