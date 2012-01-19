@@ -22,5 +22,12 @@ curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 $result = curl_exec($ch);
 $result = strip_tags($result);
 $result = html_entity_decode($result);
+$result = str_replace('&', '&amp;', $result);
+
+//$myFile = "sparql-sample.xml";
+//$fh = fopen($myFile, 'w') or die("can't open file");
+//fwrite($fh, $result);
+//fclose($fh);
+
 //echo "We got this from china:\n";
 print($result);
