@@ -1,9 +1,9 @@
 <?
 include_once "inc/sparqllib.php";
 
-class SouthamptonDataSource extends DataSource
+class TsinghuaDataSource extends DataSource
 {
-	static $endpoint = 'http://data.cs.tsinghua.edu.cn/OpenData/sparql.jsp';
+	static $endpoint = 'http://opendatamap.ecs.soton.ac.uk/tsinghua-proxy.php';
 
 	static function getAll()
 	{
