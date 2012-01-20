@@ -3,7 +3,7 @@ include_once "inc/sparqllib.php";
 
 class TsinghuaDataSource extends DataSource
 {
-	static $endpoint = 'http://opendatamap.ecs.soton.ac.uk/tsinghua-proxy.php';
+	static $endpoint = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/tsinghua-proxy.php';
 
 	static function getAll()
 	{
@@ -17,26 +17,24 @@ class TsinghuaDataSource extends DataSource
 		return $points;
 	}
 
-	/*
 	static function getEntries($q, $cats)
 	{
-		$q = str_replace("\\", "\\\\\\\\\\\\\\", trim($q));
+		//$q = str_replace("\\", "\\\\\\\\\\\\\\", trim($q));
 		
 		$pos = array();
 		$label = array();
 		$type = array();
 		$url = array();
 		$icon = array();
-		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createISolutionsWifiPointEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		//self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		//self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		//self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		//self::createISolutionsWifiPointEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		//self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		//self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		return array($pos, $label, $type, $url, $icon);
 	}
-	*/
 
 	static function getDataSets()
 	{
@@ -457,7 +455,7 @@ class TsinghuaDataSource extends DataSource
 
 	static function getBuildings($q, $qbd)
 	{
-		return sparql_get(self::$endpoint, "
+		$tbuildings = sparql_get(self::$endpoint, "
 	SELECT DISTINCT ?url ?name ?number WHERE {
 	  ?url a <http://data.cs.tsinghua.edu.cn/ns/BuildingsAndPlaces> .
 	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
@@ -465,6 +463,14 @@ class TsinghuaDataSource extends DataSource
 	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
 	} ORDER BY ?number
 		");
+		$buildings = array();
+		foreach($tbuildings as $building)
+		{
+			$building['number'] = str_replace('CSIB0000', '', $building['number']);
+			$building['number'] = str_replace('CSIS0000', '', $building['number']);
+			$buildings[] = $building;
+		}
+		return $buildings;
 	}
 	
 	static function getAllSites()
@@ -481,7 +487,7 @@ class TsinghuaDataSource extends DataSource
 	
 	static function getAllBuildings()
 	{
-		return sparql_get(self::$endpoint, "
+		$tbuildings = sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
 		  ?url a <http://data.cs.tsinghua.edu.cn/ns/BuildingsAndPlaces> .
 		  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
@@ -495,6 +501,14 @@ class TsinghuaDataSource extends DataSource
 		  OPTIONAL { ?url <http://www.w3.org/2004/02/skos/core#notation> ?number . }
 		} 
 		");
+		$buildings = array();
+		foreach($tbuildings as $building)
+		{
+			$building['number'] = str_replace('CSIB0000', '', $building['number']);
+			$building['number'] = str_replace('CSIS0000', '', $building['number']);
+			$buildings[] = $building;
+		}
+		return $buildings;
 	}
 
 	static function getSites($q)
@@ -644,24 +658,27 @@ class TsinghuaDataSource extends DataSource
 		$data = self::getBuildings($q, $qbd);
 		foreach($data as $point) {
 			$pos[$point['url']] += 100;
+			$point['smallnumber'] = str_replace('CSIB0000', '', $point['number']);
+			$point['smallnumber'] = str_replace('CSIS0000', '', $point['smallnumber']);
 			if(preg_match('/'.$q.'/i', $point['name']))
 			{
-				if($point['number'] < 100)
+				//if($point['number'] < 100)
 					$label[$point['name']] += 1000;
-				else
-					$label[$point['name']] += 100;
+				//else
+				//	$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
 				$url[$point['name']] = $point['url'];
-				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['smallnumber'];
 			}
 			if(preg_match('/^'.$qbd.'/i', $point['number']))
 			{
-				if($point['number'] < 100)
+				//if($point['number'] < 100)
 					$label['Building '.$point['number']] += 1000;
-				else
-					$type['Building '.$point['number']] = "building";
+				//else
+				//	$label['Building '.$point['number']] += 100;
+				$type['Building '.$point['number']] = "building";
 				$url['Building '.$point['number']] = $point['url'];
-				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['smallnumber'];
 			}
 		}
 	}
