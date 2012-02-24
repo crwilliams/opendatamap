@@ -318,7 +318,7 @@ class SouthamptoncachedDataSource extends DataSource
 			$codes[] = $code['code'];
 		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos['name'];
 		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
-		echo "<h3> Served by: (click to filter) </h3>";
+		echo "<h3> Served by: (click to show on map) </h3>";
 		echo "<ul class='offers'>"; 
 		foreach($allbus as $code) {
 			echo "<li ".self::routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
@@ -505,7 +505,7 @@ class SouthamptoncachedDataSource extends DataSource
 		}
 		if(count($allpos) > 0)
 		{
-			echo "<h3> Offers: (click to filter) </h3>";
+			echo "<h3> Offers: (click to show on map) </h3>";
 			echo "<ul class='offers'>"; 
 			foreach($allpos as $point) {
 				echo "<li onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."$'); updateFunc();\">".$point['label']."</li>";
