@@ -18,6 +18,9 @@ else
 $uri = $_GET['uri'];
 $zoomuri = $_GET['zoomuri'];
 $clickuri = $_GET['clickuri'];
+if(strpos($uri, "://") === false) $uri = $config['prefix'].$uri;
+if(strpos($clickuri, "://") === false) $clickuri = $config['prefix'].$clickuri;
+if(strpos($zoomuri, "://") === false) $zoomuri = $config['prefix'].$zoomuri;
 ?>
 <html>
 	<head>
