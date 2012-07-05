@@ -214,13 +214,14 @@ SELECT DISTINCT ?uri ?label WHERE {
 			");
 			foreach($tpoints as $point)
 			{
-				//if(substr($point['start'], 0, 10) == $date && ($subject == '' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/09/subject/InformationStand' || $point['b'] == 'http://id.southampton.ac.uk/opendays/2011/09/subject/General' || preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2011\/09\/event\/'.$subject.'-/', $point['s'])))
 				if(substr($point['start'], 0, 10) == $date && 
 						($subject == '' || 
 						$point['b'] == 'http://id.southampton.ac.uk/opendays/2012/07/subject/InformationStand' || 
 						$point['b'] == 'http://id.southampton.ac.uk/opendays/2012/07/subject/General' || 
-						preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2012\/07\/'.$subject.'-/', $point['s'])))
+						preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2012\/07\/event\/'.$subject.'-/', $point['s'])))
+				{
 					$points[] = $point;
+				}
 			}
 		}
 		$tpoints = sparql_get(self::$endpoint, "
