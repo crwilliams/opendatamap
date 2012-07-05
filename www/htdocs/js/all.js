@@ -107,7 +107,6 @@ var initmarkerevents = function() {
 }
 
 var refreshSubjectChoice = function() {
-	//var str = $('#inputbox').val().replace(/\/.*/, '');
 	var str = getHash('subject');
 	if(str == '')
 	{
@@ -169,7 +168,6 @@ var updateFunc = function(force) {
 	xmlhttp.onreadystatechange=function() {
 		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 			var response_data = JSON.parse(xmlhttp.responseText);
-			// console.log('got ', xmlhttp.responseText, response_data);
 			var matches = [], labelmatches = [];
 			if (response_data !== undefined) {
 				matches = response_data[0];
@@ -182,33 +180,14 @@ var updateFunc = function(force) {
 			for (var uri in markers) {
 				markers[uri].setVisible(matchesd[uri] !== undefined);
 			}
-/*
-			if(document.getElementById('selectedsubject')!=null)//Naughty hack to check for openday version
-			{
-				for (var uri in polygons) {
-					if(uri.indexOf('/site/') != -1)
-						continue;
-					var pset = polygons[uri];
-					for (var i = 0; i<pset.length; i++)
-					{
-						var bar = pset[i];
-						if(bar == null || bar == undefined)
-							continue;
-						if(matchesd[uri] !== undefined)
-							bar.setOptions({fillColor : '#0000FF', strokeColor : '#0000FF'});
-						else
-							bar.setOptions({fillColor : '#9999CC', strokeColor : '#9999CC'});
-					}
-				}
-			}
-*/			
+
 			selectIndex = -1;
 			list.innerHTML = "";
 			
 			var re = new RegExp('('+$.trim(inputbox.value)+')',"gi");
 			limit = 0;
 			for(var m in labelmatches) {
-				// if it's colins' special last box continue
+				// if it's the special last element, continue
 				if (m === undefined) continue;
 				var dispStr;
 				if (labelmatches[m][0] === undefined) {
@@ -395,7 +374,6 @@ var show = function(id) {
 	{
 		$('#toggleicons').get(0).style.zIndex = 5;
 	}
-	//$('#'+id).get(0).style.zIndex = 2000;
 }
 
 var hide = function(id) {
@@ -470,23 +448,18 @@ var cont = function() {
 	if(uri != '') zoomTo(uri, true, true);
 	if(zoomuri != '')
 	{
-		//alert(zoomuri);
 		zoomTo(zoomuri, false, true);
 	}
 	if(clickuri != '')
 	{
-		//alert(clickuri);
 		zoomTo(clickuri, true, false);
 	}
 }
 
 var initmarkers = function() {
 	$.get('alldata.php?v='+version, function(data,textstatus,xhr) {
-		// do party!!!!
-		// clear em out, babes. 
 		window.markers = {};
 		window.infowindows = {};
-		// refill ...
 		data.map(function(markpt) {
 			if (markpt.length == 0) return;
 			var pos = markpt[0];
@@ -528,7 +501,6 @@ var initmarkers = function() {
 				if(polygons[pos] === undefined) polygons[pos] = new Array();
 				polygons[pos] = new google.maps.Marker({
 					position: new google.maps.LatLng(points[i][1], points[i][0]),
-					//title: new String(poslabel).replace("'", "&apos;"),
 					icon: buildingIcon,
 					map: window.map,
 					visible: true
@@ -614,7 +586,6 @@ var updateHash = function(key, value) {
 		if(hashfields[i] != '' && hashfields[i] != undefined)
 		{
 			hashstring += ','+i+'='+hashfields[i];
-			//hashvals += '/'+hashfields[i];
 		}
 	}
 	location.hash = '#'+hashstring.substring(1);
