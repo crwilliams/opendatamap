@@ -1,5 +1,10 @@
-<div id='day'><a title='Show Friday&apos;s events (6th July 2012)' id='link_2012-07-06' onclick="updateHash('day', 
-'friday')">Friday</a><a title='Show Saturday&apos;s events (7th July 2012)' id='link_2012-07-07' onclick="updateHash('day', 'saturday');">Saturday</a></div>
+<div id='day'><?
+foreach(SouthamptonopendayDataSource::$dates as $d)
+{
+	$d = strtotime($d);
+	echo "<a title='Show ".date('l', $d)."&apos;s events (".date('jS F Y', $d).")' id='link_".date('Y-m-d', $d)."' onclick=\"updateHash('day', '".strtolower(date('l', $d))."')\">".date('l', $d)."</a>";
+}
+?></div>
 <div id='selectedsubject'>Choose a subject:</div>
 <div id='subjects'>
 <ul style='overflow:scroll; position:absolute; top:100px; bottom:0px; width:300px;'>
@@ -55,13 +60,14 @@ function sortdate($a, $b)
 	//print_r($timetable);
 	foreach($subjname as $uri => $name)
 	{
-		$short = str_replace('http://id.southampton.ac.uk/opendays/2012/07/subject/', '', $uri);
+		$short = str_replace('http://id.southampton.ac.uk/opendays/'.date('Y/m', strtotime(SouthamptonopendayDataSource::$dates[0])).'/subject/', '', $uri);
 		if($subjbroader[$uri] == 'Subject')
 			echo "<li class='".$subjbroader[$uri]." subj_".$short."'><h2 id='subj_".$short."' class='clickable' onclick='chooseSubject(\"".$name."\"); updateHash(\"subject\", \"".$short."\")' title='Select ".htmlspecialchars($name, ENT_QUOTES)."'>".$name."</h2>";
 		else
 			echo "<li style='display:none' class='".str_replace(' ', '', $subjbroader[$uri])."'><h2>".$name."</h2>";
-		foreach(array('2012-07-06', '2012-07-07') as $date)
+		foreach(SouthamptonopendayDataSource::$dates as $date)
 		{
+			$date = str_replace('/', '-', $date);
 			echo "<div class='_$date'>";
 			$events = $timetable[$uri][$date];
 			usort($events, 'sortdate');

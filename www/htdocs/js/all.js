@@ -652,29 +652,33 @@ var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, 
 
 		if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
 			return;
-		$('._2012-07-06').hide();
-		$('._2012-07-07').hide();
-		$('#link_2012-07-06').removeClass('selected');
-		$('#link_2012-07-07').removeClass('selected');
+		var dates = new Object();
+		var fulldates = new Object();
+		$('#day a').each(function(i, v) {
+			var d = v.id.substring(5, 15);
+			dates[v.innerHTML.toLowerCase()] = d;
+			fulldates[v.innerHTML.toLowerCase()] = v.title.replace('Show ', '').replace('\'s events (', ' ').replace(')', '');
+			$('._'+d).hide();
+		});
+		$('#day a').each(function(i, v) {
+			var d = v.id.substring(5, 15);
+			$('#link_'+d).removeClass('selected');
+		});
 		document.title = document.title.replace( / \| .*/, '' );
 
 		var d = getHash('day');
 		var fulldate;
 		if(d == '') {
-			d = 'friday';
+			d = Object.keys(dates)[0];
 			hashfields['day'] = d;
 			updateHash();
 		}
-		if(d == 'friday') {
-			selecteddate = '2012-07-06';
-			fulldate = 'Friday 6th July 2012';
-		}
-		else if(d == 'saturday') {
-			selecteddate = '2012-07-07';
-			fulldate = 'Saturday 7th July 2012';
-		}
-		else
+		if(dates[d] == undefined) {
 			return;
+		} else {
+			selecteddate = dates[d];
+			fulldate = fulldates[d];
+		}
 
 		document.title += ' | '+fulldate;
 		$('._'+selecteddate).show();

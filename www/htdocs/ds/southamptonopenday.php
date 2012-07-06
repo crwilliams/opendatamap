@@ -4,6 +4,7 @@ include_once "inc/sparqllib.php";
 class SouthamptonopendayDataSource extends DataSource
 {
 	static $endpoint = "http://sparql.data.southampton.ac.uk";
+	static $dates = array('2012/07/06', '2012/07/07');
 
 	static function getAll()
 	{
@@ -61,9 +62,9 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?uri ?label WHERE {
-  GRAPH <http://id.southampton.ac.uk/dataset/opendays-july-2012/latest> {
+  GRAPH <http://id.southampton.ac.uk/dataset/opendays-".strtolower(date('F-Y', strtotime(self::$dates[0])))."/latest> {
     ?uri a skos:Concept .
-    ?uri skos:broader <http://id.southampton.ac.uk/opendays/2012/07/subject/Subject> .
+    ?uri skos:broader <http://id.southampton.ac.uk/opendays/".date('Y/m', strtotime(self::$dates[0]))."/subject/Subject> .
     ?uri rdfs:label ?label .
   }
 } ORDER BY ?label
@@ -77,7 +78,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getAllPointsOfService()
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2012/07';
+		$uri = 'http://id.southampton.ac.uk/opendays/'.date('Y/m', strtotime(self::$dates[0]));
 		$points = array();
 		$tpoints = sparql_get(self::$endpoint, "
 		SELECT DISTINCT ?id ?lat ?long ?label ?number WHERE {
@@ -176,21 +177,19 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getPointsOfService($q)
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2012/07';
+		$uri = 'http://id.southampton.ac.uk/opendays/'.date('Y/m', strtotime(self::$dates[0]));
 		$q = explode('/', $q);
 		$subject = $q[0];
 		if(count($q) > 0)
 		{
-			switch($q[1])
+			$date = null;
+			foreach(self::$dates as $d)
 			{
-				case 'friday':
-					$date = '2012-07-06';
-					break;
-				case 'saturday':
-					$date = '2012-07-07';
-					break;
-				default:
-					$date = null;;
+				$d = strtotime($d);
+				if($q[1] == strtolower(date('l', $d)))
+				{
+					$date = date('Y-m-d', $d);
+				}
 			}
 		}
 		if($date != null)
@@ -214,11 +213,12 @@ SELECT DISTINCT ?uri ?label WHERE {
 			");
 			foreach($tpoints as $point)
 			{
+				$d = strtotime(self::$dates[0]);
 				if(substr($point['start'], 0, 10) == $date && 
 						($subject == '' || 
-						$point['b'] == 'http://id.southampton.ac.uk/opendays/2012/07/subject/InformationStand' || 
-						$point['b'] == 'http://id.southampton.ac.uk/opendays/2012/07/subject/General' || 
-						preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/2012\/07\/event\/'.$subject.'-/', $point['s'])))
+						$point['b'] == 'http://id.southampton.ac.uk/opendays/'.date('Y/m', $d).'/subject/InformationStand' || 
+						$point['b'] == 'http://id.southampton.ac.uk/opendays/'.date('Y/m', $d).'/subject/General' || 
+						preg_match('/^http:\/\/id\.southampton\.ac\.uk\/opendays\/'.str_replace('/', '\/', date('Y/m', $d)).'\/event\/'.$subject.'-/', $point['s'])))
 				{
 					$points[] = $point;
 				}
@@ -343,7 +343,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getAllTimetables()
 	{
-		$uri = 'http://id.southampton.ac.uk/opendays/2012/07';
+		$uri = 'http://id.southampton.ac.uk/opendays/'.date('Y/m', strtotime(self::$dates[0]));
 		$data = sparql_get(self::$endpoint, "
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
