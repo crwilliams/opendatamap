@@ -27,7 +27,7 @@ if(strpos($zoomuri, "://") === false) $zoomuri = $config['prefix'].$zoomuri;
 		<title><?php echo $config['Site title'] ?></title>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="keywords" content="<?php echo $config['Site keywords'] ?>" />
 		<meta name="description" content="<?php echo $config['Site description'] ?>" />
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
