@@ -29,6 +29,10 @@ function getCategory($icon)
 		{
 			return 'Transportation';
 		}
+		elseif(substr($category[4], 0, 12) == 'workstationicon.php?')
+		{
+			return 'Education';
+		}
 		else
 		{
 			return '';
