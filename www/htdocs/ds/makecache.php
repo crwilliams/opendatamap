@@ -29,7 +29,7 @@ function getCategory($icon)
 		{
 			return 'Transportation';
 		}
-		elseif(substr($category[4], 0, 12) == 'workstationicon.php?')
+		elseif(substr($category[4], 0, 20) == 'workstationicon.php?')
 		{
 			return 'Education';
 		}
@@ -122,5 +122,6 @@ runQuery('DELETE FROM points WHERE uri LIKE "http://id.southampton.ac.uk/vending
 runQuery('DELETE FROM matches WHERE uri LIKE "http://id.southampton.ac.uk/vending-machine/%"');
 runQuery('UPDATE points SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" where icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"');
 runQuery('UPDATE matches SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" where icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"');
+runQuery('UPDATE matches SET type = "workstation" WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"');
 //runQuery('COMMIT TRANSACTION');
 ?>
