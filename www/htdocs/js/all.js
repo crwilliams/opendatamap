@@ -685,7 +685,9 @@ var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, 
 		$('#link_'+selecteddate).addClass('selected');
 
 		var s = getHash('subject');
-		chooseSubject($('#subj_'+s).get(0).innerHTML);
+		if($('#subj_'+s).get(0) != undefined) {
+			chooseSubject($('#subj_'+s).get(0).innerHTML);
+		}
 	
 		var hashvals = '';
 		if(hashfields['subject'] != undefined)
