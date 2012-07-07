@@ -56,11 +56,11 @@ processMatches($ds, 'bus-stop');
 $ds = SouthamptonDataSource::getWorkstationRooms('');
 processMatches($ds, 'workstation');
 $ds = SouthamptonDataSource::getISolutionsWifiPoints('');
-processMatches($ds, 'workstation');
+processMatches($ds, 'wifi');
 //$ds = SouthamptonDataSource::getResidences('');
-//processMatches($ds, 'workstation');
+//processMatches($ds, 'residence');
 $ds = SouthamptonDataSource::getShowers('');
-processMatches($ds, 'workstation');
+processMatches($ds, 'shower');
 
 function processMatches($ds, $type)
 {

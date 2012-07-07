@@ -19,6 +19,8 @@ class SouthamptoncachedDataSource extends DataSource
 		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		self::createWifiEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		return array($pos, $label, $type, $url, $icon);
 	}
 
@@ -73,6 +75,16 @@ class SouthamptoncachedDataSource extends DataSource
 	static function getWorkstationRooms($q, $cats)
 	{
 		return self::getByType('workstation', $q, $cats);
+	}
+
+	static function getShowers($q, $cats)
+	{
+		return self::getByType('shower', $q, $cats);
+	}
+
+	static function getWifi($q, $cats)
+	{
+		return self::getByType('wifi', $q, $cats);
 	}
 
 	static function getByType($type, $q, $cats)
@@ -224,6 +236,54 @@ class SouthamptoncachedDataSource extends DataSource
 			{
 				$label[$point['poslabel']] += 10;
 				$type[$point['poslabel']] = "workstation";
+				$url[$point['poslabel']] = $point['pos'];
+				$icon[$point['poslabel']] = $point['icon'];
+			}
+		}
+	}
+
+	// Process wifi data
+	static function createWifiEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
+	{
+		$data = self::getWifi($q, $cats);
+		foreach($data as $point) {
+			//$point['icon'] = self::$iconpath.'Education/computers.png';
+//			if(!self::visibleCategory($point['icon'], $cats))
+//				continue;
+			$pos[$point['pos']] ++;
+			if(preg_match('/'.$q.'/i', $point['label']))
+			{
+				$label[$point['label']] ++;
+				$type[$point['label']] = "offering";
+			}
+			if(preg_match('/'.$q.'/i', $point['poslabel']))
+			{
+				$label[$point['poslabel']] += 10;
+				$type[$point['poslabel']] = "wifi";
+				$url[$point['poslabel']] = $point['pos'];
+				$icon[$point['poslabel']] = $point['icon'];
+			}
+		}
+	}
+
+	// Process shower data
+	static function createShowerEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
+	{
+		$data = self::getShowers($q, $cats);
+		foreach($data as $point) {
+			//$point['icon'] = self::$iconpath.'Education/computers.png';
+//			if(!self::visibleCategory($point['icon'], $cats))
+//				continue;
+			$pos[$point['pos']] ++;
+			if(preg_match('/'.$q.'/i', $point['label']))
+			{
+				$label[$point['label']] ++;
+				$type[$point['label']] = "offering";
+			}
+			if(preg_match('/'.$q.'/i', $point['poslabel']))
+			{
+				$label[$point['poslabel']] += 10;
+				$type[$point['poslabel']] = "shower";
 				$url[$point['poslabel']] = $point['pos'];
 				$icon[$point['poslabel']] = $point['icon'];
 			}
