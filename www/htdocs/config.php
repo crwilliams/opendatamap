@@ -24,20 +24,14 @@ error_reporting(0);
 $version = $_GET['v'];
 $versionparts = explode('_', $version);
 
-if(file_exists('config.local.php'))
-{
-	include 'config.local.php';
-}
+@include 'config.local.php';
 
 $path = '.';
 if(preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['v']))
 {
 	$version = $versionparts[0];
 	$path = $version;
-	if(file_exists('config.'.$version.'.php'))
-	{
-		include 'config.'.$version.'.php';
-	}
+	@include 'config.'.$version.'.php';
 }
 
 if(!is_array($config['datasource']))
