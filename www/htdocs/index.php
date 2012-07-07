@@ -18,9 +18,6 @@ else
 $uri = $_GET['uri'];
 $zoomuri = $_GET['zoomuri'];
 $clickuri = $_GET['clickuri'];
-if(strpos($uri, "://") === false) $uri = $config['prefix'].$uri;
-if(strpos($clickuri, "://") === false) $clickuri = $config['prefix'].$clickuri;
-if(strpos($zoomuri, "://") === false) $zoomuri = $config['prefix'].$zoomuri;
 ?>
 <html>
 	<head>
@@ -46,7 +43,11 @@ if(strpos($zoomuri, "://") === false) $zoomuri = $config['prefix'].$zoomuri;
 	</head>
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
-		<div id="spinner"><img src="img/ajax-loader.gif"><br/><br/>Please wait while the map loads...</div>
+		<div id="spinner">
+			<img src="img/ajax-loader.gif" />
+			<br/>
+			<br/>Please wait while the map loads...
+		</div>
 <?php if(has('openday')) { ?>
 		<div id="openday">
 			<?php include 'resources/opendaysubjects.php' ?>
@@ -64,12 +65,15 @@ if(strpos($zoomuri, "://") === false) $zoomuri = $config['prefix'].$zoomuri;
 foreach($config['categories'] as $catid => $catname)
 {
 ?>
-	<div title='<?= $catname ?>' class='togglebutton' style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')"><label for='<?= $catname ?>'><?= str_replace(' and ', ' <span style=\'font-weight:0.5em\'>&amp;</span> ', $catname) ?></label><input class='togglebox' style='cursor:pointer' type='checkbox' id='<?= $catid ?>' name='<?= $catname ?>' id='<?= $catname ?>' onclick="toggle('<?= $catid ?>');" <?= isset($config['selected'][$catid]) ? 'checked=\'checked\'' : '' ?>/></div>
+			<div title='<?= $catname ?>' class='togglebutton' style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')">
+				<label for='<?= $catname ?>'><?= str_replace(' and ', ' <span style=\'font-weight:0.5em\'>&amp;</span> ', $catname) ?></label>
+				<input class='togglebox' style='cursor:pointer' type='checkbox' name='<?= $catname ?>' id='<?= $catname ?>' onclick="toggle('<?= $catid ?>');" <?= isset($config['selected'][$catid]) ? 'checked=\'checked\'' : '' ?>/>
+			</div>
 <?
 }
 ?>
-		<img src='img/left.png' id='iconexpand' onclick='$("#toggleicons").removeClass("offset")' title='Expand' />
-		<img src='img/right.png' id='iconcollapse' onclick='$("#toggleicons").addClass("offset")' title='Collapse' />
+			<img src='img/left.png' id='iconexpand' onclick='$("#toggleicons").removeClass("offset")' title='Expand' />
+			<img src='img/right.png' id='iconcollapse' onclick='$("#toggleicons").addClass("offset")' title='Collapse' />
 		</div>
 		<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
 			<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="show('list'); $('#search').css('z-index', 10);" onBlur="delayHide('list', 1000);">
@@ -82,8 +86,14 @@ foreach($config['categories'] as $catid => $catname)
 			<?php include 'resources/opendaybookmarks.php' ?>
 		</div>
 <?php } ?>
-		<div id="search-small" <?php show('search') ?>><img src='img/search.png' onclick="window.location='m'" alt="Search" title="Search" /></div>
-		<div id="credits"><?php $include = true; include 'credits.php' ?></div>
-		<div id="credits-small"><a href="credits.php">Application Credits</a></div>
+		<div id="search-small" <?php show('search') ?>>
+			<img src='img/search.png' onclick="window.location='m'" alt="Search" title="Search" />
+		</div>
+		<div id="credits">
+			<?php $include = true; include 'credits.php' ?>
+		</div>
+		<div id="credits-small">
+			<a href="credits.php">Application Credits</a>
+		</div>
 	</body>
 </html>
