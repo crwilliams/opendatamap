@@ -72,7 +72,13 @@ class SouthamptonDataSource extends DataSource
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
 			if(!isset($point['icon']) || $point['icon'] == "")
+			{
 				$point['icon'] = "img/blackness.png";
+			}
+			if($point['icon'] == self::$iconpath.'Education/computers.png')
+			{
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=".$point['id'];
+			}
 			$points[] = $point;
 		}
 		return $points;
@@ -159,40 +165,44 @@ class SouthamptonDataSource extends DataSource
 
 	static function getAllWorkstationRooms()
 	{
+		return array();
 		$tpoints = sparql_get(self::$endpoint, "
+	PREFIX soton: <http://id.southampton.ac.uk/ns/>
 	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 	PREFIX org: <http://www.w3.org/ns/org#>
+	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
 	PREFIX gr: <http://purl.org/goodrelations/v1#>
-	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+	PREFIX oo: <http://purl.org/openorg/>
 
-	SELECT DISTINCT ?id ?lat ?long ?label WHERE {
-	  ?id <http://purl.org/openorg/hasFeature> ?f .
-	  ?f a ?ft .
-	  ?ft rdfs:label ?ftl .
-	  ?id skos:notation ?label .
-	  OPTIONAL { ?id spacerel:within ?b .
-	             ?b geo:lat ?lat . 
-	             ?b geo:long ?long .
-	             ?b a <http://vocab.deri.ie/rooms#Building> .
-	           }
-	  OPTIONAL { ?id spacerel:within ?s .
-	             ?s geo:lat ?lat . 
-	             ?s geo:long ?long .
-	             ?s a org:Site .
-	           }
-	  OPTIONAL { ?id geo:lat ?lat .
-	             ?id geo:long ?long .
-	           }
-	  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
-	  FILTER ( BOUND(?long) && BOUND(?lat) && REGEX(?ftl, '^WORKSTATION -') )
+	SELECT DISTINCT ?id ?label ?lat ?long ?icon ?seats ?freeseats WHERE {
+	  ?offering gr:includes <http://id.southampton.ac.uk/generic-products-and-services/iSolutionsWorkstations> .
+	  ?offering <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> gr:Offering .
+	  ?offering gr:availableAtOrFrom ?id .
+	  ?id rdfs:label ?label .
+	  ?id soton:workstationSeats ?seats .
+	  ?id soton:workstationFreeSeats ?freeseats .
+	  ?id oo:mapIcon ?icon .
+          OPTIONAL { ?id spacerel:within ?b .
+                     ?b geo:lat ?lat . 
+                     ?b geo:long ?long .
+                     ?b a <http://vocab.deri.ie/rooms#Building> .
+                   }
+          OPTIONAL { ?id spacerel:within ?s .
+                     ?s geo:lat ?lat . 
+                     ?s geo:long ?long .
+                     ?s a org:Site .
+                   }
+          OPTIONAL { ?id geo:lat ?lat .
+                     ?id geo:long ?long .
+                   }
 	} ORDER BY ?label
 		");
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['icon'] = self::$iconpath.'Education/computers.png';
+			//$point['icon'] = self::$iconpath.'Education/computers.png';
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=".$point['id'];
 			$points[] = $point;
 		}
 		return $points;
@@ -205,24 +215,30 @@ class SouthamptonDataSource extends DataSource
 		else
 			$filter = "&& ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
 		$tpoints =  sparql_get(self::$endpoint, "
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-	PREFIX org: <http://www.w3.org/ns/org#>
-	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+        PREFIX gr: <http://purl.org/goodrelations/v1#>
+        PREFIX oo: <http://purl.org/openorg/>
 
-	SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
-	  ?pos <http://purl.org/openorg/hasFeature> ?f .
-	  ?f a ?ft .
-	  ?ft rdfs:label ?label .
-	  ?pos skos:notation ?poslabel .
-	  FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') $filter)
-	} ORDER BY ?poslabel
+        SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
+          ?offering gr:includes <http://id.southampton.ac.uk/generic-products-and-services/iSolutionsWorkstations> .
+          ?offering <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> gr:Offering .
+          ?offering gr:availableAtOrFrom ?pos .
+          ?pos rdfs:label ?poslabel .
+          ?pos oo:mapIcon ?icon .
+          ?pos spacerel:within ?s .
+          ?s a <http://vocab.deri.ie/rooms#Room> .
+          ?s oo:hasFeature ?f .
+          ?f a ?ft .
+          ?ft rdfs:label ?label .
+          FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') $filter)
+        } ORDER BY ?poslabel
 		");
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['icon'] = self::$iconpath.'Education/computers.png';
+			//$point['icon'] = self::$iconpath.'Education/computers.png';
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=".$point['pos'];
 			$points[] = $point;
 		}
 		return $points;
