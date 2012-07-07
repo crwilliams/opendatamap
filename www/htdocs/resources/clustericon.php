@@ -15,6 +15,49 @@ function positionimg($rimg, $img, $destx, $desty) {
 	$y = imagesy($img);
 	imagecopyresampled($rimg, $img, $destx, $desty, 5, 5, 10, 10, $x - 10, $y - 15);
 }
+function catsort($a, $b)
+{
+	$cats['Special'] = 1;
+	$cats['Education'] = 2;
+	if(array_key_exists($a, $cats) && !array_key_exists($b, $cats))
+	{
+		return -1;
+	}
+	if(!array_key_exists($a, $cats) && array_key_exists($b, $cats))
+	{
+		return 1;
+	}
+	if(array_key_exists($a, $cats) && array_key_exists($b, $cats))
+	{
+		if($cats[$a] == $cats[$b])
+		{
+			return 0;
+		}
+		else if($cats[$a] > $cats[$b])
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+	else
+	{
+		if($a == $b)
+		{
+			return 0;
+		}
+		else if($a > $b)
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+}
 $hash = md5($_SERVER['QUERY_STRING']);
 $filename = 'cache/ci_'.$hash.'.png';
 if(!file_exists($filename))
@@ -24,7 +67,19 @@ if(!file_exists($filename))
 	foreach($imgs as $img)
 	{
 		$parts = explode('/', $img);
-		$gimgs[$parts[4]][] = $img;
+		if($parts[2] == 'data.southampton.ac.uk')
+		{
+			$cat = $parts[4];
+		}
+		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/busicon.php|', $img))
+		{
+			$cat = 'Special';
+		}
+		else
+		{
+			$cat = '?';
+		}
+		$gimgs[$cat][] = $img;
 	}
 	$limit = 10;
 	if(count($gimgs) == 1)
@@ -34,6 +89,7 @@ if(!file_exists($filename))
 	else
 	{
 		$imgs = array();
+		uksort($gimgs, 'catsort');
 		foreach($gimgs as $cat => $catimgs)
 		{
 			//$catimgs = array_values($catimgs);
