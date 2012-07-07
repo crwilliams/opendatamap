@@ -60,6 +60,7 @@ function catsort($a, $b)
 }
 $hash = md5($_SERVER['QUERY_STRING']);
 $filename = 'cache/ci_'.$hash.'.png';
+$cachable = true;
 if(!file_exists($filename))
 {
 	$imgs = $_GET['i'];
@@ -74,6 +75,12 @@ if(!file_exists($filename))
 		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/busicon.php|', $img))
 		{
 			$cat = 'Special';
+		}
+		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php|', $img))
+		{
+			$cat = 'Special';
+			$workstations[] = preg_replace('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php\?pos=|', '', $img);
+			$cachable = false;
 		}
 		else
 		{
@@ -111,6 +118,15 @@ if(!file_exists($filename))
 	imagealphablending($oimg, true);
 	for($i=$count-1; $i>=0; $i--)
 	{
+		if($i == 0 && preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php|', $imgs[$i]))
+		{
+			$imgs[$i] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?';
+			foreach($workstations as $pos)
+			{
+				$qstr[] = "pos[]=".$pos;
+			}
+			$imgs[$i] .= implode('&', $qstr);
+		}
 		$img = simagecreatefrompng($imgs[$i]);
 		//if($i != $count-1)
 		//	imagecopymerge($oimg, $img, ($count - $i - 1) * $offsetx, $i * $offsety, 0, 0, 32, 32, max(100 - ($count - $i - 1) * 20, 0));
@@ -118,6 +134,12 @@ if(!file_exists($filename))
 			imagecopy($oimg, $img, $i * $offsetx, ($count - $i - 1) * $offsety, 0, 0, 32, 37);
 	}
 	imagesavealpha($oimg,true);
+	if(!$cachable)
+	{
+		header('Content-type: image/png');
+		imagepng($oimg);
+		die();
+	}
 	imagepng($oimg, $filename);
 }
 header('Content-type: image/png');
