@@ -390,33 +390,10 @@ class SouthamptoncachedDataSource extends DataSource
 
 	static function getURIInfo($uri)
 	{
-		$info = sparql_get(self::$endpoint, "
-		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-		PREFIX org: <http://www.w3.org/ns/org#>
-
-		SELECT DISTINCT ?name ?icon ?type ?label ?notation ?ftype WHERE {
-		    OPTIONAL { <$uri> rdfs:label ?name . }
-		    OPTIONAL { <$uri> a ?type . }
-		    OPTIONAL { <$uri> <http://www.w3.org/2004/02/skos/core#notation> ?notation . }
-		    OPTIONAL { <$uri> <http://purl.org/openorg/mapIcon> ?icon . }
-		    OPTIONAL { <$uri> <http://purl.org/openorg/hasFeature> ?feature . 
-		        OPTIONAL { ?feature a ?ftype . }
-		        OPTIONAL { ?feature rdfs:label ?label . }
-		    }
-		}
-		");
-		$res = array('name' => '', 'icon' => '', 'type' => '', 'label' => '', 'notation' => '', 'ftype' => '');
-		foreach($info as $infoline)
-		{
-			foreach(array_keys($res) as $key)
-			{
-				if($res[$key] =='' && isset($infoline[$key]))
-					$res[$key] = $infoline[$key];
-			}
-		}
-		return $res;
+		$uri= mysql_escape_string($uri);
+		$q = "SELECT poslabel AS name, icon, type, label FROM matches WHERE uri = '$uri'";
+		$data = self::perform_query($q);
+		return $data[0];
 	}
 
 	static function processSouthamptonURI($uri)
