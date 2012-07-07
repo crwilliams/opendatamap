@@ -790,6 +790,25 @@ class SouthamptonDataSource extends DataSource
 		}
 		echo "</h2>";
 
+		$allopen = sparql_get(self::$endpoint, "
+		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+		PREFIX org: <http://www.w3.org/ns/org#>
+		PREFIX gr: <http://purl.org/goodrelations/v1#>
+
+		SELECT DISTINCT * WHERE {
+			<$uri> gr:hasOpeningHoursSpecification ?time .
+			OPTIONAL { ?time gr:validFrom ?start . }
+			OPTIONAL { ?time gr:validThrough ?end . }
+			?time gr:hasOpeningHoursDayOfWeek ?day .
+			?time gr:opens ?opens .
+			?time gr:closes ?closes .
+		} ORDER BY ?start ?end ?day ?opens ?closes
+		");
+
+		self::processOpeningTimes($allopen);
+
 		if($computer)
 		{
 			$allpos = sparql_get(self::$endpoint, "
@@ -851,25 +870,6 @@ class SouthamptonDataSource extends DataSource
 			echo "</div>";
 			die();
 		}
-
-		$allopen = sparql_get(self::$endpoint, "
-		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-		PREFIX org: <http://www.w3.org/ns/org#>
-		PREFIX gr: <http://purl.org/goodrelations/v1#>
-
-		SELECT DISTINCT * WHERE {
-			<$uri> gr:hasOpeningHoursSpecification ?time .
-			OPTIONAL { ?time gr:validFrom ?start . }
-			OPTIONAL { ?time gr:validThrough ?end . }
-			?time gr:hasOpeningHoursDayOfWeek ?day .
-			?time gr:opens ?opens .
-			?time gr:closes ?closes .
-		} ORDER BY ?start ?end ?day ?opens ?closes
-		");
-
-		self::processOpeningTimes($allopen);
 
 		if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
 			self::processSownURI($uri);
