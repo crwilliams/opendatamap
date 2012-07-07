@@ -490,6 +490,9 @@ class SouthamptoncachedDataSource extends DataSource
  			FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
 		} ORDER BY ?poslabel
 			");
+			$seats = self::getSeats($uri);
+			echo "Workstations available: ".$seats['freeseats']."<br />";
+			echo "Workstations total: ".$seats['allseats']."<br />";
 		}
 		else if($type == 'wifi')
 		{
@@ -600,6 +603,19 @@ class SouthamptoncachedDataSource extends DataSource
 	        }
 		");
 		return $freeseats[0]['freeseats'];
+	}
+
+	static function getSeats($pos)
+	{
+		$seats = sparql_get(self::$endpoint, "
+	        PREFIX soton: <http://id.southampton.ac.uk/ns/>
+
+	        SELECT ?freeseats ?allseats WHERE {
+	          <$pos> soton:workstationFreeSeats ?freeseats .
+	          <$pos> soton:workstationSeats ?allseats .
+	        }
+		");
+		return $seats[0];
 	}
 }
 ?>
