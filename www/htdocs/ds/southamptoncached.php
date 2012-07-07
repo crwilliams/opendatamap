@@ -599,5 +599,17 @@ class SouthamptoncachedDataSource extends DataSource
 			return "style='background-color:#".str_pad(dechex($color[$code][0]), 2, '0').str_pad(dechex($color[$code][1]), 2, '0').str_pad(dechex($color[$code][2]), 2, '0').";' ";
 		}
 	}
+
+	static function getFreeSeats($pos)
+	{
+		$freeseats = sparql_get(self::$endpoint, "
+	        PREFIX soton: <http://id.southampton.ac.uk/ns/>
+
+	        SELECT ?freeseats WHERE {
+	          <$pos> soton:workstationFreeSeats ?freeseats .
+	        }
+		");
+		return $freeseats[0]['freeseats'];
+	}
 }
 ?>
