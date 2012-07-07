@@ -398,43 +398,30 @@ class SouthamptoncachedDataSource extends DataSource
 
 	static function processSouthamptonURI($uri)
 	{
-		$wifi = false;
 		$res = false;
-		if(substr($uri, strlen($uri)-5, 5) == '#wifi')
-		{
-			$uri = substr($uri, 0, strlen($uri)-5);
-			$wifi = true;
-		}
 		if(substr($uri, strlen($uri)-12, 12) == '#residential')
 		{
 			$uri = substr($uri, 0, strlen($uri)-12);
 			$res = true;
 		}
 		$allpos = self::getURIInfo($uri);
+		if(substr($uri, strlen($uri)-5, 5) == '#wifi')
+		{
+			$uri = substr($uri, 0, strlen($uri)-5);
+		}
+		$type = $allpos['type'];
 		echo "<div id='content'>";
-		$computer = false;
 		if($allpos['icon'] == '')
 		{
-			if($wifi && $allpos['type'] == "http://vocab.deri.ie/rooms#Building")
-			{
-				$icon = self::$iconpath."Offices/wifi.png";
-				$name = 'Wi-Fi Internet Access in Building '.$allpos['notation'];
-			}
-			else if($res)
+			if($res)
 			{
 				$icon = self::$iconpath."Restaurants-and-Hotels/lodging_0star.png";
 				$name = $allpos['name'];
 			}
-			else if($allpos['ftype'] == "http://id.southampton.ac.uk/location-feature/Shower")
+			else if($allpos['type'] == "shower")
 			{
 				$icon = self::$iconpath."Offices/shower.png";
 				$name = $allpos['label'];
-			}
-			else if(substr($uri, 0, 33) == "http://id.southampton.ac.uk/room/")
-			{
-				$icon = self::$iconpath."Education/computers.png";
-				$name = $allpos['name'];
-				$computer = "true";
 			}
 			else
 			{
@@ -486,25 +473,28 @@ class SouthamptoncachedDataSource extends DataSource
 
 		self::processOpeningTimes($allpos);
 
-		if($computer)
+		if($type == 'workstation')
 		{
 			$allpos = sparql_get(self::$endpoint, "
-		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-		PREFIX org: <http://www.w3.org/ns/org#>
-		PREFIX gr: <http://purl.org/goodrelations/v1#>
+		PREFIX gr: <http://purl.org/goodrelations/v1#> 
+		PREFIX oo: <http://purl.org/openorg/>
 
 		SELECT DISTINCT ?label WHERE {
-			<$uri> <http://purl.org/openorg/hasFeature> ?f .
+			<$uri> spacerel:within ?s .
+			?s a <http://vocab.deri.ie/rooms#Room> .
+			?s oo:hasFeature ?f .
 			?f a ?ft .
 			?ft rdfs:label ?label .
-			FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
-		} ORDER BY ?label
+ 			FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
+		} ORDER BY ?poslabel
 			");
 		}
-		else if($wifi)
+		else if($type == 'wifi')
+		{
 			$allpos = array(array('label' => 'Wi-Fi Access'));
+		}
 		else
 		{
 			$allpos = sparql_get(self::$endpoint, "
@@ -550,7 +540,7 @@ class SouthamptoncachedDataSource extends DataSource
 			echo "</ul>";
 		}
 
-		if($wifi)
+		if($type == 'wifi')
 		{
 			$allpos = sparql_get(self::$endpoint, "
 			PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
