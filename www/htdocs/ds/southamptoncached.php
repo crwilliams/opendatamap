@@ -444,6 +444,14 @@ class SouthamptoncachedDataSource extends DataSource
 		} ORDER BY ?page
 		");
 
+		$rating = sparql_get(self::$endpoint, "
+		PREFIX oo: <http://purl.org/openorg/>
+
+		SELECT DISTINCT ?rating WHERE {
+			<$uri> oo:ukfhrsRatingKey ?rating .
+		} ORDER BY ?rating
+		");
+
 		//if(count($page) > 0)
 		echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$name;
 		if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri) && !$wifi)
@@ -453,6 +461,12 @@ class SouthamptoncachedDataSource extends DataSource
 			echo "<a class='odl' href='".$uri."'>Visit page</a>";
 		}
 		echo "</h2>";
+
+		if(count($rating) > 0)
+		{
+			$r = explode('_', $rating[0]['rating']);
+			echo "<img style='float:right' src='img/fhrs/small/72ppi/".strtolower($rating[0]['rating']).".jpg' alt='Food hygiene rating: ".$r[1]."' title='Food hygiene rating: ".$r[1]."' />";
+		}
 
 		$allpos = sparql_get(self::$endpoint, "
 		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
