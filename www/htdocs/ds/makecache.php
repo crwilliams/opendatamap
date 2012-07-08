@@ -125,5 +125,7 @@ runQuery('DELETE FROM matches WHERE uri LIKE "http://id.southampton.ac.uk/vendin
 runQuery('UPDATE points SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" where icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"');
 runQuery('UPDATE matches SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" where icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"');
 runQuery('UPDATE matches SET type = "workstation" WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"');
+runQuery('UPDATE points SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"');
+runQuery('UPDATE matches SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"');
 //runQuery('COMMIT TRANSACTION');
 ?>
