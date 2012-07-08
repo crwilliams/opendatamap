@@ -632,7 +632,7 @@ class SouthamptoncachedDataSource extends DataSource
 		          ?uri soton:workstationFreeSeats ?freeseats .
 		          ?uri soton:workstationSeats ?allseats .
 		        }
-			");
+			", '', 1);
 			foreach($seats as $seat)
 			{
 				$res[$seat['uri']]['freeseats'] = $seat['freeseats'];
@@ -649,7 +649,7 @@ class SouthamptoncachedDataSource extends DataSource
 		          <$pos> soton:workstationFreeSeats ?freeseats .
 		          <$pos> soton:workstationSeats ?allseats .
 		        }
-			");
+			", '', 1);
 			return $seats[0];
 		}
 	}

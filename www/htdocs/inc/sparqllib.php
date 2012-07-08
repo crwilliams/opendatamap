@@ -21,11 +21,11 @@ function sparql_field_name( $result, $i ) { return $result->field_name( $i ); }
 
 function sparql_fetch_all( $result ) { return $result->fetch_all(); }
 
-function sparql_get( $endpoint, $sparql, $path = '' )
+function sparql_get( $endpoint, $sparql, $path = '', $cachetime = 60 )
 {
 	$hash = md5($endpoint.$sparql);
 	$filename = $path.'../cache/sparql-'.$hash.'.txt';
-	if(file_exists($filename) && filemtime($filename)+(60*60) > time())
+	if(file_exists($filename) && filemtime($filename)+($cachetime*60) > time())
 	{
 		$data = unserialize(file_get_contents($filename));
 	}
