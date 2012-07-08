@@ -222,6 +222,7 @@ class SouthamptoncachedDataSource extends DataSource
 	static function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
 		$data = self::getWorkstationRooms($q, $cats);
+		$seats = self::getSeats();
 		foreach($data as $point) {
 			//$point['icon'] = self::$iconpath.'Education/computers.png';
 //			if(!self::visibleCategory($point['icon'], $cats))
@@ -234,6 +235,7 @@ class SouthamptoncachedDataSource extends DataSource
 			}
 			if(preg_match('/'.$q.'/i', $point['poslabel']))
 			{
+				$point['poslabel'] .= " (".$seats[$point['pos']]['freeseats']." free)";
 				$label[$point['poslabel']] += 10;
 				$type[$point['poslabel']] = "workstation";
 				$url[$point['poslabel']] = $point['pos'];
@@ -619,17 +621,37 @@ class SouthamptoncachedDataSource extends DataSource
 		return $freeseats[0]['freeseats'];
 	}
 
-	static function getSeats($pos)
+	static function getSeats($pos = null)
 	{
-		$seats = sparql_get(self::$endpoint, "
-	        PREFIX soton: <http://id.southampton.ac.uk/ns/>
-
-	        SELECT ?freeseats ?allseats WHERE {
-	          <$pos> soton:workstationFreeSeats ?freeseats .
-	          <$pos> soton:workstationSeats ?allseats .
-	        }
-		");
-		return $seats[0];
+		if(is_null($pos))
+		{
+			$seats = sparql_get(self::$endpoint, "
+	        	PREFIX soton: <http://id.southampton.ac.uk/ns/>
+	
+		        SELECT ?uri ?freeseats ?allseats WHERE {
+		          ?uri soton:workstationFreeSeats ?freeseats .
+		          ?uri soton:workstationSeats ?allseats .
+		        }
+			");
+			foreach($seats as $seat)
+			{
+				$res[$seat['uri']]['freeseats'] = $seat['freeseats'];
+				$res[$seat['uri']]['allseats'] = $seat['allseats'];
+			}
+			return $res;
+		}
+		else
+		{
+			$seats = sparql_get(self::$endpoint, "
+	        	PREFIX soton: <http://id.southampton.ac.uk/ns/>
+	
+		        SELECT ?freeseats ?allseats WHERE {
+		          <$pos> soton:workstationFreeSeats ?freeseats .
+		          <$pos> soton:workstationSeats ?allseats .
+		        }
+			");
+			return $seats[0];
+		}
 	}
 }
 ?>
