@@ -110,6 +110,7 @@ function process($ds)
 
 $equivs[] = array('Wi-Fi Access', 'Wifi Internet Access');
 $equivs[] = array('Wi-Fi Access', 'Wireless Internet Access');
+$equivs[] = array('Wi-Fi Access', 'eduroam');
 $equivs[] = array('iSolutions Workstations', 'Computer Use');
 
 foreach($equivs as $equiv)
