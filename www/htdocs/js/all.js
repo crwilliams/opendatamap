@@ -691,10 +691,11 @@ var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, 
 	
 		var hashvals = '';
 		if(hashfields['subject'] != undefined)
-			hashvals += '/'+hashfields['subject'];
+			hashvals += hashfields['subject'];
+		hashvals += '/';
 		if(hashfields['day'] != undefined)
-			hashvals += '/'+hashfields['day'];
-		$('#inputbox').val(hashvals.substring(1));
+			hashvals += hashfields['day'];
+		$('#inputbox').val(hashvals);
 		updateFunc();
 	};
 
