@@ -449,8 +449,10 @@ class SouthamptoncachedDataSource extends DataSource
 		$rating = sparql_get(self::$endpoint, "
 		PREFIX oo: <http://purl.org/openorg/>
 
-		SELECT DISTINCT ?rating WHERE {
-			<$uri> oo:ukfhrsRatingKey ?rating .
+		SELECT DISTINCT ?ratingKey ?ratingValue ?page WHERE {
+			<$uri> oo:ukfhrsRatingValue ?ratingValue .
+			<$uri> oo:ukfhrsRatingKey ?ratingKey .
+			<$uri> oo:ukfhrsPage ?page .
 		} ORDER BY ?rating
 		");
 
@@ -466,8 +468,7 @@ class SouthamptoncachedDataSource extends DataSource
 
 		if(count($rating) > 0)
 		{
-			$r = explode('_', $rating[0]['rating']);
-			echo "<img style='float:right' src='img/fhrs/small/72ppi/".strtolower($rating[0]['rating']).".jpg' alt='Food hygiene rating: ".$r[1]."' title='Food hygiene rating: ".$r[1]."' />";
+			echo "<a href='".$rating[0]['page']."'><img style='float:right' src='img/fhrs/small/72ppi/".strtolower($rating[0]['ratingKey']).".jpg' alt='Food hygiene rating: ".$rating[0]['ratingValue']."' title='Food hygiene rating: ".$rating[0]['ratingValue']."' /></a>";
 		}
 
 		$allpos = sparql_get(self::$endpoint, "
