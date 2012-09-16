@@ -286,6 +286,7 @@ SELECT ?pos ?poslabel WHERE {
 		foreach($tpoints as $point)
 		{
 			$point['label'] = 'Wi-Fi Access';
+			$point['label'] = 'iSolutions Wi-Fi';
 			$point['icon'] = self::$iconpath.'Offices/wifi.png';
 			$points[] = $point;
 		}
