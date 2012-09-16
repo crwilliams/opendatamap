@@ -247,29 +247,20 @@ class SouthamptonDataSource extends DataSource
 	static function getAllISolutionsWifiPoints()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
-        PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-        PREFIX org: <http://www.w3.org/ns/org#>
-        PREFIX gr: <http://purl.org/goodrelations/v1#>
-        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-        SELECT DISTINCT ?id ?lat ?long ?label WHERE {
-          ?fid <http://purl.org/openorg/hasFeature> ?f .
-          ?f a <http://id.southampton.ac.uk/syllabus/feature/RSC-_WIRELESS_NETWORK> .
-          ?fid spacerel:within ?id .
-          ?id geo:lat ?lat . 
-          ?id geo:long ?long .
-          ?id skos:notation ?label .
-          ?id a <http://vocab.deri.ie/rooms#Building> .
-          FILTER ( BOUND(?long) && BOUND(?lat) )
-        } ORDER BY ?label
+SELECT ?id ?lat ?long ?label WHERE {
+  GRAPH <http://id.southampton.ac.uk/dataset/wifi/latest> {
+    ?id geo:lat ?lat .
+    ?id geo:long ?long .
+    ?id rdfs:label ?label .
+  }
+}
 		");
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['id'] = $point['id'].'#wifi';
-			$point['label'] = 'Wi-Fi Internet Access Points in Building '.$point['label'];
 			$point['icon'] = self::$iconpath.'Offices/wifi.png';
 			$points[] = $point;
 		}
@@ -283,25 +274,17 @@ class SouthamptonDataSource extends DataSource
 		else
 			$filter = "&& ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i') )";
 		$tpoints =  sparql_get(self::$endpoint, "
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-	PREFIX org: <http://www.w3.org/ns/org#>
-	PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-	SELECT DISTINCT ?poslabel ?pos WHERE {
-          ?fid <http://purl.org/openorg/hasFeature> ?f .
-          ?f a <http://id.southampton.ac.uk/syllabus/feature/RSC-_WIRELESS_NETWORK> .
-          ?fid spacerel:within ?pos .
-          ?pos skos:notation ?poslabel .
-          ?pos a <http://vocab.deri.ie/rooms#Building> .
-        } ORDER BY ?poslabel
+SELECT ?pos ?poslabel WHERE {
+  GRAPH <http://id.southampton.ac.uk/dataset/wifi/latest> {
+    ?pos rdfs:label ?poslabel .
+  }
+}
 		");
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['pos'] = $point['pos'].'#wifi';
-			$point['poslabel'] = 'Wi-Fi Internet Access Points in Building '.$point['poslabel'];
 			$point['label'] = 'Wi-Fi Access';
 			$point['icon'] = self::$iconpath.'Offices/wifi.png';
 			$points[] = $point;

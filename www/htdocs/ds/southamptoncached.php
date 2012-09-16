@@ -35,6 +35,7 @@ class SouthamptoncachedDataSource extends DataSource
 		  OPTIONAL { ?uri <http://purl.org/dc/terms/license> ?l . }
 		} ORDER BY ?name
 		");
+		$ds[] = array('name' => 'WiFi', 'uri' => 'http://id.southampton.ac.uk/dataset/wifi', 'l' => 'http://reference.data.gov.uk/id/open-government-licence');
 		$ds[] = array('name' => 'Ordnance Survey Linked Data', 'uri' => 'http://data.ordnancesurvey.co.uk', 'l' => 'http://reference.data.gov.uk/id/open-government-licence');
 		return $ds;
 	}
@@ -346,6 +347,8 @@ class SouthamptoncachedDataSource extends DataSource
 			return self::processSouthamptonBusStopURI($uri);
 		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
 			return self::processSouthamptonURI($uri);
+		else if(substr($uri, 0, strlen('http://opendatamap.ecs.soton.ac.uk/mymap/hcn1g12/eduroamwifiaccess#')) == 'http://opendatamap.ecs.soton.ac.uk/mymap/hcn1g12/eduroamwifiaccess#')
+			return self::processSouthamptonURI($uri);
 		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
 			return self::processSouthamptonURI($uri);
 		else
@@ -556,31 +559,6 @@ class SouthamptoncachedDataSource extends DataSource
 			echo "<ul class='offers'>"; 
 			foreach($allpos as $point) {
 				echo "<li onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."$'); updateFunc();\">".$point['label']."</li>";
-			}
-			echo "</ul>";
-		}
-
-		if($type == 'wifi')
-		{
-			$allpos = sparql_get(self::$endpoint, "
-			PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-			PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-			PREFIX org: <http://www.w3.org/ns/org#>
-			PREFIX gr: <http://purl.org/goodrelations/v1#>
-
-			SELECT DISTINCT ?r ?label WHERE {
-		          ?r <http://purl.org/openorg/hasFeature> ?f .
-        		  ?f a <http://id.southampton.ac.uk/syllabus/feature/RSC-_WIRELESS_NETWORK> .
-        		  ?r spacerel:within <$uri> .
-			  ?r <http://www.w3.org/2004/02/skos/core#notation> ?label
-			} ORDER BY ?label
-			");
-			echo "<h3> Rooms with known coverage </h3>";
-			echo "<ul class='offers'>"; 
-			foreach($allpos as $room) {
-				$labelparts = explode('-', $room['label']);
-				echo "<li style='background-color:white'><a href='".$room['r']."'>".$labelparts[1]."</a></li>";
 			}
 			echo "</ul>";
 		}
