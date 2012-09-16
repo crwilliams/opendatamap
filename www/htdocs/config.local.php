@@ -20,4 +20,11 @@ if($versionparts[1] == 'catering')
 	$config['enabled'] = array('search', 'geobutton');
 	$_GET['ec'] = 'Restaurants-and-Hotels';
 }
+
+if($versionparts[1] == 'isolutions-wifi')
+{
+	$config['Site title'] = "iSolutions WiFi map";
+	$config['enabled'] = array('geobutton');
+	$_GET['q'] = 'isolutions wi-fi';
+}
 ?>
