@@ -128,10 +128,18 @@ function getDataSetLinks($include)
 	{
 		$dsclass = ucwords($ds).'DataSource';
 		foreach(call_user_func(array($dsclass, 'getDataSets')) as $dataset)
-			$datasets[] = $dataset;
+		{
+			if(!in_array($dataset['uri'], $config['unused-datasets']))
+			{
+				$datasets[] = $dataset;
+			}
+		}
 		foreach(call_user_func(array($dsclass, 'getDataSetExtras')) as $datasetextra)
+		{
 			$datasetextras[] = $datasetextra;
+		}
 	}
+
 	foreach($datasets as $dataset)
 	{
 		$datasetlink =  "<a href='".$dataset['uri']."'>".$dataset['name']."</a>";

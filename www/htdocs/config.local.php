@@ -19,6 +19,7 @@ if($versionparts[1] == 'catering')
 	$config['Site title'] = "Catering map";
 	$config['enabled'] = array('search', 'geobutton');
 	$_GET['ec'] = 'Restaurants-and-Hotels';
+	$config['unused-datasets'] = array('http://id.southampton.ac.uk/dataset/bus-routes', 'http://id.southampton.ac.uk/dataset/bus-stops', 'http://id.southampton.ac.uk/dataset/room-features', 'http://id.southampton.ac.uk/dataset/wifi', 'http://data.ordnancesurvey.co.uk');
 }
 
 if($versionparts[1] == 'isolutions-wifi')
@@ -26,5 +27,6 @@ if($versionparts[1] == 'isolutions-wifi')
 	$config['Site title'] = "iSolutions WiFi map";
 	$config['enabled'] = array('geobutton');
 	$_GET['q'] = 'isolutions wi-fi';
+	$config['unused-datasets'] = array('http://id.southampton.ac.uk/dataset/amenities', 'http://id.southampton.ac.uk/dataset/bus-routes', 'http://id.southampton.ac.uk/dataset/bus-stops', 'http://id.southampton.ac.uk/dataset/room-features', 'http://id.southampton.ac.uk/dataset/catering', 'http://data.ordnancesurvey.co.uk');
 }
 ?>
