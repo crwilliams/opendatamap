@@ -66,7 +66,7 @@ foreach($config['categories'] as $catid => $catname)
 {
 ?>
 			<div title='<?= $catname ?>' class='togglebutton' style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')">
-				<?= str_replace(' and ', ' <span style=\'font-size:0.8em\'>&amp;</span> ', $catname) ?>
+				<span class='label'><?= str_replace(' and ', ' <span style=\'font-size:0.8em\'>&amp;</span> ', $catname) ?></span>
 				<input class='togglebox' style='cursor:pointer' type='checkbox' name='<?= $catname ?>' id='<?= $catid ?>' onclick="toggle('<?= $catid ?>');" <?= isset($config['selected'][$catid]) ? 'checked=\'checked\'' : '' ?>/>
 			</div>
 <?

@@ -336,13 +336,8 @@ h3 {
 	width:16px;
 }
 
-.offset label {
+.offset .label {
 	display:none;
-}
-
-.togglebutton label {
-	cursor:pointer;
-	margin-right:7px;
 }
 
 .offset #iconexpand {
