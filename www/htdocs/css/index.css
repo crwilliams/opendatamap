@@ -16,6 +16,9 @@ body {
 	padding-bottom:5px;
 */
 }
+.back {
+	font-size: 0.8em;
+}
 
 div#bookmarks {
 	text-align:right;
