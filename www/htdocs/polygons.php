@@ -1,6 +1,6 @@
 <?php
 include_once "config.php";
-
+header('Content-type: application/json');
 echo '[';
 foreach($config['datasource'] as $ds)
 {
@@ -8,7 +8,7 @@ foreach($config['datasource'] as $ds)
 	foreach(call_user_func(array($dsclass, 'getAllSites')) as $site)
 	{
 		echo '[';
-		echo '["'.$site['url'].'"],';
+		echo '["'.$site['uri'].'"],';
 		echo '["'.$site['name'].'"],';
 		echo '-10,';
 		echo '[';
@@ -28,6 +28,7 @@ foreach($config['datasource'] as $ds)
 		{
 			echo ',""';
 		}
+		echo ',[0, 0]';
 		echo '],';
 	}
 }
@@ -38,8 +39,8 @@ foreach($config['datasource'] as $ds)
 	foreach(call_user_func(array($dsclass, 'getAllBuildings')) as $building)
 	{
 		echo '[';
-		echo '["'.$building['url'].'"],';
-		echo '["<img class=\'icon\' style=\'width:20px;\' src=\'resources/numbericon.php?n='.$building['number'].'\' /> '.$building['name'].'"],';
+		echo '["'.$building['uri'].'"],';
+		echo '["<img class=\'icon\' style=\'width:20px;\' src=\'resources/numbericon.php?n='.$building['num'].'\' /> '.$building['name'].' <a class=\'odl\' href=\''.$building['uri'].'\'>Visit building page</a>"],';
 		echo '-5,';
 		echo '[';
 		if($building['outline'] != "")
@@ -56,7 +57,7 @@ foreach($config['datasource'] as $ds)
 		}
 		else
 		{
-			echo '['.$building['long'].','.$building['lat'].']]';
+			echo '['.$building['lng'].','.$building['lat'].']]';
 		}
 		if(isset($building['color']))
 		{
@@ -66,6 +67,7 @@ foreach($config['datasource'] as $ds)
 		{
 			echo ',""';
 		}
+		echo ',['.$building['lng'].','.$building['lat'].']';
 		echo '],';
 	}
 }

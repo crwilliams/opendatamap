@@ -1,9 +1,16 @@
 <?
 include_once "inc/sparqllib.php";
+include_once('/home/opendatamap/mysql-pdo.inc.php');
 
 class SouthamptoncachedDataSource extends DataSource
 {
 	static $endpoint = 'http://sparql.data.southampton.ac.uk';
+	static $handlers = array(
+		'http://id.southampton.ac.uk/bus-stop/'					=>       'processSouthamptonBusStopURI',
+		'http://id.southampton.ac.uk/'						=>		'processSouthamptonURI',
+		'http://opendatamap.ecs.soton.ac.uk/mymap/hcn1g12/eduroamwifiaccess#'	=>		'processSouthamptonURI',
+		'http://id.sown.org.uk/'						=>		       'processSownURI',
+	);
 
 	static function getEntries($q, $cats)
 	{
@@ -14,13 +21,11 @@ class SouthamptoncachedDataSource extends DataSource
 		$type = array();
 		$url = array();
 		$icon = array();
+		
 		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createWifiEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		self::_createEntries($pos, $label, $type, $url, $icon, $q, $cats);
+		
 		return array($pos, $label, $type, $url, $icon);
 	}
 
@@ -42,253 +47,126 @@ class SouthamptoncachedDataSource extends DataSource
 
 	static function getDataSetExtras()
 	{
-		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
+		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.");
 	}
 
 	static function getAll()
 	{
-		$q = "SELECT uri AS id, lat, lng AS `long`, label, icon FROM points";
-		return self::perform_query($q);
+		$q = 'SELECT uri AS id, lat, lng AS `long`, label, icon FROM points';
+		return self::_query($q);
 	}
 	
-	static function perform_query($q)
+	static function _query($q, $p = array())
 	{
-		include_once('/home/opendatamap/mysql.inc.php');
-		$res = mysql_query($q);
-		$data = array();
-		while($row = mysql_fetch_assoc($res))
-		{
-			$data[] = $row;
-		}
-		return $data;
+		global $dbh;
+		$stmt = $dbh->prepare($q);
+		$stmt->execute($p);
+		return $stmt->fetchAll();
 	}
 
-	static function getPointsOfService($q, $cats)
-	{
-		return self::getByType('point-of-service', $q, $cats);
-	}
-
-	static function getBusStops($q, $cats)
-	{
-		return self::getByType('bus-stop', $q, $cats);
-	}
-
-	static function getWorkstationRooms($q, $cats)
-	{
-		return self::getByType('workstation', $q, $cats);
-	}
-
-	static function getShowers($q, $cats)
-	{
-		return self::getByType('shower', $q, $cats);
-	}
-
-	static function getWifi($q, $cats)
-	{
-		return self::getByType('wifi', $q, $cats);
-	}
-
-	static function getByType($type, $q, $cats)
+	private static function _getMatches($q, $cats)
 	{
 		$safecats = array();
 		foreach($cats as $cat)
 		{
 			$safecats[] = "'".mysql_escape_string($cat)."'";
 		}
-		$cats = implode(',', $safecats);		
-		
+		$cats = implode(',', $safecats);
 		
 		if($q == '')
 		{
-			$q = "SELECT poslabel, label, uri AS pos, icon FROM matches WHERE type = '$type' AND category IN ($cats)";
+			$q = "SELECT poslabel, label, uri AS pos, icon, type FROM matches WHERE category IN ($cats)";
 		}
 		else
 		{
 			$q = mysql_escape_string($q);
-			$q = "SELECT poslabel, label, uri AS pos, icon FROM matches WHERE type = '$type' AND (poslabel REGEXP '$q' OR label REGEXP '$q') AND category IN ($cats)";
+			$q = "SELECT poslabel, label, uri AS pos, icon, type FROM matches WHERE (poslabel REGEXP '$q' OR label REGEXP '$q') AND category IN ($cats)";
 		}
-		return self::perform_query($q);
+		return self::_query($q);
+	}
+
+	static function getAllBuildings()
+	{
+		$q = 'SELECT uri, name, outline, lat, lng, num FROM places WHERE type = "building"';
+		return self::_query($q);
 	}
 	
-	static function getBuildings($q, $qbd)
+	static function getBuildings($str1, $str2)
 	{
-		return sparql_get(self::$endpoint, "
-	SELECT DISTINCT ?url ?name ?number WHERE {
-	  ?url a <http://id.southampton.ac.uk/ns/UoSBuilding> .
-	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-	  ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
-	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
-	} ORDER BY ?number
-		");
+		if(trim($str1) == '')
+		{
+			$q = 'SELECT uri, name, num FROM places WHERE type = "building"';
+			return self::_query($q);
+		}
+		else if(trim($str2) == '')
+		{
+			$q = 'SELECT uri, name, num FROM places WHERE type = "building" AND (name REGEXP ?)';
+			$p = array($str1);
+			return self::_query($q, $p);
+		}
+		else
+		{
+			$q = 'SELECT uri, name, num FROM places WHERE type = "building" AND (name REGEXP ? OR name REGEXP ?)';
+			$p = array($str1, $str2);
+			return self::_query($q, $p);
+		}
 	}
 	
 	static function getAllSites()
 	{
-		return sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?url ?name ?outline WHERE {
-		  ?url a <http://www.w3.org/ns/org#Site> .
-		  ?url <http://purl.org/dc/terms/spatial> ?outline .
-		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-		} 
-		");
-	}
-	
-	static function getAllBuildings()
-	{
-		return sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
-		  ?url a <http://id.southampton.ac.uk/ns/UoSBuilding> .
-		  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
-		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
-		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
-		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-		  OPTIONAL { ?url <http://purl.org/openorg/hasFeature> ?hfeature . 
-		           ?hfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-		  OPTIONAL { ?url <http://purl.org/openorg/lacksFeature> ?lfeature . 
-		           ?lfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-		  OPTIONAL { ?url <http://www.w3.org/2004/02/skos/core#notation> ?number . }
-		} 
-		");
+		$q = 'SELECT uri, name, outline FROM places WHERE type = "site"';
+		return self::_query($q);
 	}
 
-	static function getSites($q)
+	static function getSites($str)
 	{
-		return sparql_get(self::$endpoint, "
-	SELECT DISTINCT ?url ?name WHERE {
-	  ?url a <http://www.w3.org/ns/org#Site> .
-	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-	  ?url <http://purl.org/dc/terms/spatial> ?outline .
-	  FILTER ( REGEX( ?name, '$q', 'i') )
-	} ORDER BY ?url
-		");
-	}
-
-/*
-	static function visibleCategory($icon, $cats)
-	{
-		global $iconcats;
-		if($iconcats == null) include_once "inc/categories.php";
-		return in_cat($iconcats, $icon, $cats);
-	}
-*/
-
-	// Process point of service data
-	static function createPointOfServiceEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = self::getPointsOfService($q, $cats);
-		foreach($data as $point) {
-//			if(!self::visibleCategory($point['icon'], $cats))
-//				continue;
-			$point['icon'] = self::convertIcon($point['icon']);
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-			{
-				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
-			}
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "point-of-service";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'];
-			}
+		if(trim($str) == '')
+		{
+			$q = 'SELECT uri, name FROM places WHERE type = "site"';
+			return self::_query($q);
+		}
+		else
+		{
+			$q = 'SELECT uri, name FROM places WHERE type = "site" AND name REGEXP ?';
+			$p = array($str);
+			return self::_query($q, $p);
 		}
 	}
 
-	// Process bus data
-	static function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
+	private static function _createEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
-		$data = self::getBusStops($q, $cats);
+		$data = self::_getMatches($q, $cats);
+		$seats = self::_getSeats();
+		
 		foreach($data as $point) {
-//			if(!self::visibleCategory($point['icon'], $cats))
-//				continue;
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-				$label[$point['label']] ++;
-				$type[$point['label']] = "bus-route";
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$routes[$point['poslabel']][] = $point['label'];
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "bus-stop";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'].'?r='.implode('/', $routes[$point['poslabel']]);
-			}
-		}
-	}
-
-	// Process workstation data
-	static function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = self::getWorkstationRooms($q, $cats);
-		$seats = self::getSeats();
-		foreach($data as $point) {
-			//$point['icon'] = self::$iconpath.'Education/computers.png';
-//			if(!self::visibleCategory($point['icon'], $cats))
-//				continue;
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
 			{
 				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
+				$type[$point['label']] = 'offering';
+				
+				if($point['type'] == 'bus-route')
+				{
+					$type[$point['label']] = 'bus-stop';
+				}
 			}
 			if(preg_match('/'.$q.'/i', $point['poslabel']))
 			{
-				$point['poslabel'] .= " (".$seats[$point['pos']]['freeseats']." free)";
+				if($point['type'] == 'workstation')
+				{
+					$point['poslabel'] .= " (".$seats[$point['pos']]['freeseats']." free)";
+				}
+				
 				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "workstation";
+				$type[$point['poslabel']] = $point['type'];
 				$url[$point['poslabel']] = $point['pos'];
 				$icon[$point['poslabel']] = $point['icon'];
-			}
-		}
-	}
-
-	// Process wifi data
-	static function createWifiEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = self::getWifi($q, $cats);
-		foreach($data as $point) {
-			//$point['icon'] = self::$iconpath.'Education/computers.png';
-//			if(!self::visibleCategory($point['icon'], $cats))
-//				continue;
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-			{
-				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
-			}
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "wifi";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'];
-			}
-		}
-	}
-
-	// Process shower data
-	static function createShowerEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = self::getShowers($q, $cats);
-		foreach($data as $point) {
-			//$point['icon'] = self::$iconpath.'Education/computers.png';
-//			if(!self::visibleCategory($point['icon'], $cats))
-//				continue;
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-			{
-				$label[$point['label']] ++;
-				$type[$point['label']] = "offering";
-			}
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "shower";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'];
+				
+				if($point['type'] == 'bus-stop')
+				{
+					$routes[$point['poslabel']][] = $point['label'];
+					$icon[$point['poslabel']] = $point['icon'].'?r='.implode('/', $routes[$point['poslabel']]);
+				}
 			}
 		}
 	}
@@ -299,26 +177,26 @@ class SouthamptoncachedDataSource extends DataSource
 		$qbd = trim(str_replace(array('building', 'buildin', 'buildi', 'build', 'buil', 'bui', 'bu', 'b'), '', strtolower($q)));
 		$data = self::getBuildings($q, $qbd);
 		foreach($data as $point) {
-			$pos[$point['url']] += 100;
+			$pos[$point['uri']] += 100;
 			if(preg_match('/'.$q.'/i', $point['name']))
 			{
-				if($point['number'] < 100)
+				if($point['num'] < 100)
 					$label[$point['name']] += 1000;
 				else
 					$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
-				$url[$point['name']] = $point['url'];
-				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+				$url[$point['name']] = $point['uri'];
+				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['num'];
 			}
-			if(preg_match('/'.$qbd.'/i', $point['number']))
+			if(preg_match('/'.$qbd.'/i', $point['num']))
 			{
-				if($point['number'] < 100)
-					$label['Building '.$point['number']] += 1000;
+				if($point['num'] < 100)
+					$label['Building '.$point['num']] += 1000;
 				else
-					$type['Building '.$point['number']] = "building";
-				$type['Building '.$point['number']] = "building";
-				$url['Building '.$point['number']] = $point['url'];
-				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+					$label['Building '.$point['num']] += 100;
+				$type['Building '.$point['num']] = "building";
+				$url['Building '.$point['num']] = $point['uri'];
+				$icon['Building '.$point['num']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['num'];
 			}
 		}
 	}
@@ -328,33 +206,29 @@ class SouthamptoncachedDataSource extends DataSource
 	{
 		$data = self::getSites($q);
 		foreach($data as $point) {
-			$pos[$point['url']] += 100000;
+			$pos[$point['uri']] += 100000;
 			$label[$point['name']] += 100000;
 			if(preg_match('/Campus/i', $point['name']))
 			{
-				$pos[$point['url']] += 100000;
+				$pos[$point['uri']] += 100000;
 				$label[$point['name']] += 100000;
 			}
 			$type[$point['name']] = "site";
-			$url[$point['name']] = $point['url'];
+			$url[$point['name']] = $point['uri'];
 			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
 		}
 	}
 	
 	static function processURI($uri)
 	{
-		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
-			return self::processSouthamptonBusStopURI($uri);
-		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
-			return self::processSouthamptonURI($uri);
-		else if(substr($uri, 0, strlen('http://opendatamap.ecs.soton.ac.uk/mymap/hcn1g12/eduroamwifiaccess#')) == 'http://opendatamap.ecs.soton.ac.uk/mymap/hcn1g12/eduroamwifiaccess#')
-			return self::processSouthamptonURI($uri);
-		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
-			return self::processSouthamptonURI($uri);
-		else
-			return false;
+		foreach(self::$handlers as $prefix => $handler)
+		{
+			if(substr($uri, 0, strlen($prefix)) == $prefix)
+				return self::$handler($uri);
+		}
+		return false;
 	}
-
+	
 	static function processSownURI($uri)
 	{
 		return true;
@@ -395,9 +269,9 @@ class SouthamptoncachedDataSource extends DataSource
 
 	static function getURIInfo($uri)
 	{
-		$uri= mysql_escape_string($uri);
-		$q = "SELECT poslabel AS name, icon, type, label FROM matches WHERE uri = '$uri'";
-		$data = self::perform_query($q);
+		$q = "SELECT poslabel AS name, icon, type, label FROM matches WHERE uri = ?";
+		$p = array($uri);
+		$data = self::_query($q, $p);
 		return $data[0];
 	}
 
@@ -510,9 +384,17 @@ class SouthamptoncachedDataSource extends DataSource
  			FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
 		} ORDER BY ?poslabel
 			");
-			$seats = self::getSeats($uri);
-			echo "Workstations available: ".$seats['freeseats']."<br />";
-			echo "Workstations total: ".$seats['allseats']."<br />";
+			$seats = self::_getSeats($uri);
+			echo "<h3> Workstations Available: </h3>";
+			if($seats['freeseats'] == 0)
+			{
+				$seats['freeseats'] = 'None';
+			}
+			echo $seats['freeseats']." <span style='font-size:0.8em'>out of ".$seats['allseats']."</span>";
+			//echo "<ul>";
+			//echo "<li>available: ".$seats['freeseats']."</li>";
+			//echo "<li>total: ".$seats['allseats']."</li>";
+			//echo "</ul>";
 		}
 		else if($type == 'wifi')
 		{
@@ -600,7 +482,7 @@ class SouthamptoncachedDataSource extends DataSource
 		return $freeseats[0]['freeseats'];
 	}
 
-	static function getSeats($pos = null)
+	private static function _getSeats($pos = null)
 	{
 		if(is_null($pos))
 		{
@@ -634,3 +516,4 @@ class SouthamptoncachedDataSource extends DataSource
 	}
 }
 ?>
+

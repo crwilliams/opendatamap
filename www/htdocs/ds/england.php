@@ -12,7 +12,7 @@ PREFIX school: <http://education.data.gov.uk/def/school/>
 PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?id ?lat ?long ?label ?type WHERE {
+SELECT ?id ?lat ?lng ?label ?type WHERE {
   ?id school:typeOfEstablishment ?type .
   {
     { ?id school:typeOfEstablishment school:TypeOfEstablishment_TERM_Higher_Education_Institutions . }
@@ -21,7 +21,7 @@ SELECT ?id ?lat ?long ?label ?type WHERE {
   } .
   ?id rdfs:label ?label .
   ?id geo:lat ?lat .
-  ?id geo:long ?long .
+  ?id geo:long ?lng .
 }
 		");
 		$points = array();
@@ -129,7 +129,7 @@ SELECT ?pos ?lat ?long ?label ?type WHERE {
   } .
   ?pos rdfs:label ?label .
   ?pos geo:lat ?lat .
-  ?pos geo:long ?long .
+  ?pos geo:long ?lng .
 }
 		");
 		$points = array();

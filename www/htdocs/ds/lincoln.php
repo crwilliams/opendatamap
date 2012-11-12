@@ -40,7 +40,7 @@ class LincolnDataSource extends DataSource
 				
 				$building = array('url' => $bs->building_permalink,
 					'name' => $bs->building_name,
-					'number' => $bs->building_id,
+					'num' => $bs->building_id,
 					'outline' => $outline,
 					'color' => self::getColor($bs->colourscheme),
 				);

@@ -332,12 +332,12 @@ SELECT DISTINCT ?uri ?label WHERE {
 	static function getBuildings($q, $qbd)
 	{
 		return sparql_get(self::$endpoint, "
-	SELECT DISTINCT ?url ?name ?number WHERE {
-	  ?url a <http://vocab.deri.ie/rooms#Building> .
-	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-	  ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
-	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
-	} ORDER BY ?number
+	SELECT DISTINCT ?uri ?name ?num WHERE {
+	  ?uri a <http://vocab.deri.ie/rooms#Building> .
+	  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+	  ?uri <http://www.w3.org/2004/02/skos/core#notation> ?num .
+	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?num, '$qbd', 'i') )
+	} ORDER BY ?num
 		");
 	}
 
@@ -378,10 +378,10 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	static function getAllSites()
 	{
 		return sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?url ?name ?outline WHERE {
-		  ?url a <http://www.w3.org/ns/org#Site> .
-		  ?url <http://purl.org/dc/terms/spatial> ?outline .
-		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+		SELECT DISTINCT ?uri ?name ?outline WHERE {
+		  ?uri a <http://www.w3.org/ns/org#Site> .
+		  ?uri <http://purl.org/dc/terms/spatial> ?outline .
+		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 		} 
 		");
 	}
@@ -389,17 +389,13 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	static function getAllBuildings()
 	{
 		return sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
-		  ?url a <http://vocab.deri.ie/rooms#Building> .
-		  ?url <http://purl.org/dc/terms/spatial> ?outline .
-		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
-		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
-		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-		  OPTIONAL { ?url <http://purl.org/openorg/hasFeature> ?hfeature . 
-		           ?hfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-		  OPTIONAL { ?url <http://purl.org/openorg/lacksFeature> ?lfeature . 
-		           ?lfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-		  OPTIONAL { ?url <http://www.w3.org/2004/02/skos/core#notation> ?number . }
+		SELECT DISTINCT ?uri ?name ?outline ?lat ?lng ?num WHERE {
+		  ?uri a <http://vocab.deri.ie/rooms#Building> .
+		  ?uri <http://purl.org/dc/terms/spatial> ?outline .
+		  ?uri <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+		  ?uri <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng .
+		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+		  OPTIONAL { ?uri <http://www.w3.org/2004/02/skos/core#notation> ?num . }
 		} 
 		");
 	}
@@ -407,12 +403,12 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 	static function getSites($q)
 	{
 		return sparql_get(self::$endpoint, "
-	SELECT DISTINCT ?url ?name WHERE {
-	  ?url a <http://www.w3.org/ns/org#Site> .
-	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-	  ?url <http://purl.org/dc/terms/spatial> ?outline .
+	SELECT DISTINCT ?uri ?name WHERE {
+	  ?uri a <http://www.w3.org/ns/org#Site> .
+	  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+	  ?uri <http://purl.org/dc/terms/spatial> ?outline .
 	  FILTER ( REGEX( ?name, '$q', 'i') )
-	} ORDER BY ?url
+	} ORDER BY ?uri
 		");
 	}
 

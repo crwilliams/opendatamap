@@ -456,10 +456,10 @@ class TsinghuaDataSource extends DataSource
 	static function getBuildings($q, $qbd)
 	{
 		$tbuildings = sparql_get(self::$endpoint, "
-	SELECT DISTINCT ?url ?name ?number WHERE {
-	  ?url a <http://data.cs.tsinghua.edu.cn/ns/BuildingsAndPlaces> .
-	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-	  ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
+	SELECT DISTINCT ?uri ?name ?number WHERE {
+	  ?uri a <http://data.cs.tsinghua.edu.cn/ns/BuildingsAndPlaces> .
+	  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+	  ?uri <http://www.w3.org/2004/02/skos/core#notation> ?number .
 	  FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
 	} ORDER BY ?number
 		");
@@ -477,10 +477,10 @@ class TsinghuaDataSource extends DataSource
 	{
 		return array();
 		return sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?url ?name ?outline WHERE {
-		  ?url a <http://www.w3.org/ns/org#Site> .
-		  ?url <http://purl.org/dc/terms/spatial> ?outline .
-		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+		SELECT DISTINCT ?uri ?name ?outline WHERE {
+		  ?uri a <http://www.w3.org/ns/org#Site> .
+		  ?uri <http://purl.org/dc/terms/spatial> ?outline .
+		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 		} 
 		");
 	}
@@ -488,17 +488,17 @@ class TsinghuaDataSource extends DataSource
 	static function getAllBuildings()
 	{
 		$tbuildings = sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?url ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
-		  ?url a <http://data.cs.tsinghua.edu.cn/ns/BuildingsAndPlaces> .
-		  OPTIONAL { ?url <http://purl.org/dc/terms/spatial> ?outline . }
-		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
-		  ?url <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
-		  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-		  OPTIONAL { ?url <http://purl.org/openorg/hasFeature> ?hfeature . 
+		SELECT DISTINCT ?uri ?name ?outline ?lat ?long ?hfeature ?lfeature ?number WHERE {
+		  ?uri a <http://data.cs.tsinghua.edu.cn/ns/BuildingsAndPlaces> .
+		  OPTIONAL { ?uri <http://purl.org/dc/terms/spatial> ?outline . }
+		  ?uri <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
+		  ?uri <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?long .
+		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+		  OPTIONAL { ?uri <http://purl.org/openorg/hasFeature> ?hfeature . 
 		           ?hfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-		  OPTIONAL { ?url <http://purl.org/openorg/lacksFeature> ?lfeature . 
+		  OPTIONAL { ?uri <http://purl.org/openorg/lacksFeature> ?lfeature . 
 		           ?lfeature <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> }
-		  OPTIONAL { ?url <http://www.w3.org/2004/02/skos/core#notation> ?number . }
+		  OPTIONAL { ?uri <http://www.w3.org/2004/02/skos/core#notation> ?number . }
 		} 
 		");
 		$buildings = array();
@@ -515,12 +515,12 @@ class TsinghuaDataSource extends DataSource
 	{
 		return array();
 		return sparql_get(self::$endpoint, "
-	SELECT DISTINCT ?url ?name WHERE {
-	  ?url a <http://www.w3.org/ns/org#Site> .
-	  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-	  ?url <http://purl.org/dc/terms/spatial> ?outline .
+	SELECT DISTINCT ?uri ?name WHERE {
+	  ?uri a <http://www.w3.org/ns/org#Site> .
+	  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+	  ?uri <http://purl.org/dc/terms/spatial> ?outline .
 	  FILTER ( REGEX( ?name, '$q', 'i') )
-	} ORDER BY ?url
+	} ORDER BY ?uri
 		");
 	}
 

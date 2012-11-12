@@ -362,10 +362,10 @@ function getBuildings($q, $qbd)
 {
 	global $endpoint;
 	return sparql_get($endpoint, "
-SELECT DISTINCT ?url ?name ?number WHERE {
-  ?url a <http://vocab.deri.ie/rooms#Building> .
-  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-  ?url <http://www.w3.org/2004/02/skos/core#notation> ?number .
+SELECT DISTINCT ?uri ?name ?number WHERE {
+  ?uri a <http://vocab.deri.ie/rooms#Building> .
+  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?uri <http://www.w3.org/2004/02/skos/core#notation> ?number .
   FILTER ( REGEX( ?name, '$q', 'i') || REGEX( ?number, '$qbd', 'i') )
 } ORDER BY ?number
 	");
@@ -375,12 +375,12 @@ function getSites($q)
 {
 	global $endpoint;
 	return sparql_get($endpoint, "
-SELECT DISTINCT ?url ?name WHERE {
-  ?url a <http://www.w3.org/ns/org#Site> .
-  ?url <http://www.w3.org/2000/01/rdf-schema#label> ?name .
-  ?url <http://purl.org/dc/terms/spatial> ?outline .
+SELECT DISTINCT ?uri ?name WHERE {
+  ?uri a <http://www.w3.org/ns/org#Site> .
+  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
+  ?uri <http://purl.org/dc/terms/spatial> ?outline .
   FILTER ( REGEX( ?name, '$q', 'i') )
-} ORDER BY ?url
+} ORDER BY ?uri
 	");
 }
 

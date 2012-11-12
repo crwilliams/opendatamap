@@ -10,6 +10,8 @@ var polygoninfowindows = new Object();
 var clusterMarkers = new Object();
 var clusterInfowindows = new Object();
 var hashfields = new Object();
+var firstAtPos = new Object();
+var tempInfowindow = undefined;
 
 var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
 var CLEAR_SEARCH_ICON = "img/nt-left.png";
@@ -73,11 +75,40 @@ var reset_search_icon = function() {
 }
 
 // someone's clicked on something, you need to load the real data into it
-var loadWindow = function(j) {
+var loadWindow = function(j, dest, hide, reload) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
+	if(dest === undefined && polygonlls[j] !== undefined)
+	{
+		return;
+	}
 	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURIComponent(j), function(data) {
-		infowindows[j].setContent(data);
+		var ll = markers[j].getPosition().toString();
+		if(polygonnames[ll] !==undefined)
+		{
+			clusterTitle = '<h1>'+polygonnames[ll]+'</h1><hr />';
+		}
+		else
+		{
+			clusterTitle = '';
+		}
+		if(dest === undefined)
+		{
+			infowindows[j].setContent(clusterTitle+data);
+		}
+		else
+		{
+			tempInfowindow = new google.maps.InfoWindow({content:clusterTitle+data+'<a href="#" class="back" onclick="return goBack(\''+reload+'\')\">Back to list</a>'});
+			tempInfowindow.setPosition(clusterInfowindows[reload].getPosition());
+			tempInfowindow.open(map);
+			clusterInfowindows[reload].close();
+		}
 	});
+}
+
+var goBack = function(reload) {
+	tempInfowindow.close();
+	clusterInfowindows[reload].open(map);
+	return false;
 }
 
 var closeAll = function() {
@@ -90,6 +121,9 @@ var closeAll = function() {
 	}
 	for(var i in polygons) {
 		polygoninfowindows[i].close();
+	}
+	if(tempInfowindow !== undefined) {
+		tempInfowindow.close();
 	}
 }
 
@@ -286,7 +320,24 @@ var zoomTo = function(uri, cl, pan) {
 	}
 }
 
+var getLiveInfo = function(i) {
+	return "";//" <span class='live'>[" + i + "]</span>";
+}
+
+var renderClusterItem = function(uri, ll) {
+	if(polygonlls[uri] == undefined)
+	{
+		//return '<div class="clusteritem" onclick="infowindows[\''+uri+'\'].open(map, clusterMarkers[\''+ll+'\']); loadWindow(\''+uri+'\')"><img class="icon" src="'+markers[uri].getIcon()+'" />'+markers[uri].getTitle().replace('\\\'', '\'') +getLiveInfo(uri)+'</div>';
+		return '<div class="clusteritem" onclick="loadWindow(\''+uri+'\', $(\'#'+ll.replace(/[^0-9]/g, '_')+'-content\'), $(\'#'+ll.replace(/[^0-9]/g, '_')+'-listcontent\'), \''+ll+'\')"><img class="icon" src="'+markers[uri].getIcon()+'" />'+markers[uri].getTitle().replace('\\\'', '\'') +getLiveInfo(uri)+'</div>';
+	}
+	else
+	{
+		return '';
+	}
+}
+
 var cluster = function() {
+	closeAll();
 	for(var i in clusterMarkers) {
 		if(typeof(clusterMarkers[i]) == "object")
 			clusterMarkers[i].setMap(null);
@@ -294,7 +345,7 @@ var cluster = function() {
 	clusterMarkers = new Object();
 	clusterInfowindows = new Object();
 	var positions = new Object();
-	var firstAtPos = new Object();
+	firstAtPos = new Object();
 	var str = "";
 	var count = 0;
 	var count2 = 0;
@@ -303,43 +354,73 @@ var cluster = function() {
 			count ++;
 			str += markers[i].getTitle();
 			str += markers[i].getPosition().toString();
-			if(positions[markers[i].getPosition().toString()] !== undefined) {
-				positions[markers[i].getPosition().toString()] ++;
+			var ll = markers[i].getPosition().toString();
+			if(positions[ll] !== undefined) {
+				positions[ll] ++;
 				markers[i].setVisible(false);
-				if(clusterMarkers[markers[i].getPosition().toString()] === undefined) {
-					clusterMarkers[markers[i].getPosition().toString()] = new google.maps.Marker({
+				if(clusterMarkers[ll] === undefined) {
+					clusterMarkers[ll] = new google.maps.Marker({
 						position: markers[i].getPosition(),
 						title: '2',
 						map: map,
 						visible: true
 					});
-					clusterInfowindows[markers[i].getPosition().toString()] = new google.maps.InfoWindow({
-						content: '<div class="clusteritem" onclick="infowindows[\''+firstAtPos[markers[i].getPosition().toString()]+'\'].open(map, clusterMarkers[\''+markers[i].getPosition().toString()+'\']); loadWindow(\''+firstAtPos[markers[i].getPosition().toString()]+'\')"><img class="icon" src="'+markers[firstAtPos[markers[i].getPosition().toString()]].getIcon()+'" />'+markers[firstAtPos[markers[i].getPosition().toString()]].getTitle().replace('\\\'', '\'') +'</div>'+
-							'<div class="clusteritem" onclick="infowindows[\''+i+'\'].open(map, clusterMarkers[\''+markers[i].getPosition().toString()+'\']); loadWindow(\''+i+'\')"><img class="icon" src="'+markers[i].getIcon()+'" />'+markers[i].getTitle().replace('\\\'', '\'')+'</div>'	
+					clusterInfowindows[ll] = new google.maps.InfoWindow({
+						content: renderClusterItem(firstAtPos[ll], ll)+renderClusterItem(i, ll)
 					});
-					clusterMarkers[markers[i].getPosition().toString()].setIcon('resources/clustericon.php?i[]='+markers[firstAtPos[markers[i].getPosition().toString()]].getIcon()+'&i[]='+markers[i].getIcon());
-					markers[firstAtPos[markers[i].getPosition().toString()]].setVisible(false);
+					clusterMarkers[ll].setIcon('resources/clustericon.php?i[]='+markers[firstAtPos[ll]].getIcon()+'&i[]='+markers[i].getIcon());
+					markers[firstAtPos[ll]].setVisible(false);
 				} else {
-					clusterInfowindows[markers[i].getPosition().toString()].setContent(clusterInfowindows[markers[i].getPosition().toString()].getContent()+
-						'<div class="clusteritem" onclick="infowindows[\''+i+'\'].open(map, clusterMarkers[\''+markers[i].getPosition().toString()+'\']); loadWindow(\''+i+'\')"><img class="icon" src="'+markers[i].getIcon()+'" />'+markers[i].getTitle().replace('\\\'', '\'')+'</div>');
-					if(markers[i].getIcon() != clusterMarkers[markers[i].getPosition().toString()].getIcon())
+					clusterInfowindows[ll].setContent(clusterInfowindows[ll].getContent()+
+						renderClusterItem(i, ll));
+					if(markers[i].getIcon() != clusterMarkers[ll].getIcon())
 					{
-						clusterMarkers[markers[i].getPosition().toString()].setIcon(clusterMarkers[markers[i].getPosition().toString()].getIcon()+'&i[]='+markers[i].getIcon());
+						clusterMarkers[ll].setIcon(clusterMarkers[ll].getIcon()+'&i[]='+markers[i].getIcon());
 					}
-					var oldc = parseInt(clusterMarkers[markers[i].getPosition().toString()].getTitle());
-					clusterMarkers[markers[i].getPosition().toString()].setTitle('' + (oldc + 1));
+					var oldc = parseInt(clusterMarkers[ll].getTitle());
+					clusterMarkers[ll].setTitle('' + (oldc + 1));
 				}
 				count2 ++;
 			} else {
-				positions[markers[i].getPosition().toString()] = 1;
-				firstAtPos[markers[i].getPosition().toString()] = i;
+				positions[ll] = 1;
+				firstAtPos[ll] = i;
 			}
 		}
 	}
 	for(var i in clusterInfowindows) {
 		with({i: i})
 		{
-			clusterInfowindows[i].setContent('<div id="content">'+clusterInfowindows[i].getContent()+'<div style="font-size:0.8em; padding-top:15px; font-style:italic">click icon for more information</div></div>');
+			if(polygonnames[i] !==undefined)
+			{
+				clusterTitle = '<h1>'+polygonnames[i]+'</h1><hr />';
+			}
+			else
+			{
+				clusterTitle = '';
+			}
+			clusterInfowindows[i].setContent(clusterTitle+'<div id="'+i.replace(/[^0-9]/g, '_')+'-listcontent">'+clusterInfowindows[i].getContent()+'<div style="font-size:0.8em; padding-top:15px; font-style:italic">click icon for more information</div></div><div id="'+i.replace(/[^0-9]/g, '_')+'-content"></div>');
+		}
+	}
+	for(var i in infowindows) {
+		with({i: i})
+		{
+			var ll = markers[i].getPosition().toString();
+			if(polygonnames[ll] !== undefined)
+			{
+				clusterTitle = '<h1>'+polygonnames[ll]+'</h1><hr />';
+			}
+			else
+			{
+				clusterTitle = '';
+			}
+			if(polygonlls[i] === undefined)
+			{
+				infowindows[i].setContent(clusterTitle+infowindows[i].getContent());
+			}
+			else
+			{
+				infowindows[i].setContent(clusterTitle);
+			}
 		}
 	}
 	for(var i in clusterMarkers) {
@@ -350,6 +431,19 @@ var cluster = function() {
 				closeAll();
 				_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', i]);
 				clusterInfowindows[i].open(map,clusterMarkers[i]);
+/*
+				console.log(clusterInfowindows[i].content);
+				if(xmlhttp !== undefined) xmlhttp.abort();
+				xmlhttp = new XMLHttpRequest();
+				xmlhttp.open("GET","process.php?v="+version+"&q="+inputbox.value+'&ec='+enabledCategories,true);
+//	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
+				xmlhttp.send();
+				xmlhttp.onreadystatechange=function() {
+					if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+						var response_data = JSON.parse(xmlhttp.responseText);
+					}
+				}
+*/
 			});
 		}
 	}
@@ -481,6 +575,8 @@ var initmarkers = function() {
 	$.get('polygons.php?v='+version, function(data,textstatus,xhr) {
 		window.polygons = {};
 		window.polygoninfowindows = {};
+		window.polygonnames = {};
+		window.polygonlls = {};
 		var buildingIcon = new google.maps.MarkerImage('img/building.png',
 			new google.maps.Size(20, 20),
 			new google.maps.Point(0, 0),
@@ -492,6 +588,9 @@ var initmarkers = function() {
 			var poslabel = markpt[1];
 			var zindex = markpt[2];
 			var points = markpt[3];
+			var ll = new google.maps.LatLng(markpt[5][1], markpt[5][0]).toString();
+			polygonnames[ll] = poslabel;
+			polygonlls[pos] = ll;
 			var paths = new Array();
 			var i;
 			for(i=0; i < points.length-1; i++) {
@@ -542,7 +641,7 @@ var initmarkers = function() {
 					visible: true
 				}));
 			}
-			polygoninfowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title">'+poslabel+'</h2><a class="odl" href="'+pos+'">Visit page</a></div>'});
+			polygoninfowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title">'+poslabel+'</h2></div>'});
 			
 			var listener;
 			var position;
@@ -561,15 +660,30 @@ var initmarkers = function() {
 			google.maps.event.addListener(listener, 'click', function(event) {
 				closeAll();
 				_gaq.push(['_trackEvent', 'InfoWindow', pType, pos]);
+				var infowindow = polygoninfowindows[pos];
+				var requireload = false;
+				if(polygonlls[pos] !== undefined && clusterInfowindows[polygonlls[pos]] !== undefined)
+				{
+					infowindow = clusterInfowindows[polygonlls[pos]];
+				}
+				else if(firstAtPos[polygonlls[pos]] && infowindows[firstAtPos[polygonlls[pos]]] !== undefined)
+				{
+					infowindow = infowindows[firstAtPos[polygonlls[pos]]];
+					requireload = firstAtPos[polygonlls[pos]];
+				}
 				if(event !== undefined) {
 					if(event.latLng !== undefined) {
-						polygoninfowindows[pos].setPosition(event.latLng);
+						infowindow.setPosition(event.latLng);
 					} else {
-						polygoninfowindows[pos].setPosition(position);
+						infowindow.setPosition(position);
 					}
-					polygoninfowindows[pos].open(window.map);
+					infowindow.open(window.map);
 				} else {
-					polygoninfowindows[pos].open(window.map, listener);
+					infowindow.open(window.map, listener);
+				}
+				if(requireload)
+				{
+					loadWindow(requireload);
 				}
 			});
 		});
