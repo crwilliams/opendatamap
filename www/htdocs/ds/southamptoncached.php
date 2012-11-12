@@ -333,12 +333,9 @@ class SouthamptoncachedDataSource extends DataSource
 		} ORDER BY ?rating
 		");
 
-		//if(count($page) > 0)
 		echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$name;
 		if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri) && !$wifi)
 		{
-			//print_r($page[0]);
-			//echo "<a class='odl' href='".$page[0]['page']."'>Visit page</a>";
 			echo "<a class='odl' href='".$uri."'>Visit page</a>";
 		}
 		echo "</h2>";
@@ -391,10 +388,6 @@ class SouthamptoncachedDataSource extends DataSource
 				$seats['freeseats'] = 'None';
 			}
 			echo $seats['freeseats']." <span style='font-size:0.8em'>out of ".$seats['allseats']."</span>";
-			//echo "<ul>";
-			//echo "<li>available: ".$seats['freeseats']."</li>";
-			//echo "<li>total: ".$seats['allseats']."</li>";
-			//echo "</ul>";
 		}
 		else if($type == 'wifi')
 		{

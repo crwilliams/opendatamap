@@ -29,6 +29,8 @@ var zoomuri;
 var clickuri;
 var uri;
 
+var contcount = 0;
+
 var addControl = function(elementID, position) {
 	var element = document.getElementById(elementID);
 	map.controls[position].push(element);
@@ -271,7 +273,8 @@ var zoomTo = function(uri, cl, pan) {
 	cl = typeof(cl) != 'undefined' ? cl : true;
 	pan = typeof(pan) != 'undefined' ? pan : true;
 	var bounds = new google.maps.LatLngBounds();
-	if(uri.substring(0,9) == 'postcode:') {
+	if(uri.substring(0,9) == 'postcode:')
+	{
 		var pdata = uri.substring(9).split(',');
 		var latlng = new google.maps.LatLng(pdata[1], pdata[2]);
 		pmarkers[pdata[0]] = new google.maps.Marker({position:latlng, map:map, title:pdata[0], icon:'http://opendatamap.ecs.soton.ac.uk/resources/postcodeicon.php?pc='+pdata[0]});
@@ -283,40 +286,50 @@ var zoomTo = function(uri, cl, pan) {
 			});
 		}
 		_gaq.push(['_trackEvent', 'JumpTo', 'Postcode', pdata[0]]);
-		if(pan)map.panTo(latlng);
+		if(pan) map.panTo(latlng);
 	}
-	else if(polygons[uri] !== undefined) {
-		if(polygons[uri].length !== undefined) {
+	else if(polygons[uri] !== undefined)
+	{
+		if(polygons[uri].length !== undefined)
+		{
 			_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
 			for(var i = 0; i<polygons[uri].length; i++) {
 				polygons[uri][i].getPath().forEach(function(el, i) {
 					bounds.extend(el);
 				});
 			}
-			if(pan)map.fitBounds(bounds);
-			if(cl)google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
-		} else {
-			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-			if(pan)map.panTo(polygons[uri].getPosition());
-			if(cl)google.maps.event.trigger(polygons[uri], 'click');
+			if(pan) map.fitBounds(bounds);
+			if(cl) google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
 		}
-	} else if(markers[uri] !== undefined) {
+		else
+		{
+			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
+			if(pan) map.panTo(polygons[uri].getPosition());
+			if(cl) google.maps.event.trigger(polygons[uri], 'click');
+		}
+	}
+	else if(markers[uri] !== undefined)
+	{
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-		if(pan)map.panTo(markers[uri].getPosition());
-		if(cl)google.maps.event.trigger(markers[uri], 'click');
-	} else if(uri == 'southampton-overview') {
+		if(pan) map.panTo(markers[uri].getPosition());
+		if(cl) google.maps.event.trigger(markers[uri], 'click');
+	}
+	else if(uri == 'southampton-overview')
+	{
 		bounds.extend(new google.maps.LatLng(50.9667011,-1.4444580));
 		bounds.extend(new google.maps.LatLng(50.9326431,-1.4438220));
 		bounds.extend(new google.maps.LatLng(50.8887047,-1.3935115));
 		bounds.extend(new google.maps.LatLng(50.9554826,-1.3560130));
 		bounds.extend(new google.maps.LatLng(50.9667013,-1.4178855));
-		if(pan)map.fitBounds(bounds);
-	} else if(uri == 'southampton-centre') {
+		if(pan) map.fitBounds(bounds);
+	}
+	else if(uri == 'southampton-centre')
+	{
 		bounds.extend(new google.maps.LatLng(50.9072471,-1.4186829));
 		bounds.extend(new google.maps.LatLng(50.9111925,-1.4029262));
 		bounds.extend(new google.maps.LatLng(50.9079644,-1.3979205));
 		bounds.extend(new google.maps.LatLng(50.8930407,-1.4004233));
-		if(pan)map.fitBounds(bounds);
+		if(pan) map.fitBounds(bounds);
 	}
 }
 
@@ -327,7 +340,6 @@ var getLiveInfo = function(i) {
 var renderClusterItem = function(uri, ll) {
 	if(polygonlls[uri] == undefined)
 	{
-		//return '<div class="clusteritem" onclick="infowindows[\''+uri+'\'].open(map, clusterMarkers[\''+ll+'\']); loadWindow(\''+uri+'\')"><img class="icon" src="'+markers[uri].getIcon()+'" />'+markers[uri].getTitle().replace('\\\'', '\'') +getLiveInfo(uri)+'</div>';
 		return '<div class="clusteritem" onclick="loadWindow(\''+uri+'\', $(\'#'+ll.replace(/[^0-9]/g, '_')+'-content\'), $(\'#'+ll.replace(/[^0-9]/g, '_')+'-listcontent\'), \''+ll+'\')"><img class="icon" src="'+markers[uri].getIcon()+'" />'+markers[uri].getTitle().replace('\\\'', '\'') +getLiveInfo(uri)+'</div>';
 	}
 	else
@@ -431,19 +443,6 @@ var cluster = function() {
 				closeAll();
 				_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', i]);
 				clusterInfowindows[i].open(map,clusterMarkers[i]);
-/*
-				console.log(clusterInfowindows[i].content);
-				if(xmlhttp !== undefined) xmlhttp.abort();
-				xmlhttp = new XMLHttpRequest();
-				xmlhttp.open("GET","process.php?v="+version+"&q="+inputbox.value+'&ec='+enabledCategories,true);
-//	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
-				xmlhttp.send();
-				xmlhttp.onreadystatechange=function() {
-					if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-						var response_data = JSON.parse(xmlhttp.responseText);
-					}
-				}
-*/
 			});
 		}
 	}
@@ -510,8 +509,6 @@ var delayHide = function(id, delay) {
 	t = setTimeout("hide('"+id+"');", delay);
 }
 
-var contcount = 0;
-
 var cont = function() {
 	contcount++;
 	if(contcount != 2) return;
@@ -521,10 +518,6 @@ var cont = function() {
 	initbookmarks();
 	initcredits();
 	initsearch();
-	//var georssLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/uni-link-routes.kml');
-	//georssLayer.setMap(map);
-	//var pathLayer = new google.maps.KmlLayer('http://opendatamap.ecs.soton.ac.uk/dev/colin/paths.kml');
-	//pathLayer.setMap(map);
 	
 	$('#inputbox').keydown(keypress);
 	$('#inputbox').keyup(updateFunc);
@@ -712,6 +705,65 @@ var getHash = function(key) {
 		return hashfields[key];
 }
 
+var hcf = function() {
+	var hashstring = location.hash.replace( /^#/, '' );
+	var hashstringparts = hashstring.split(',');
+	hashfields = new Object();
+	for(var i in hashstringparts)
+	{
+		var hashfield = hashstringparts[i].split('=');
+		hashfields[hashfield[0]] = hashfield[1];
+	}
+
+	if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
+		return;
+	var dates = new Object();
+	var fulldates = new Object();
+	$('#day a').each(function(i, v) {
+		var d = v.id.substring(5, 15);
+		dates[v.innerHTML.toLowerCase()] = d;
+		fulldates[v.innerHTML.toLowerCase()] = v.title.replace('Show ', '').replace('\'s events (', ' ').replace(')', '');
+		$('._'+d).hide();
+	});
+	$('#day a').each(function(i, v) {
+		var d = v.id.substring(5, 15);
+		$('#link_'+d).removeClass('selected');
+	});
+	document.title = document.title.replace( / \| .*/, '' );
+
+	var d = getHash('day');
+	var fulldate;
+	if(d == '') {
+		d = Object.keys(dates)[0];
+		hashfields['day'] = d;
+		updateHash();
+	}
+	if(dates[d] == undefined) {
+		return;
+	} else {
+		selecteddate = dates[d];
+		fulldate = fulldates[d];
+	}
+
+	document.title += ' | '+fulldate;
+	$('._'+selecteddate).show();
+	$('#link_'+selecteddate).addClass('selected');
+
+	var s = getHash('subject');
+	if($('#subj_'+s).get(0) != undefined) {
+		chooseSubject($('#subj_'+s).get(0).innerHTML);
+	}
+
+	var hashvals = '';
+	if(hashfields['subject'] != undefined)
+		hashvals += hashfields['subject'];
+	hashvals += '/';
+	if(hashfields['day'] != undefined)
+		hashvals += hashfields['day'];
+	$('#inputbox').val(hashvals);
+	updateFunc();
+};
+
 var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
 	zoomuri = pzoomuri;
 	clickuri = pclickuri;
@@ -730,88 +782,32 @@ var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, 
 	});
 
 	var styledMapType = new google.maps.StyledMapType([
-  {
-    featureType: "poi",
-    elementType: "all",
-    stylers: [
-      { visibility: "off" }
-    ]
-  },{
-    featureType: "landscape.man_made",
-    elementType: "all",
-    stylers: [
-      { visibility: "off" }
-    ]
-  },{
-    featureType: "transit.station",
-    elementType: "all",
-    stylers: [
-      { visibility: "off" }
-    ]
-  }
-], {name: 'Map'});
+		{
+			featureType: "poi",
+			elementType: "all",
+			stylers: [
+				{ visibility: "off" }
+			]
+		},{
+			featureType: "landscape.man_made",
+			elementType: "all",
+			stylers: [
+				{ visibility: "off" }
+			]
+		},{
+			featureType: "transit.station",
+			elementType: "all",
+			stylers: [
+				{ visibility: "off" }
+			]
+		}
+	], {name: 'Map'});
+
 	map.mapTypes.set('Map2', styledMapType);
 
 	initmarkers();
 
-	var hcf = function() {
-		var hashstring = location.hash.replace( /^#/, '' );
-		var hashstringparts = hashstring.split(',');
-		hashfields = new Object();
-		for(var i in hashstringparts)
-		{
-			var hashfield = hashstringparts[i].split('=');
-			hashfields[hashfield[0]] = hashfield[1];
-		}
 
-		if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
-			return;
-		var dates = new Object();
-		var fulldates = new Object();
-		$('#day a').each(function(i, v) {
-			var d = v.id.substring(5, 15);
-			dates[v.innerHTML.toLowerCase()] = d;
-			fulldates[v.innerHTML.toLowerCase()] = v.title.replace('Show ', '').replace('\'s events (', ' ').replace(')', '');
-			$('._'+d).hide();
-		});
-		$('#day a').each(function(i, v) {
-			var d = v.id.substring(5, 15);
-			$('#link_'+d).removeClass('selected');
-		});
-		document.title = document.title.replace( / \| .*/, '' );
-
-		var d = getHash('day');
-		var fulldate;
-		if(d == '') {
-			d = Object.keys(dates)[0];
-			hashfields['day'] = d;
-			updateHash();
-		}
-		if(dates[d] == undefined) {
-			return;
-		} else {
-			selecteddate = dates[d];
-			fulldate = fulldates[d];
-		}
-
-		document.title += ' | '+fulldate;
-		$('._'+selecteddate).show();
-		$('#link_'+selecteddate).addClass('selected');
-
-		var s = getHash('subject');
-		if($('#subj_'+s).get(0) != undefined) {
-			chooseSubject($('#subj_'+s).get(0).innerHTML);
-		}
-	
-		var hashvals = '';
-		if(hashfields['subject'] != undefined)
-			hashvals += hashfields['subject'];
-		hashvals += '/';
-		if(hashfields['day'] != undefined)
-			hashvals += hashfields['day'];
-		$('#inputbox').val(hashvals);
-		updateFunc();
-	};
 
 	$(window).bind('hashchange', hcf);
 

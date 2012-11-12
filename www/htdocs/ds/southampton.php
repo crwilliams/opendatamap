@@ -24,7 +24,6 @@ class SouthamptonDataSource extends DataSource
 		foreach(self::_getAllBusStopOfferings()	 		as $point) $points[] = $point;
 		foreach(self::_getAllWorkstationRoomOfferings()		as $point) $points[] = $point;
 		foreach(self::_getAllISolutionsWifiPointOfferings()	as $point) $points[] = $point;
-		//foreach(self::_getAllResidenceOfferings()		as $point) $points[] = $point;
 		foreach(self::_getAllShowerOfferings()			as $point) $points[] = $point;
 		return $points;
 	}
@@ -300,65 +299,6 @@ class SouthamptonDataSource extends DataSource
 			$point['label'] = 'iSolutions Wi-Fi';
 			$point['icon'] = self::$iconpath.'Offices/wifi.png';
 			$point['type'] = 'wifi';
-			$points[] = $point;
-		}
-		return $points;
-	}
-
-	private static function _getAllResidences()
-	{
-		$tpoints = sparql_get(self::$endpoint, "
-		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-		PREFIX org: <http://www.w3.org/ns/org#>
-		PREFIX gr: <http://purl.org/goodrelations/v1#>
-		PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-		
-		SELECT DISTINCT ?id ?lat ?lng ?label WHERE {
-		  ?b rdfs:label ?label .
-		  ?b <http://purl.org/openorg/hasFeature> ?id .
-		  ?id a <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> .
-		  OPTIONAL { ?b geo:lat ?lat . 
-		             ?b geo:long ?lng .
-		             ?b a <http://vocab.deri.ie/rooms#Building> .
-		           }
-		  OPTIONAL { ?id spacerel:within ?s .
-		             ?s geo:lat ?lat . 
-		             ?s geo:long ?lng .
-		             ?s a org:Site .
-		           }
-		  OPTIONAL { ?id geo:lat ?lat .
-		             ?id geo:long ?lng .
-		           }
-		  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
-		  FILTER ( BOUND(?lng) && BOUND(?lat) )
-		} ORDER BY ?label
-		");
-		$points = array();
-		foreach($tpoints as $point)
-		{
-			$point['icon'] = self::$iconpath.'Restaurants-and-Hotels/lodging_0star.png';
-			$points[] = $point;
-		}
-		return $points;
-	}
-
-	private static function _getAllResidenceOfferings()
-	{
-		$tpoints =  sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?poslabel ?pos WHERE {
-		  ?b <http://www.w3.org/2000/01/rdf-schema#label> ?poslabel .
-		  ?b <http://purl.org/openorg/hasFeature> ?pos .
-		  ?pos a <http://id.southampton.ac.uk/ns/PlaceFeature-ResidentialUse> .
-		} ORDER BY ?poslabel
-		");
-		$points = array();
-		foreach($tpoints as $point)
-		{
-			$point['label'] = 'Accommodation';
-			$point['icon'] = self::$iconpath.'Restaurants-and-Hotels/lodging_0star.png';
-			$point['type'] = 'residence';
 			$points[] = $point;
 		}
 		return $points;
