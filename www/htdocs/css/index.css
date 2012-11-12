@@ -275,6 +275,7 @@ ul.offers li{
 	margin-right: 5px;
 	line-height: 2em;
 	background-color: #DDDDB7;
+	cursor:pointer;
 } 
 
 ul.offers{
@@ -308,6 +309,7 @@ h3 {
 	padding-right:5px;
 	padding-left:32px;
 	text-indent:-30px;
+	cursor:pointer;
 }
 
 .toggleicons {
