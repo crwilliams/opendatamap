@@ -92,12 +92,12 @@ function getAllMatches($q, $cats)
 }
 
 class DataSource{
-	static function getAll(){}
-	static function getEntries($q, $cats){}
-	static function getDataSets(){}
-	static function getDataSetExtras(){}
-	static function getAllSites(){}
-	static function getAllBuildings(){}
+	static function getAll(){return array();}
+	static function getEntries($q, $cats){return array();}
+	static function getDataSets(){return array();}
+	static function getDataSetExtras(){return array();}
+	static function getAllSites(){return array();}
+	static function getAllBuildings(){return array();}
 	static function processURI($uri){return false;}
 	
 	static $iconpath = 'http://data.southampton.ac.uk/map-icons/';
