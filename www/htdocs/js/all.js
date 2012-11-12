@@ -31,116 +31,7 @@ var uri;
 
 var contcount = 0;
 
-var addControl = function(elementID, position) {
-	var element = document.getElementById(elementID);
-	map.controls[position].push(element);
-}
-
-var initcredits = function() {
-	addControl('credits', google.maps.ControlPosition.RIGHT_BOTTOM);
-	addControl('credits-small', google.maps.ControlPosition.RIGHT_BOTTOM);
-}
-
-var geoloc = function() {
-	_gaq.push(['_trackEvent', 'Geolocation', 'Request']);
-	navigator.geolocation.getCurrentPosition(
-		function(position) {        
-			if( position.coords.accuracy < 5000 ) {
-				map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-			} else {
-				alert('Sorry, geo location wildly inaccurate ('+ position.coords.accuracy+" meters)"); 
-			}
-			_gaq.push(['_trackEvent', 'Geolocation', 'Response', null, position.coords.accuracy]);
-		},        
-		function(e) {
-			alert('Sorry, geo location failed'); 
-			_gaq.push(['_trackEvent', 'Geolocation', 'Failed']);
-		}
-	);                                                                  
-}
-
-var initgeoloc = function() {
-	if (navigator.geolocation) {
-		addControl('geobutton', google.maps.ControlPosition.TOP_RIGHT);
-	} else {
-		$('#geobutton').get(0).style.display = 'none';
-	}
-}
-
-var reset_search_icon = function() {
-	var val = $("#inputbox").val();
-	if (val.length > 0) {
-		$("#clear").attr("src", CLEAR_SEARCH_ICON);
-	} else {
-		$("#clear").attr("src", DEFAULT_SEARCH_ICON);
-	}
-}
-
-// someone's clicked on something, you need to load the real data into it
-var loadWindow = function(j, dest, hide, reload) {
-	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
-	if(dest === undefined && polygonlls[j] !== undefined)
-	{
-		return;
-	}
-	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURIComponent(j), function(data) {
-		var ll = markers[j].getPosition().toString();
-		if(polygonnames[ll] !==undefined)
-		{
-			clusterTitle = '<h1>'+polygonnames[ll]+'</h1><hr />';
-		}
-		else
-		{
-			clusterTitle = '';
-		}
-		if(dest === undefined)
-		{
-			infowindows[j].setContent(clusterTitle+data);
-		}
-		else
-		{
-			tempInfowindow = new google.maps.InfoWindow({content:clusterTitle+data+'<a href="#" class="back" onclick="return goBack(\''+reload+'\')\">Back to list</a>'});
-			tempInfowindow.setPosition(clusterInfowindows[reload].getPosition());
-			tempInfowindow.open(map);
-			clusterInfowindows[reload].close();
-		}
-	});
-}
-
-var goBack = function(reload) {
-	tempInfowindow.close();
-	clusterInfowindows[reload].open(map);
-	return false;
-}
-
-var closeAll = function() {
-	for(var i in markers) {
-		infowindows[i].close();
-	}
-	for(var i in clusterMarkers) {
-		if(typeof(clusterInfowindows[i]) == "object")
-			clusterInfowindows[i].close();
-	}
-	for(var i in polygons) {
-		polygoninfowindows[i].close();
-	}
-	if(tempInfowindow !== undefined) {
-		tempInfowindow.close();
-	}
-}
-
-var initmarkerevents = function() {
-	for(var i in markers) {
-		with({i: i})
-		{
-			google.maps.event.addListener(markers[i], 'click', function() {
-				closeAll();
-				infowindows[i].open(map,markers[i]);
-				loadWindow(i);
-			});
-		}
-	}
-}
+// Subject functions.
 
 var refreshSubjectChoice = function() {
 	var str = getHash('subject');
@@ -182,88 +73,11 @@ var changeSubject = function() {
 	$('#selectedsubject').css('color', 'inherit');
 	$('#selectedsubject').click(null);
 	refreshSubjectChoice();
-	updateFunc();
+	searchResults_updateFunc();
 	updateHash('subject', '');
 }
 
-var updateFunc = function(force) {
-
-	if(force !== true) force = false;
-	var enabledCategories = getSelectedCategories();
-	reset_search_icon();
-	var inputbox = $("#inputbox").get(0);
-	var list = $("#list").get(0);
-	if(!force && inputbox.value == oldString) return;
-	oldString = inputbox.value;
-
-	if(xmlhttp !== undefined) xmlhttp.abort();
-	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET","matches.php?v="+version+"&q="+inputbox.value+'&ec='+enabledCategories,true);
-	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
-	xmlhttp.send();
-	xmlhttp.onreadystatechange=function() {
-		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-			var response_data = JSON.parse(xmlhttp.responseText);
-			var matches = [], labelmatches = [];
-			if (response_data !== undefined) {
-				matches = response_data[0];
-				labelmatches = response_data[1];
-			}
-			
-			var matchesd = {};
-			matches.map(function(x) { if (x !== undefined) { matchesd[x] = true; } });
-			
-			for (var uri in markers) {
-				markers[uri].setVisible(matchesd[uri] !== undefined);
-			}
-
-			selectIndex = -1;
-			list.innerHTML = "";
-			
-			var re = new RegExp('('+$.trim(inputbox.value)+')',"gi");
-			limit = 0;
-			for(var m in labelmatches) {
-				// if it's the special last element, continue
-				if (m === undefined) continue;
-				var dispStr;
-				if (labelmatches[m][0] === undefined) {
-					continue;	
-				}
-				
-				if(inputbox.value != "") {
-					dispStr = new String(labelmatches[m][0]).replace(re, "<span style='background-color:#FFFF66'>$1</span>");
-				} else {
-					dispStr = labelmatches[m][0];
-				}
-				if(labelmatches[m][2] !== undefined) {
-					if(labelmatches[m][3] !== undefined) {
-						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><img class="icon" src="'+labelmatches[m][3]+'" style="width:15px" />'+dispStr+'</li>';
-					} else {
-						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); setInputBox(\'\'); updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
-					}
-				} else {
-					list.innerHTML += '<li id="li'+limit+'" onclick="setInputBox(\'^'+labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)')+'$\'); updateFunc();">'+dispStr+'</li>';
-				} 
-				limit++;
-			}
-			if(limit == 0)
-				list.innerHTML += '<li><i>No results found</i></li>';
-			cluster();
-			
-			if ($("#spinner").is(":visible")) {
-			  $("#spinner").fadeOut();
-			}
-			// end of initialize
-		}
-	}
-}
-
-var keypress = function(e) {
-	if(e.keyCode == 40) return moveDown();
-	else if(e.keyCode == 38) return moveUp();
-	else if(e.keyCode == 13) return select();
-	else if(e.keyCode == 27) return blursearch();
-}
+//Misc functions.
 
 var removepmarker = function(pc) {
 	pmarkers[pc].setMap(null);
@@ -448,16 +262,209 @@ var cluster = function() {
 	}
 }
 
-var initsearch = function() {
-	$('#search').index = 2;
-	addControl('search', google.maps.ControlPosition.TOP_RIGHT);
-	$('#search-small').index = 2;
-	addControl('search-small', google.maps.ControlPosition.TOP_RIGHT);
+var addControl = function(elementID, position) {
+	var element = document.getElementById(elementID);
+	map.controls[position].push(element);
 }
 
-var setInputBox = function(str) {
+var geoloc = function() {
+	_gaq.push(['_trackEvent', 'Geolocation', 'Request']);
+	navigator.geolocation.getCurrentPosition(
+		function(position) {        
+			if( position.coords.accuracy < 5000 ) {
+				map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+			} else {
+				alert('Sorry, geo location wildly inaccurate ('+ position.coords.accuracy+" meters)"); 
+			}
+			_gaq.push(['_trackEvent', 'Geolocation', 'Response', null, position.coords.accuracy]);
+		},        
+		function(e) {
+			alert('Sorry, geo location failed'); 
+			_gaq.push(['_trackEvent', 'Geolocation', 'Failed']);
+		}
+	);                                                                  
+}
+
+var reset_search_icon = function() {
+	var val = $("#inputbox").val();
+	if (val.length > 0) {
+		$("#clear").attr("src", CLEAR_SEARCH_ICON);
+	} else {
+		$("#clear").attr("src", DEFAULT_SEARCH_ICON);
+	}
+}
+
+// someone's clicked on something, you need to load the real data into it
+var loadWindow = function(j, dest, hide, reload) {
+	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
+	if(dest === undefined && polygonlls[j] !== undefined)
+	{
+		return;
+	}
+	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURIComponent(j), function(data) {
+		var ll = markers[j].getPosition().toString();
+		if(polygonnames[ll] !==undefined)
+		{
+			clusterTitle = '<h1>'+polygonnames[ll]+'</h1><hr />';
+		}
+		else
+		{
+			clusterTitle = '';
+		}
+		if(dest === undefined)
+		{
+			infowindows[j].setContent(clusterTitle+data);
+		}
+		else
+		{
+			tempInfowindow = new google.maps.InfoWindow({content:clusterTitle+data+'<a href="#" class="back" onclick="return goBack(\''+reload+'\')\">Back to list</a>'});
+			tempInfowindow.setPosition(clusterInfowindows[reload].getPosition());
+			tempInfowindow.open(map);
+			clusterInfowindows[reload].close();
+		}
+	});
+}
+
+var goBack = function(reload) {
+	tempInfowindow.close();
+	clusterInfowindows[reload].open(map);
+	return false;
+}
+
+var closeAll = function() {
+	for(var i in markers) {
+		infowindows[i].close();
+	}
+	for(var i in clusterMarkers) {
+		if(typeof(clusterInfowindows[i]) == "object")
+			clusterInfowindows[i].close();
+	}
+	for(var i in polygons) {
+		polygoninfowindows[i].close();
+	}
+	if(tempInfowindow !== undefined) {
+		tempInfowindow.close();
+	}
+}
+
+// Search functions.
+
+var searchResults_setInputBox = function(str) {
 	$('#inputbox').get(0).value = str;
 }
+
+var searchResults_updateFunc = function(force) {
+
+	if(force !== true) force = false;
+	var enabledCategories = getSelectedCategories();
+	reset_search_icon();
+	var inputbox = $("#inputbox").get(0);
+	var list = $("#list").get(0);
+	if(!force && inputbox.value == oldString) return;
+	oldString = inputbox.value;
+
+	if(xmlhttp !== undefined) xmlhttp.abort();
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET","matches.php?v="+version+"&q="+inputbox.value+'&ec='+enabledCategories,true);
+	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
+	xmlhttp.send();
+	xmlhttp.onreadystatechange=function() {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			var response_data = JSON.parse(xmlhttp.responseText);
+			var matches = [], labelmatches = [];
+			if (response_data !== undefined) {
+				matches = response_data[0];
+				labelmatches = response_data[1];
+			}
+			
+			var matchesd = {};
+			matches.map(function(x) { if (x !== undefined) { matchesd[x] = true; } });
+			
+			for (var uri in markers) {
+				markers[uri].setVisible(matchesd[uri] !== undefined);
+			}
+
+			selectIndex = -1;
+			list.innerHTML = "";
+			
+			var re = new RegExp('('+$.trim(inputbox.value)+')',"gi");
+			limit = 0;
+			for(var m in labelmatches) {
+				// if it's the special last element, continue
+				if (m === undefined) continue;
+				var dispStr;
+				if (labelmatches[m][0] === undefined) {
+					continue;	
+				}
+				
+				if(inputbox.value != "") {
+					dispStr = new String(labelmatches[m][0]).replace(re, "<span style='background-color:#FFFF66'>$1</span>");
+				} else {
+					dispStr = labelmatches[m][0];
+				}
+				if(labelmatches[m][2] !== undefined) {
+					if(labelmatches[m][3] !== undefined) {
+						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); searchResults_setInputBox(\'\'); searchResults_updateFunc();"><img class="icon" src="'+labelmatches[m][3]+'" style="width:15px" />'+dispStr+'</li>';
+					} else {
+						list.innerHTML += '<li id="li'+limit+'" onclick="zoomTo(\''+labelmatches[m][2]+'\'); searchResults_setInputBox(\'\'); searchResults_updateFunc();"><span style="font-size:0.5em">'+labelmatches[m][1]+': </span>'+dispStr+'</li>';
+					}
+				} else {
+					list.innerHTML += '<li id="li'+limit+'" onclick="searchResults_setInputBox(\'^'+labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)')+'$\'); searchResults_updateFunc();">'+dispStr+'</li>';
+				} 
+				limit++;
+			}
+			if(limit == 0)
+				list.innerHTML += '<li><i>No results found</i></li>';
+			cluster();
+			
+			if ($("#spinner").is(":visible")) {
+			  $("#spinner").fadeOut();
+			}
+			// end of initialize
+		}
+	}
+}
+
+var searchResults_keypress = function(e) {
+	if(e.keyCode == 40) return searchResults_moveDown();
+	else if(e.keyCode == 38) return searchResults_moveUp();
+	else if(e.keyCode == 13) return searchResults_select();
+	else if(e.keyCode == 27) return searchResults_blursearch();
+}
+
+var searchResults_moveUp = function() {
+	searchResults_removeHighlight();
+	if(selectIndex >= 0) selectIndex--;
+	searchResults_updateHighlight();
+	return false;
+}
+
+var searchResults_moveDown = function() {
+	searchResults_removeHighlight();
+	if(selectIndex < limit - 1) selectIndex++;
+	searchResults_updateHighlight();
+	return false;
+}
+
+var searchResults_select = function() {
+	if(selectIndex >= 0) $('#li'+selectIndex).get(0).onclick();
+	searchResults_blursearch();
+}
+
+var searchResults_blursearch = function() {
+	removeHighlight();
+	$('#inputbox').blur();
+}
+
+var searchResults_removeHighlight = function() {
+	if(selectIndex >= 0) $('#li'+selectIndex).get(0).style.backgroundColor = 'inherit';
+}
+
+var searchResults_updateHighlight = function() {
+	if(selectIndex >= 0) $('#li'+selectIndex).get(0).style.backgroundColor = '#CCCCFF';
+}
+
+// Show and hide functions.
 
 var show = function(id) {
 	selectIndex = -1;
@@ -471,38 +478,6 @@ var show = function(id) {
 
 var hide = function(id) {
 	$('#'+id).get(0).style.display = "none";
-}
-
-var moveUp = function() {
-	removeHighlight();
-	if(selectIndex >= 0) selectIndex--;
-	updateHighlight();
-	return false;
-}
-
-var moveDown = function() {
-	removeHighlight();
-	if(selectIndex < limit - 1) selectIndex++;
-	updateHighlight();
-	return false;
-}
-
-var select = function() {
-	if(selectIndex >= 0) $('#li'+selectIndex).get(0).onclick();
-	blursearch();
-}
-
-var blursearch = function() {
-	removeHighlight();
-	$('#inputbox').blur();
-}
-
-var removeHighlight = function() {
-	if(selectIndex >= 0) $('#li'+selectIndex).get(0).style.backgroundColor = 'inherit';
-}
-
-var updateHighlight = function() {
-	if(selectIndex >= 0) $('#li'+selectIndex).get(0).style.backgroundColor = '#CCCCFF';
 }
 
 var delayHide = function(id, delay) {
@@ -519,8 +494,8 @@ var cont = function() {
 	initcredits();
 	initsearch();
 	
-	$('#inputbox').keydown(keypress);
-	$('#inputbox').keyup(updateFunc);
+	$('#inputbox').keydown(searchResults_keypress);
+	$('#inputbox').keyup(searchResults_updateFunc);
 	var hashstring = location.hash.replace( /^#/, '' );
 	location.hash = location.hash.replace(/\/.*/, '');
 	hashstring = hashstring.split('/');
@@ -531,7 +506,7 @@ var cont = function() {
 	}
 	else
 		hashstring = '';
-	updateFunc();
+	searchResults_updateFunc();
 	if(uri != '') zoomTo(uri, true, true);
 	if(zoomuri != '')
 	{
@@ -540,6 +515,189 @@ var cont = function() {
 	if(clickuri != '')
 	{
 		zoomTo(clickuri, true, false);
+	}
+}
+
+// Hash functions.
+
+var updateHash = function(key, value) {
+	if(key != undefined && value != undefined)
+		hashfields[key] = value;
+	var hashstring = '';
+	for(var i in hashfields)
+	{
+		if(hashfields[i] != '' && hashfields[i] != undefined)
+		{
+			hashstring += ','+i+'='+hashfields[i];
+		}
+	}
+	location.hash = '#'+hashstring.substring(1);
+}
+
+var getHash = function(key) {
+	if(hashfields[key] == undefined)
+		return '';
+	else
+		return hashfields[key];
+}
+
+var hcf = function() {
+	var hashstring = location.hash.replace( /^#/, '' );
+	var hashstringparts = hashstring.split(',');
+	hashfields = new Object();
+	for(var i in hashstringparts)
+	{
+		var hashfield = hashstringparts[i].split('=');
+		hashfields[hashfield[0]] = hashfield[1];
+	}
+
+	if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
+		return;
+	var dates = new Object();
+	var fulldates = new Object();
+	$('#day a').each(function(i, v) {
+		var d = v.id.substring(5, 15);
+		dates[v.innerHTML.toLowerCase()] = d;
+		fulldates[v.innerHTML.toLowerCase()] = v.title.replace('Show ', '').replace('\'s events (', ' ').replace(')', '');
+		$('._'+d).hide();
+	});
+	$('#day a').each(function(i, v) {
+		var d = v.id.substring(5, 15);
+		$('#link_'+d).removeClass('selected');
+	});
+	document.title = document.title.replace( / \| .*/, '' );
+
+	var d = getHash('day');
+	var fulldate;
+	if(d == '') {
+		d = Object.keys(dates)[0];
+		hashfields['day'] = d;
+		updateHash();
+	}
+	if(dates[d] == undefined) {
+		return;
+	} else {
+		selecteddate = dates[d];
+		fulldate = fulldates[d];
+	}
+
+	document.title += ' | '+fulldate;
+	$('._'+selecteddate).show();
+	$('#link_'+selecteddate).addClass('selected');
+
+	var s = getHash('subject');
+	if($('#subj_'+s).get(0) != undefined) {
+		chooseSubject($('#subj_'+s).get(0).innerHTML);
+	}
+
+	var hashvals = '';
+	if(hashfields['subject'] != undefined)
+		hashvals += hashfields['subject'];
+	hashvals += '/';
+	if(hashfields['day'] != undefined)
+		hashvals += hashfields['day'];
+	$('#inputbox').val(hashvals);
+	searchResults_updateFunc();
+};
+
+// Category functions.
+
+var toggle = function(category) {
+	var cEl = $('#'+category).get(0);
+	if(cEl.checked) {
+		cEl.checked = false;
+		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 0]);
+	} else {
+		cEl.checked = true;
+		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
+	}
+	searchResults_updateFunc(true);
+}
+
+var getSelectedCategories = function() {
+	var boxes = $('.togglebox');
+	var selected = "";
+	for(var i in boxes) {
+		if(boxes[i] !== null && boxes[i].checked)
+			selected += boxes[i].id + ",";
+	}
+	return selected;
+}
+
+// Initilaization functions.
+
+var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
+	zoomuri = pzoomuri;
+	clickuri = pclickuri;
+	uri = puri;
+	version = pversion;
+	map = new google.maps.Map($('#map_canvas').get(0), {
+		zoom: zoom,
+		center: new google.maps.LatLng(lat, long),
+		mapTypeControlOptions: {
+			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
+		        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+		        position: google.maps.ControlPosition.TOP_LEFT
+		},
+		
+		mapTypeId: defaultMap
+	});
+
+	var styledMapType = new google.maps.StyledMapType([
+		{
+			featureType: "poi",
+			elementType: "all",
+			stylers: [
+				{ visibility: "off" }
+			]
+		},{
+			featureType: "landscape.man_made",
+			elementType: "all",
+			stylers: [
+				{ visibility: "off" }
+			]
+		},{
+			featureType: "transit.station",
+			elementType: "all",
+			stylers: [
+				{ visibility: "off" }
+			]
+		}
+	], {name: 'Map'});
+
+	map.mapTypes.set('Map2', styledMapType);
+
+	initmarkers();
+
+
+
+	$(window).bind('hashchange', hcf);
+
+	hcf();
+
+}
+
+var initcredits = function() {
+	addControl('credits', google.maps.ControlPosition.RIGHT_BOTTOM);
+	addControl('credits-small', google.maps.ControlPosition.RIGHT_BOTTOM);
+}
+
+var inittoggle = function() {
+	addControl('toggleicons', google.maps.ControlPosition.RIGHT_TOP);
+}
+
+var initbookmarks = function() {
+	if($('#bookmarks')==null)
+		return;
+	addControl('bookmarks', google.maps.ControlPosition.TOP_RIGHT);
+	$('#bookmarks').show();
+}
+
+var initgeoloc = function() {
+	if (navigator.geolocation) {
+		addControl('geobutton', google.maps.ControlPosition.TOP_RIGHT);
+	} else {
+		$('#geobutton').get(0).style.display = 'none';
 	}
 }
 
@@ -684,166 +842,22 @@ var initmarkers = function() {
 	},'json');
 };
 
-var updateHash = function(key, value) {
-	if(key != undefined && value != undefined)
-		hashfields[key] = value;
-	var hashstring = '';
-	for(var i in hashfields)
-	{
-		if(hashfields[i] != '' && hashfields[i] != undefined)
+var initmarkerevents = function() {
+	for(var i in markers) {
+		with({i: i})
 		{
-			hashstring += ','+i+'='+hashfields[i];
+			google.maps.event.addListener(markers[i], 'click', function() {
+				closeAll();
+				infowindows[i].open(map,markers[i]);
+				loadWindow(i);
+			});
 		}
 	}
-	location.hash = '#'+hashstring.substring(1);
 }
 
-var getHash = function(key) {
-	if(hashfields[key] == undefined)
-		return '';
-	else
-		return hashfields[key];
-}
-
-var hcf = function() {
-	var hashstring = location.hash.replace( /^#/, '' );
-	var hashstringparts = hashstring.split(',');
-	hashfields = new Object();
-	for(var i in hashstringparts)
-	{
-		var hashfield = hashstringparts[i].split('=');
-		hashfields[hashfield[0]] = hashfield[1];
-	}
-
-	if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
-		return;
-	var dates = new Object();
-	var fulldates = new Object();
-	$('#day a').each(function(i, v) {
-		var d = v.id.substring(5, 15);
-		dates[v.innerHTML.toLowerCase()] = d;
-		fulldates[v.innerHTML.toLowerCase()] = v.title.replace('Show ', '').replace('\'s events (', ' ').replace(')', '');
-		$('._'+d).hide();
-	});
-	$('#day a').each(function(i, v) {
-		var d = v.id.substring(5, 15);
-		$('#link_'+d).removeClass('selected');
-	});
-	document.title = document.title.replace( / \| .*/, '' );
-
-	var d = getHash('day');
-	var fulldate;
-	if(d == '') {
-		d = Object.keys(dates)[0];
-		hashfields['day'] = d;
-		updateHash();
-	}
-	if(dates[d] == undefined) {
-		return;
-	} else {
-		selecteddate = dates[d];
-		fulldate = fulldates[d];
-	}
-
-	document.title += ' | '+fulldate;
-	$('._'+selecteddate).show();
-	$('#link_'+selecteddate).addClass('selected');
-
-	var s = getHash('subject');
-	if($('#subj_'+s).get(0) != undefined) {
-		chooseSubject($('#subj_'+s).get(0).innerHTML);
-	}
-
-	var hashvals = '';
-	if(hashfields['subject'] != undefined)
-		hashvals += hashfields['subject'];
-	hashvals += '/';
-	if(hashfields['day'] != undefined)
-		hashvals += hashfields['day'];
-	$('#inputbox').val(hashvals);
-	updateFunc();
-};
-
-var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
-	zoomuri = pzoomuri;
-	clickuri = pclickuri;
-	uri = puri;
-	version = pversion;
-	map = new google.maps.Map($('#map_canvas').get(0), {
-		zoom: zoom,
-		center: new google.maps.LatLng(lat, long),
-		mapTypeControlOptions: {
-			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
-		        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-		        position: google.maps.ControlPosition.TOP_LEFT
-		},
-		
-		mapTypeId: defaultMap
-	});
-
-	var styledMapType = new google.maps.StyledMapType([
-		{
-			featureType: "poi",
-			elementType: "all",
-			stylers: [
-				{ visibility: "off" }
-			]
-		},{
-			featureType: "landscape.man_made",
-			elementType: "all",
-			stylers: [
-				{ visibility: "off" }
-			]
-		},{
-			featureType: "transit.station",
-			elementType: "all",
-			stylers: [
-				{ visibility: "off" }
-			]
-		}
-	], {name: 'Map'});
-
-	map.mapTypes.set('Map2', styledMapType);
-
-	initmarkers();
-
-
-
-	$(window).bind('hashchange', hcf);
-
-	hcf();
-
-}
-
-var toggle = function(category) {
-	var cEl = $('#'+category).get(0);
-	if(cEl.checked) {
-		cEl.checked = false;
-		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 0]);
-	} else {
-		cEl.checked = true;
-		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
-	}
-	updateFunc(true);
-}
-
-var getSelectedCategories = function() {
-	var boxes = $('.togglebox');
-	var selected = "";
-	for(var i in boxes) {
-		if(boxes[i] !== null && boxes[i].checked)
-			selected += boxes[i].id + ",";
-	}
-	return selected;
-}
-
-var inittoggle = function() {
-	addControl('toggleicons', google.maps.ControlPosition.RIGHT_TOP);
-}
-
-var initbookmarks = function() {
-	if($('#bookmarks')==null)
-		return;
-	addControl('bookmarks', google.maps.ControlPosition.TOP_RIGHT);
-	$('#bookmarks').show();
+var initsearch = function() {
+	$('#search').index = 2;
+	addControl('search', google.maps.ControlPosition.TOP_RIGHT);
+	$('#search-small').index = 2;
+	addControl('search-small', google.maps.ControlPosition.TOP_RIGHT);
 }
