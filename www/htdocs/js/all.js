@@ -1,16 +1,16 @@
 var map;
 var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};
-var markers = new Object();
-var infowindows = new Object();
-var postcodeMarkers = new Object();
-var postcodeInfowindows = new Object();
-var polygons = new Object();
-var polygoninfowindows = new Object();
-var clusterMarkers = new Object();
-var clusterInfowindows = new Object();
-var hashfields = new Object();
-var firstAtPos = new Object();
+var markers = {};
+var infowindows = {};
+var postcodeMarkers = {};
+var postcodeInfowindows = {};
+var polygons = {};
+var polygoninfowindows = {};
+var clusterMarkers = {};
+var clusterInfowindows = {};
+var hashfields = {};
+var firstAtPos = {};
 var tempInfowindow = undefined;
 
 var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
@@ -33,40 +33,37 @@ var contcount = 0;
 
 // Subject functions.
 
-var refreshSubjectChoice = function() {
+var refreshSubjectChoice = function () {
 	var str = getHash('subject');
-	if(str == '')
-	{
+	if (str === '') {
 		$('.General').hide();
 		$('.InformationStand').hide();
 		$('.Subject').show();
 		$('.Subject h2').show();
 		$('.Subject li').hide();
 		$('#selectedsubject').html("Choose a subject:");
-	}
-	else
-	{
+	} else {
 		$('.General').show();
 		$('.InformationStand').show();
 		$('.Subject').hide();
 		$('.Subject h2').hide();
-		$('.Subject.subj_'+str).show();
-		$('.Subject.subj_'+str+' li').show();
+		$('.Subject.subj_' + str).show();
+		$('.Subject.subj_' + str + ' li').show();
 	}
-}
+};
 
-var chooseSubject = function(name) {
-	$('#selectedsubject').html(name+'<br/><span style="font-size:0.8em">(click to change subject)</span>');
+var chooseSubject = function (name) {
+	$('#selectedsubject').html(name + '<br/><span style="font-size:0.8em">(click to change subject)</span>');
 	$('#selectedsubject').addClass('clickable');
 	$('#selectedsubject').attr('title', 'Click to change subject');
 	$('#selectedsubject').css('background-color', '#007C92');
 	$('#selectedsubject').css('color', 'white');
 	$('#selectedsubject').click(changeSubject);
 	refreshSubjectChoice();
-}
+};
 
-var changeSubject = function() {
-	$('#inputbox').val('/'+getHash('day'));
+var changeSubject = function () {
+	$('#inputbox').val('/' + getHash('day'));
 	$('#selectedsubject').removeClass('clickable');
 	$('#selectedsubject').attr('title', null);
 	$('#selectedsubject').css('background-color', 'inherit');
@@ -75,131 +72,118 @@ var changeSubject = function() {
 	refreshSubjectChoice();
 	searchResults_updateFunc();
 	updateHash('subject', '');
-}
+};
 
 //Misc functions.
 
-var removePostcodeMarker = function(postcode) {
+var removePostcodeMarker = function (postcode) {
 	postcodeMarkers[postcode].setMap(null);
-}
+};
 
-var zoomTo = function(uri, click, pan) {
-	click = typeof(click) != 'undefined' ? click : true;
-	pan = typeof(pan) != 'undefined' ? pan : true;
+var zoomTo = function (uri, click, pan) {
+	click = (click !== undefined) ? click : true;
+	pan = (pan !== undefined) ? pan : true;
 	var bounds = new google.maps.LatLngBounds();
-	if(uri.substring(0,9) == 'postcode:')
-	{
+	if (uri.substring(0, 9) === 'postcode:') {
 		var postcodeData = uri.substring(9).split(',');
 		var latlng = new google.maps.LatLng(postcodeData[1], postcodeData[2]);
 		postcodeMarkers[postcodeData[0]] = new google.maps.Marker({
-			position:latlng,
-			map:map,
-			title:postcodeData[0],
-			icon:'http://opendatamap.ecs.soton.ac.uk/resources/postcodeicon.php?pc='+postcodeData[0]
-			});
+			position: latlng,
+			map: map,
+			title: postcodeData[0],
+			icon: 'http://opendatamap.ecs.soton.ac.uk/resources/postcodeicon.php?pc=' + postcodeData[0]
+		});
 		postcodeInfowindows[postcodeData[0]] = new google.maps.InfoWindow({
-			content:'<div id="content">'+
-				'<h2 id="title">'+postcodeData[0]+'</h2>'+
-				'<a class="odl" href="'+postcodeData[3]+'">Visit page</a><br />'+
-				'<a class="odl" href="javascript:removePostcodeMarker(\''+postcodeData[0]+'\')">Remove this marker</a>'+
+			content: '<div id="content">' +
+				'<h2 id="title">' + postcodeData[0] + '</h2>' +
+				'<a class="odl" href="' + postcodeData[3] + '">Visit page</a><br />' +
+				'<a class="odl" href="javascript:removePostcodeMarker(\'' + postcodeData[0] + '\')">Remove this marker</a>' +
 				'</div>'
-			});
-		with({postcode: postcodeData[0]})
+		});
+		/*
+		with ({postcode: postcodeData[0]})
 		{
 			google.maps.event.addListener(postcodeMarkers[postcode], 'click', function() {
 				postcodeInfowindows[postcode].open(map,postcodeMarkers[postcode]);
 			});
 		}
+		*/
 		_gaq.push(['_trackEvent', 'JumpTo', 'Postcode', postcodeData[0]]);
-		if(pan) map.panTo(latlng);
-	}
-	else if(polygons[uri] !== undefined)
-	{
-		if(polygons[uri].length !== undefined)
-		{
+		if (pan) { map.panTo(latlng); }
+	} else if (polygons[uri] !== undefined) {
+		if (polygons[uri].length !== undefined) {
 			_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
-			for(var i = 0; i<polygons[uri].length; i++) {
+			for (var i = 0; i<polygons[uri].length; i++) {
 				polygons[uri][i].getPath().forEach(function(el, i) {
 					bounds.extend(el);
 				});
 			}
-			if(pan) map.fitBounds(bounds);
-			if(click) google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter());
-		}
-		else
-		{
+			if (pan) { map.fitBounds(bounds); }
+			if (click) { google.maps.event.trigger(polygons[uri][0], 'click', bounds.getCenter()); }
+		} else {
 			_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-			if(pan) map.panTo(polygons[uri].getPosition());
-			if(click) google.maps.event.trigger(polygons[uri], 'click');
+			if (pan) { map.panTo(polygons[uri].getPosition()); }
+			if (click) { google.maps.event.trigger(polygons[uri], 'click'); }
 		}
-	}
-	else if(markers[uri] !== undefined)
-	{
+	} else if(markers[uri] !== undefined) {
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-		if(pan) map.panTo(markers[uri].getPosition());
-		if(click) google.maps.event.trigger(markers[uri], 'click');
-	}
-	else if(uri == 'southampton-overview')
-	{
+		if (pan) { map.panTo(markers[uri].getPosition()); }
+		if (click) { google.maps.event.trigger(markers[uri], 'click'); }
+	} else if(uri == 'southampton-overview') {
 		bounds.extend(new google.maps.LatLng(50.9667011,-1.4444580));
 		bounds.extend(new google.maps.LatLng(50.9326431,-1.4438220));
 		bounds.extend(new google.maps.LatLng(50.8887047,-1.3935115));
 		bounds.extend(new google.maps.LatLng(50.9554826,-1.3560130));
 		bounds.extend(new google.maps.LatLng(50.9667013,-1.4178855));
-		if(pan) map.fitBounds(bounds);
-	}
-	else if(uri == 'southampton-centre')
-	{
+		if (pan) { map.fitBounds(bounds); }
+	} else if(uri == 'southampton-centre') {
 		bounds.extend(new google.maps.LatLng(50.9072471,-1.4186829));
 		bounds.extend(new google.maps.LatLng(50.9111925,-1.4029262));
 		bounds.extend(new google.maps.LatLng(50.9079644,-1.3979205));
 		bounds.extend(new google.maps.LatLng(50.8930407,-1.4004233));
-		if(pan) map.fitBounds(bounds);
+		if (pan) { map.fitBounds(bounds); }
 	}
-}
+};
 
-var getLiveInfo = function(i) {
+var getLiveInfo = function (i) {
 	return "";//" <span class='live'>[" + i + "]</span>";
-}
+};
 
-var renderClusterItem = function(uri, ll) {
-	if(polygonlls[uri] == undefined)
-	{
+var renderClusterItem = function (uri, ll) {
+	if (polygonlls[uri] === undefined) {
 		var lltrim = ll.replace(/[^0-9]/g, '_');
 		var onclick = "loadWindow('" + uri + "', $('#" + lltrim + "-content'), $('#" + lltrim + "-listcontent'), '" + ll + "')";
-		return '<div class="clusteritem" onclick="'+onclick+'">' + 
-			'<img class="icon" src="'+markers[uri].getIcon()+'" />' + 
+		return '<div class="clusteritem" onclick="' + onclick + '">' +
+			'<img class="icon" src="' + markers[uri].getIcon() + '" />' +
 			markers[uri].getTitle().replace('\\\'', '\'') + getLiveInfo(uri) + '</div>';
-	}
-	else
-	{
+	} else {
 		return '';
 	}
-}
+};
 
-var cluster = function() {
+var cluster = function () {
 	closeAll();
-	for(var i in clusterMarkers) {
-		if(typeof(clusterMarkers[i]) == "object")
+	for (var i in clusterMarkers) {
+		if (typeof (clusterMarkers[i]) == "object")
 			clusterMarkers[i].setMap(null);
 	}
-	clusterMarkers = new Object();
-	clusterInfowindows = new Object();
-	var positions = new Object();
-	firstAtPos = new Object();
+	clusterMarkers = {};
+	clusterInfowindows = {};
+	var positions = {};
+	firstAtPos = {};
 	var str = "";
 	var count = 0;
 	var count2 = 0;
-	for(var i in markers) {
-		if(markers[i].getVisible() === true) {
+	for (var i in markers) {
+		if (markers[i].getVisible() === true) {
 			count ++;
 			str += markers[i].getTitle();
 			str += markers[i].getPosition().toString();
 			var ll = markers[i].getPosition().toString();
-			if(positions[ll] !== undefined) {
+			if (positions[ll] !== undefined) {
 				positions[ll] ++;
 				markers[i].setVisible(false);
-				if(clusterMarkers[ll] === undefined) {
+				if (clusterMarkers[ll] === undefined) {
 					clusterMarkers[ll] = new google.maps.Marker({
 						position: markers[i].getPosition(),
 						title: '2',
@@ -216,7 +200,7 @@ var cluster = function() {
 				} else {
 					clusterInfowindows[ll].setContent(clusterInfowindows[ll].getContent() + 
 						renderClusterItem(i, ll));
-					if(markers[i].getIcon() != clusterMarkers[ll].getIcon())
+					if (markers[i].getIcon() != clusterMarkers[ll].getIcon())
 					{
 						clusterMarkers[ll].setIcon(clusterMarkers[ll].getIcon() + 
 							'&i[]=' + markers[i].getIcon());
@@ -235,7 +219,7 @@ var cluster = function() {
 		with({i: i})
 		{
 			var clusterTitle = '';
-			if(polygonnames[i] !==undefined)
+			if (polygonnames[i] !==undefined)
 			{
 				clusterTitle = '<h1>' + polygonnames[i] + '</h1><hr />';
 			}
@@ -251,11 +235,11 @@ var cluster = function() {
 		{
 			var ll = markers[i].getPosition().toString();
 			var content = '';
-			if(polygonnames[ll] !== undefined)
+			if (polygonnames[ll] !== undefined)
 			{
 				content += '<h1>' + polygonnames[ll] + '</h1><hr />';
 			}
-			if(polygonlls[i] === undefined)
+			if (polygonlls[i] === undefined)
 			{
 				content += infowindows[i].getContent();
 			}
@@ -273,103 +257,96 @@ var cluster = function() {
 			});
 		}
 	}
-}
+};
 
-var addControl = function(elementID, position) {
+var addControl = function (elementID, position) {
 	var element = document.getElementById(elementID);
 	map.controls[position].push(element);
-}
+};
 
-var geoloc = function() {
+var geoloc = function () {
 	_gaq.push(['_trackEvent', 'Geolocation', 'Request']);
 	navigator.geolocation.getCurrentPosition(
-		function(position) {        
-			if( position.coords.accuracy < 5000 ) {
+		function (position) {        
+			if (position.coords.accuracy < 5000) {
 				map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
 			} else {
-				alert('Sorry, geo location wildly inaccurate ('+ position.coords.accuracy+" meters)"); 
+				alert('Sorry, geo location wildly inaccurate (' + position.coords.accuracy + " meters)"); 
 			}
 			_gaq.push(['_trackEvent', 'Geolocation', 'Response', null, position.coords.accuracy]);
 		},        
-		function(e) {
+		function (e) {
 			alert('Sorry, geo location failed'); 
 			_gaq.push(['_trackEvent', 'Geolocation', 'Failed']);
 		}
 	);                                                                  
-}
+};
 
-var resetSearchIcon = function() {
+var resetSearchIcon = function () {
 	var val = $("#inputbox").val();
 	if (val.length > 0) {
 		$("#clear").attr("src", CLEAR_SEARCH_ICON);
 	} else {
 		$("#clear").attr("src", DEFAULT_SEARCH_ICON);
 	}
-}
+};
 
 // someone's clicked on something, you need to load the real data into it
-var loadWindow = function(j, dest, hide, reload) {
+var loadWindow = function (j, dest, hide, reload) {
 	_gaq.push(['_trackEvent', 'InfoWindow', 'Single', j]);
-	if(dest === undefined && polygonlls[j] !== undefined)
-	{
+	if (dest === undefined && polygonlls[j] !== undefined) {
 		return;
 	}
-	$.get("info.php?v="+version+"&date="+selecteddate+"&uri="+encodeURIComponent(j), function(data) {
+	$.get("info.php?v=" + version + "&date=" + selecteddate + "&uri=" + encodeURIComponent(j), function (data) {
 		var ll = markers[j].getPosition().toString();
-		if(polygonnames[ll] !==undefined)
-		{
-			clusterTitle = '<h1>'+polygonnames[ll]+'</h1><hr />';
-		}
-		else
-		{
+		if (polygonnames[ll] !== undefined) {
+			clusterTitle = '<h1>' + polygonnames[ll] + '</h1><hr />';
+		} else {
 			clusterTitle = '';
 		}
-		if(dest === undefined)
-		{
-			infowindows[j].setContent(clusterTitle+data);
-		}
-		else
-		{
+		if (dest === undefined) {
+			infowindows[j].setContent(clusterTitle + data);
+		} else {
 			tempInfowindow = new google.maps.InfoWindow({
-				content:clusterTitle+data+
-				'<a href="#" class="back" onclick="return goBack(\''+reload+'\')\">Back to list</a>'
-				});
+				content: clusterTitle + data +
+					'<a href="#" class="back" onclick="return goBack(\'' + reload + '\')\">Back to list</a>'
+			});
 			tempInfowindow.setPosition(clusterInfowindows[reload].getPosition());
 			tempInfowindow.open(map);
 			clusterInfowindows[reload].close();
 		}
 	});
-}
+};
 
-var goBack = function(reload) {
+var goBack = function (reload) {
 	tempInfowindow.close();
 	clusterInfowindows[reload].open(map);
 	return false;
-}
+};
 
-var closeAll = function() {
-	for(var i in markers) {
+var closeAll = function () {
+	for (var i in markers) {
 		infowindows[i].close();
 	}
-	for(var i in clusterMarkers) {
-		if(typeof(clusterInfowindows[i]) == "object")
+	for (var i in clusterMarkers) {
+		if (typeof (clusterInfowindows[i]) == "object")
 			clusterInfowindows[i].close();
 	}
-	for(var i in polygons) {
+	for (var i in polygons) {
 		polygoninfowindows[i].close();
 	}
 	if(tempInfowindow !== undefined) {
 		tempInfowindow.close();
 	}
-}
+};
 
 // Search functions.
 
-var searchResults_setInputBox = function(str) {
+var searchResults_setInputBox = function (str) {
 	$('#inputbox').get(0).value = str;
-}
+};
 
-var searchResults_updateFunc = function(force) {
+var searchResults_updateFunc = function (force) {
 	if(force !== true) force = false;
 	var enabledCategories = getSelectedCategories();
 	resetSearchIcon();
@@ -378,7 +355,7 @@ var searchResults_updateFunc = function(force) {
 	if(!force && inputbox.value == oldString) return;
 	oldString = inputbox.value;
 
-	if(xmlhttp !== undefined) xmlhttp.abort();
+	if (xmlhttp !== undefined) { xmlhttp.abort(); }
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","matches.php?v=" + version + "&q=" + inputbox.value + '&ec=' + enabledCategories,true);
 	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
@@ -394,11 +371,11 @@ var searchResults_updateFunc = function(force) {
 			searchResults_processResponse(matches, labelmatches);
 		}
 	};
-}
+};
 
-var searchResults_processResponse = function(matches, labelmatches){
+var searchResults_processResponse = function (matches, labelmatches){
 	var matchesd = {};
-	matches.map(function(x) { if (x !== undefined) { matchesd[x] = true; } });
+	matches.map(function (x) { if (x !== undefined) { matchesd[x] = true; } });
 	
 	for (var uri in markers) {
 		markers[uri].setVisible(matchesd[uri] !== undefined);
@@ -418,11 +395,11 @@ var searchResults_processResponse = function(matches, labelmatches){
 		}
 		
 		var dispStr = labelmatches[m][0];
-		if(inputbox.value != "") {
+		if (inputbox.value != "") {
 			dispStr = new String(dispStr).replace(re,
 				"<span style='background-color:#FFFF66'>$1</span>");
 		}
-		if(labelmatches[m][2] !== undefined) {
+		if (labelmatches[m][2] !== undefined) {
 			var onclick = "zoomTo('" + labelmatches[m][2] + "');" + 
 				"searchResults_setInputBox('');" + 
 				"searchResults_updateFunc();";
@@ -441,77 +418,77 @@ var searchResults_processResponse = function(matches, labelmatches){
 		} 
 		limit++;
 	}
-	if(limit == 0)
+	if(limit == 0) {
 		list.innerHTML += '<li><i>No results found</i></li>';
+	}
 	cluster();
 	
 	if ($("#spinner").is(":visible")) {
 		$("#spinner").fadeOut();
 	}
-}
+};
 
-var searchResults_keypress = function(e) {
-	if(e.keyCode == 40) return searchResults_moveDown();
-	else if(e.keyCode == 38) return searchResults_moveUp();
-	else if(e.keyCode == 13) return searchResults_select();
-	else if(e.keyCode == 27) return searchResults_blursearch();
-}
+var searchResults_keypress = function (e) {
+	if (e.keyCode === 40) { return searchResults_moveDown(); }
+	else if (e.keyCode === 38) { return searchResults_moveUp(); }
+	else if (e.keyCode === 13) { return searchResults_select(); }
+	else if (e.keyCode === 27) { return searchResults_blursearch(); }
+};
 
-var searchResults_moveUp = function() {
+var searchResults_moveUp = function () {
 	searchResults_removeHighlight();
-	if(selectIndex >= 0) selectIndex--;
+	if (selectIndex >= 0) { selectIndex--; }
 	searchResults_updateHighlight();
 	return false;
-}
+};
 
-var searchResults_moveDown = function() {
+var searchResults_moveDown = function () {
 	searchResults_removeHighlight();
-	if(selectIndex < limit - 1) selectIndex++;
+	if (selectIndex < limit - 1) { selectIndex++; }
 	searchResults_updateHighlight();
 	return false;
-}
+};
 
-var searchResults_select = function() {
-	if(selectIndex >= 0) $('#li'+selectIndex).get(0).onclick();
+var searchResults_select = function () {
+	if (selectIndex >= 0) { $('#li' + selectIndex).get(0).onclick(); }
 	searchResults_blursearch();
-}
+};
 
-var searchResults_blursearch = function() {
+var searchResults_blursearch = function () {
 	removeHighlight();
 	$('#inputbox').blur();
-}
+};
 
-var searchResults_removeHighlight = function() {
-	if(selectIndex >= 0) $('#li'+selectIndex).get(0).style.backgroundColor = 'inherit';
-}
+var searchResults_removeHighlight = function () {
+	if (selectIndex >= 0) { $('#li' + selectIndex).get(0).style.backgroundColor = 'inherit'; }
+};
 
-var searchResults_updateHighlight = function() {
-	if(selectIndex >= 0) $('#li'+selectIndex).get(0).style.backgroundColor = '#CCCCFF';
-}
+var searchResults_updateHighlight = function () {
+	if (selectIndex >= 0) { $('#li' + selectIndex).get(0).style.backgroundColor = '#CCCCFF'; }
+};
 
 // Show and hide functions.
 
-var show = function(id) {
+var show = function (id) {
 	selectIndex = -1;
 	clearTimeout(t);
 	$('#'+id).get(0).style.display = "block";
-	if(id == 'list')
-	{
+	if (id == 'list') {
 		$('#toggleicons').get(0).style.zIndex = 5;
 	}
-}
+};
 
-var hide = function(id) {
+var hide = function (id) {
 	$('#'+id).get(0).style.display = "none";
-}
+};
 
-var delayHide = function(id, delay) {
+var delayHide = function (id, delay) {
 	t = setTimeout("hide('"+id+"');", delay);
-}
+};
 
-var cont = function() {
+var cont = function () {
 	contcount++;
-	if(contcount != 2) return;
+	if(contcount != 2) { return; }
 	initMarkerEvents();
 	initGeoloc();
 	initToggle();
@@ -524,71 +501,70 @@ var cont = function() {
 	var hashstring = location.hash.replace( /^#/, '' );
 	location.hash = location.hash.replace(/\/.*/, '');
 	hashstring = hashstring.split('/');
-	if(hashstring.length > 1)
-	{
+	if(hashstring.length > 1) {
 		hashstring = hashstring[1];
 		$('#subj_'+hashstring).click();
-	}
-	else
+	} else {
 		hashstring = '';
+	}
 	searchResults_updateFunc();
-	if(uri != '') zoomTo(uri, true, true);
-	if(zoomuri != '')
+	if (uri != '') { zoomTo(uri, true, true); }
+	if (zoomuri != '')
 	{
 		zoomTo(zoomuri, false, true);
 	}
-	if(clickuri != '')
+	if (clickuri != '')
 	{
 		zoomTo(clickuri, true, false);
 	}
-}
+};
 
 // Hash functions.
 
-var updateHash = function(key, value) {
-	if(key != undefined && value != undefined)
+var updateHash = function (key, value) {
+	if (key != undefined && value != undefined) {
 		hashfields[key] = value;
+	}
 	var hashstring = '';
-	for(var i in hashfields)
-	{
-		if(hashfields[i] != '' && hashfields[i] != undefined)
-		{
-			hashstring += ','+i+'='+hashfields[i];
+	for (var i in hashfields) {
+		if (hashfields[i] != '' && hashfields[i] != undefined) {
+			hashstring += ',' + i + '=' + hashfields[i];
 		}
 	}
-	location.hash = '#'+hashstring.substring(1);
-}
+	location.hash = '#' + hashstring.substring(1);
+};
 
-var getHash = function(key) {
-	if(hashfields[key] == undefined)
+var getHash = function (key) {
+	if(hashfields[key] == undefined) {
 		return '';
-	else
+	} else {
 		return hashfields[key];
-}
+	}
+};
 
-var hashChange = function() {
+var hashChange = function () {
 	var hashstring = location.hash.replace( /^#/, '' );
 	var hashstringparts = hashstring.split(',');
-	hashfields = new Object();
-	for(var i in hashstringparts)
-	{
+	hashfields = {};
+	for (var i in hashstringparts) {
 		var hashfield = hashstringparts[i].split('=');
 		hashfields[hashfield[0]] = hashfield[1];
 	}
 
-	if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map')
+	if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map') {
 		return;
-	var dates = new Object();
-	var fulldates = new Object();
-	$('#day a').each(function(i, v) {
+	}
+	var dates = {};
+	var fulldates = {};
+	$('#day a').each(function (i, v) {
 		var d = v.id.substring(5, 15);
 		dates[v.innerHTML.toLowerCase()] = d;
 		fulldates[v.innerHTML.toLowerCase()] = v.title.replace('Show ', '').replace('\'s events (', ' ').replace(')', '');
-		$('._'+d).hide();
+		$('._' + d).hide();
 	});
-	$('#day a').each(function(i, v) {
+	$('#day a').each(function (i, v) {
 		var d = v.id.substring(5, 15);
-		$('#link_'+d).removeClass('selected');
+		$('#link_' + d).removeClass('selected');
 	});
 	document.title = document.title.replace( / \| .*/, '' );
 
@@ -599,27 +575,27 @@ var hashChange = function() {
 		hashfields['day'] = d;
 		updateHash();
 	}
-	if(dates[d] == undefined) {
+	if(dates[d] === undefined) {
 		return;
 	} else {
 		selecteddate = dates[d];
 		fulldate = fulldates[d];
 	}
 
-	document.title += ' | '+fulldate;
-	$('._'+selecteddate).show();
-	$('#link_'+selecteddate).addClass('selected');
+	document.title += ' | ' + fulldate;
+	$('._' + selecteddate).show();
+	$('#link_' + selecteddate).addClass('selected');
 
 	var s = getHash('subject');
-	if($('#subj_'+s).get(0) != undefined) {
-		chooseSubject($('#subj_'+s).get(0).innerHTML);
+	if ($('#subj_' + s).get(0) !== undefined) {
+		chooseSubject($('#subj_' + s).get(0).innerHTML);
 	}
 
 	var hashvals = '';
-	if(hashfields['subject'] != undefined)
+	if(hashfields['subject'] !== undefined)
 		hashvals += hashfields['subject'];
 	hashvals += '/';
-	if(hashfields['day'] != undefined)
+	if(hashfields['day'] !== undefined)
 		hashvals += hashfields['day'];
 	$('#inputbox').val(hashvals);
 	searchResults_updateFunc();
@@ -627,7 +603,7 @@ var hashChange = function() {
 
 // Category functions.
 
-var toggle = function(category) {
+var toggle = function (category) {
 	var cEl = $('#'+category).get(0);
 	if(cEl.checked) {
 		cEl.checked = false;
@@ -637,9 +613,9 @@ var toggle = function(category) {
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
 	}
 	searchResults_updateFunc(true);
-}
+};
 
-var getSelectedCategories = function() {
+var getSelectedCategories = function () {
 	var boxes = $('.togglebox');
 	var selected = "";
 	for(var i in boxes) {
@@ -647,11 +623,11 @@ var getSelectedCategories = function() {
 			selected += boxes[i].id + ",";
 	}
 	return selected;
-}
+};
 
 // Initilaization functions.
 
-var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
+var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
 	zoomuri = pzoomuri;
 	clickuri = pclickuri;
 	uri = puri;
@@ -697,33 +673,33 @@ var initialize = function(lat, long, zoom, puri, pzoomuri, pclickuri, pversion, 
 	$(window).bind('hashchange', hashChange);
 
 	hashChange();
-}
+};
 
-var initCredits = function() {
+var initCredits = function () {
 	addControl('credits', google.maps.ControlPosition.RIGHT_BOTTOM);
 	addControl('credits-small', google.maps.ControlPosition.RIGHT_BOTTOM);
-}
+};
 
-var initToggle = function() {
+var initToggle = function () {
 	addControl('toggleicons', google.maps.ControlPosition.RIGHT_TOP);
-}
+};
 
-var initBookmarks = function() {
+var initBookmarks = function () {
 	if($('#bookmarks')==null)
 		return;
 	addControl('bookmarks', google.maps.ControlPosition.TOP_RIGHT);
 	$('#bookmarks').show();
-}
+};
 
-var initGeoloc = function() {
+var initGeoloc = function () {
 	if (navigator.geolocation) {
 		addControl('geobutton', google.maps.ControlPosition.TOP_RIGHT);
 	} else {
 		$('#geobutton').get(0).style.display = 'none';
 	}
-}
+};
 
-var initMarkers = function() {
+var initMarkers = function () {
 	$.get('alldata.php?v='+version, function(data,textstatus,xhr) {
 		window.markers = {};
 		window.infowindows = {};
@@ -861,7 +837,7 @@ var initMarkers = function() {
 	},'json');
 };
 
-var initMarkerEvents = function() {
+var initMarkerEvents = function () {
 	for(var i in markers) {
 		with({i: i})
 		{
@@ -872,11 +848,11 @@ var initMarkerEvents = function() {
 			});
 		}
 	}
-}
+};
 
-var initSearch = function() {
+var initSearch = function () {
 	$('#search').index = 2;
 	addControl('search', google.maps.ControlPosition.TOP_RIGHT);
 	$('#search-small').index = 2;
 	addControl('search-small', google.maps.ControlPosition.TOP_RIGHT);
-}
+};
