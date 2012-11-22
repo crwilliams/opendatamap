@@ -307,6 +307,11 @@ h3 {
 	padding:0px;
 	margin-bottom:8px;
 }
+div.listcontent-footer {
+	font-size:0.8em;
+	padding-top:15px;
+	font-style:italic
+}
 .clusteritem {
 	padding:0px 8px 0px 0px;
 	font-size:10pt;
