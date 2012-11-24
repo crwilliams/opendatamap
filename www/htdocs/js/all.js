@@ -312,8 +312,12 @@ var loadWindow = function (j, dest, hide, reload) {
 				content: clusterTitle + data +
 					'<a href="#" class="back" onclick="return goBack(\'' + reload + '\')\">Back to list</a>'
 			});
-			tempInfowindow.setPosition(clusterInfowindows[reload].getPosition());
-			tempInfowindow.open(map);
+			if (clusterInfowindows[reload].get('anchor') !== undefined) {
+				tempInfowindow.open(map, clusterInfowindows[reload].get('anchor'));
+			} else {
+				tempInfowindow.setPosition(clusterInfowindows[reload].getPosition());
+				tempInfowindow.open(map);
+			}
 			clusterInfowindows[reload].close();
 		}
 	});
