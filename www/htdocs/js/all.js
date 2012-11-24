@@ -129,14 +129,14 @@ var zoomTo = function (uri, click, pan) {
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
 		if (pan) { map.panTo(markers[uri].getPosition()); }
 		if (click) { google.maps.event.trigger(markers[uri], 'click'); }
-	} else if(uri == 'southampton-overview') {
+	} else if(uri === 'southampton-overview') {
 		bounds.extend(new google.maps.LatLng(50.9667011,-1.4444580));
 		bounds.extend(new google.maps.LatLng(50.9326431,-1.4438220));
 		bounds.extend(new google.maps.LatLng(50.8887047,-1.3935115));
 		bounds.extend(new google.maps.LatLng(50.9554826,-1.3560130));
 		bounds.extend(new google.maps.LatLng(50.9667013,-1.4178855));
 		if (pan) { map.fitBounds(bounds); }
-	} else if(uri == 'southampton-centre') {
+	} else if(uri === 'southampton-centre') {
 		bounds.extend(new google.maps.LatLng(50.9072471,-1.4186829));
 		bounds.extend(new google.maps.LatLng(50.9111925,-1.4029262));
 		bounds.extend(new google.maps.LatLng(50.9079644,-1.3979205));
@@ -164,8 +164,9 @@ var renderClusterItem = function (uri, ll) {
 var cluster = function () {
 	closeAll();
 	for (var i in clusterMarkers) {
-		if (typeof (clusterMarkers[i]) == "object")
+		if (typeof (clusterMarkers[i]) === "object") {
 			clusterMarkers[i].setMap(null);
+		}
 	}
 	clusterMarkers = {};
 	clusterInfowindows = {};
@@ -200,12 +201,12 @@ var cluster = function () {
 				} else {
 					clusterInfowindows[ll].setContent(clusterInfowindows[ll].getContent() + 
 						renderClusterItem(i, ll));
-					if (markers[i].getIcon() != clusterMarkers[ll].getIcon())
+					if (markers[i].getIcon() !== clusterMarkers[ll].getIcon())
 					{
 						clusterMarkers[ll].setIcon(clusterMarkers[ll].getIcon() + 
 							'&i[]=' + markers[i].getIcon());
 					}
-					var oldc = parseInt(clusterMarkers[ll].getTitle());
+					var oldc = parseInt(clusterMarkers[ll].getTitle(), 10);
 					clusterMarkers[ll].setTitle('' + (oldc + 1));
 				}
 				count2 ++;
@@ -329,13 +330,14 @@ var closeAll = function () {
 		infowindows[i].close();
 	}
 	for (var i in clusterMarkers) {
-		if (typeof (clusterInfowindows[i]) == "object")
+		if (typeof (clusterInfowindows[i]) === "object") {
 			clusterInfowindows[i].close();
+		}
 	}
 	for (var i in polygons) {
 		polygoninfowindows[i].close();
 	}
-	if(tempInfowindow !== undefined) {
+	if (tempInfowindow !== undefined) {
 		tempInfowindow.close();
 	}
 };
@@ -347,21 +349,27 @@ var searchResults_setInputBox = function (str) {
 };
 
 var searchResults_updateFunc = function (force) {
-	if(force !== true) force = false;
+	if(force !== true) {
+		force = false;
+	}
 	var enabledCategories = getSelectedCategories();
 	resetSearchIcon();
 	var inputbox = $("#inputbox").get(0);
 	var list = $("#list").get(0);
-	if(!force && inputbox.value == oldString) return;
+	if (!force && inputbox.value === oldString) {
+		return;
+	}
 	oldString = inputbox.value;
 
-	if (xmlhttp !== undefined) { xmlhttp.abort(); }
+	if (xmlhttp !== undefined) {
+		xmlhttp.abort();
+	}
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","matches.php?v=" + version + "&q=" + inputbox.value + '&ec=' + enabledCategories,true);
 	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
 	xmlhttp.send();
 	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+		if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
 			var response_data = JSON.parse(xmlhttp.responseText);
 			var matches = [], labelmatches = [];
 			if (response_data !== undefined) {
@@ -375,7 +383,11 @@ var searchResults_updateFunc = function (force) {
 
 var searchResults_processResponse = function (matches, labelmatches){
 	var matchesd = {};
-	matches.map(function (x) { if (x !== undefined) { matchesd[x] = true; } });
+	matches.map(function (x) {
+		if (x !== undefined) {
+			matchesd[x] = true;
+		}
+	});
 	
 	for (var uri in markers) {
 		markers[uri].setVisible(matchesd[uri] !== undefined);
@@ -386,16 +398,18 @@ var searchResults_processResponse = function (matches, labelmatches){
 	
 	var re = new RegExp('(' + $.trim(inputbox.value) + ')',"gi");
 	var limit = 0;
-	for(var m in labelmatches) {
+	for (var m in labelmatches) {
 		// if it's the special last element, continue
-		if (m === undefined) continue;
+		if (m === undefined) {
+			continue;
+		}
 		var dispStr;
 		if (labelmatches[m][0] === undefined) {
 			continue;	
 		}
 		
 		var dispStr = labelmatches[m][0];
-		if (inputbox.value != "") {
+		if (inputbox.value !== "") {
 			dispStr = new String(dispStr).replace(re,
 				"<span style='background-color:#FFFF66'>$1</span>");
 		}
@@ -418,7 +432,7 @@ var searchResults_processResponse = function (matches, labelmatches){
 		} 
 		limit++;
 	}
-	if(limit == 0) {
+	if(limit === 0) {
 		list.innerHTML += '<li><i>No results found</i></li>';
 	}
 	cluster();
@@ -429,28 +443,42 @@ var searchResults_processResponse = function (matches, labelmatches){
 };
 
 var searchResults_keypress = function (e) {
-	if (e.keyCode === 40) { return searchResults_moveDown(); }
-	else if (e.keyCode === 38) { return searchResults_moveUp(); }
-	else if (e.keyCode === 13) { return searchResults_select(); }
-	else if (e.keyCode === 27) { return searchResults_blursearch(); }
+	if (e.keyCode === 40) {
+		return searchResults_moveDown();
+	}
+	else if (e.keyCode === 38) {
+		return searchResults_moveUp();
+	}
+	else if (e.keyCode === 13) {
+		return searchResults_select();
+	}
+	else if (e.keyCode === 27) {
+		return searchResults_blursearch();
+	}
 };
 
 var searchResults_moveUp = function () {
 	searchResults_removeHighlight();
-	if (selectIndex >= 0) { selectIndex--; }
+	if (selectIndex >= 0) {
+		selectIndex--;
+	}
 	searchResults_updateHighlight();
 	return false;
 };
 
 var searchResults_moveDown = function () {
 	searchResults_removeHighlight();
-	if (selectIndex < limit - 1) { selectIndex++; }
+	if (selectIndex < limit - 1) {
+		selectIndex++;
+	}
 	searchResults_updateHighlight();
 	return false;
 };
 
 var searchResults_select = function () {
-	if (selectIndex >= 0) { $('#li' + selectIndex).get(0).onclick(); }
+	if (selectIndex >= 0) {
+		$('#li' + selectIndex).get(0).onclick();
+	}
 	searchResults_blursearch();
 };
 
@@ -472,23 +500,25 @@ var searchResults_updateHighlight = function () {
 var show = function (id) {
 	selectIndex = -1;
 	clearTimeout(t);
-	$('#'+id).get(0).style.display = "block";
-	if (id == 'list') {
+	$('#' + id).get(0).style.display = "block";
+	if (id === 'list') {
 		$('#toggleicons').get(0).style.zIndex = 5;
 	}
 };
 
 var hide = function (id) {
-	$('#'+id).get(0).style.display = "none";
+	$('#' + id).get(0).style.display = "none";
 };
 
 var delayHide = function (id, delay) {
-	t = setTimeout("hide('"+id+"');", delay);
+	t = setTimeout("hide('" + id + "');", delay);
 };
 
 var cont = function () {
 	contcount++;
-	if(contcount != 2) { return; }
+	if (contcount !== 2) {
+		return;
+	}
 	initMarkerEvents();
 	initGeoloc();
 	initToggle();
@@ -501,19 +531,19 @@ var cont = function () {
 	var hashstring = location.hash.replace( /^#/, '' );
 	location.hash = location.hash.replace(/\/.*/, '');
 	hashstring = hashstring.split('/');
-	if(hashstring.length > 1) {
+	if (hashstring.length > 1) {
 		hashstring = hashstring[1];
-		$('#subj_'+hashstring).click();
+		$('#subj_' + hashstring).click();
 	} else {
 		hashstring = '';
 	}
 	searchResults_updateFunc();
-	if (uri != '') { zoomTo(uri, true, true); }
-	if (zoomuri != '')
+	if (uri !== '') { zoomTo(uri, true, true); }
+	if (zoomuri !== '')
 	{
 		zoomTo(zoomuri, false, true);
 	}
-	if (clickuri != '')
+	if (clickuri !== '')
 	{
 		zoomTo(clickuri, true, false);
 	}
@@ -522,12 +552,12 @@ var cont = function () {
 // Hash functions.
 
 var updateHash = function (key, value) {
-	if (key != undefined && value != undefined) {
+	if (key !== undefined && value !== undefined) {
 		hashfields[key] = value;
 	}
 	var hashstring = '';
 	for (var i in hashfields) {
-		if (hashfields[i] != '' && hashfields[i] != undefined) {
+		if (hashfields[i] !== '' && hashfields[i] !== undefined) {
 			hashstring += ',' + i + '=' + hashfields[i];
 		}
 	}
@@ -535,7 +565,7 @@ var updateHash = function (key, value) {
 };
 
 var getHash = function (key) {
-	if(hashfields[key] == undefined) {
+	if (hashfields[key] === undefined) {
 		return '';
 	} else {
 		return hashfields[key];
@@ -551,7 +581,7 @@ var hashChange = function () {
 		hashfields[hashfield[0]] = hashfield[1];
 	}
 
-	if(document.title.replace( / \| .*/, '' ) != 'University of Southampton Open Day Map') {
+	if (document.title.replace( / \| .*/, '' ) !== 'University of Southampton Open Day Map') {
 		return;
 	}
 	var dates = {};
@@ -570,9 +600,9 @@ var hashChange = function () {
 
 	var d = getHash('day');
 	var fulldate;
-	if(d == '') {
+	if(d === '') {
 		d = Object.keys(dates)[0];
-		hashfields['day'] = d;
+		hashfields.day = d;
 		updateHash();
 	}
 	if(dates[d] === undefined) {
@@ -592,11 +622,13 @@ var hashChange = function () {
 	}
 
 	var hashvals = '';
-	if(hashfields['subject'] !== undefined)
-		hashvals += hashfields['subject'];
+	if (hashfields.subject !== undefined) {
+		hashvals += hashfields.subject;
+	}
 	hashvals += '/';
-	if(hashfields['day'] !== undefined)
-		hashvals += hashfields['day'];
+	if (hashfields.day !== undefined) {
+		hashvals += hashfields.day;
+	}
 	$('#inputbox').val(hashvals);
 	searchResults_updateFunc();
 };
@@ -605,7 +637,7 @@ var hashChange = function () {
 
 var toggle = function (category) {
 	var cEl = $('#'+category).get(0);
-	if(cEl.checked) {
+	if (cEl.checked) {
 		cEl.checked = false;
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 0]);
 	} else {
@@ -618,9 +650,10 @@ var toggle = function (category) {
 var getSelectedCategories = function () {
 	var boxes = $('.togglebox');
 	var selected = "";
-	for(var i in boxes) {
-		if(boxes[i] !== null && boxes[i].checked)
+	for (var i in boxes) {
+		if (boxes[i] !== null && boxes[i].checked) {
 			selected += boxes[i].id + ",";
+		}
 	}
 	return selected;
 };
@@ -637,10 +670,9 @@ var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion,
 		center: new google.maps.LatLng(lat, long),
 		mapTypeControlOptions: {
 			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
-		        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-		        position: google.maps.ControlPosition.TOP_LEFT
+			style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+			position: google.maps.ControlPosition.TOP_LEFT
 		},
-		
 		mapTypeId: defaultMap
 	});
 
@@ -685,8 +717,9 @@ var initToggle = function () {
 };
 
 var initBookmarks = function () {
-	if($('#bookmarks')==null)
+	if ($('#bookmarks') === null) {
 		return;
+	}
 	addControl('bookmarks', google.maps.ControlPosition.TOP_RIGHT);
 	$('#bookmarks').show();
 };
@@ -704,7 +737,9 @@ var initMarkers = function () {
 		window.markers = {};
 		window.infowindows = {};
 		data.map(function(markpt) {
-			if (markpt.length == 0) return;
+			if (markpt.length == 0) {
+				return;
+			}
 			var pos = markpt[0];
 			var lat = markpt[1];
 			var lon = markpt[2];
@@ -717,11 +752,14 @@ var initMarkers = function () {
 				icon: icon,
 				visible: false
 			});
-			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content"><h2 id="title"><img class="icon" style="width:20px;" src="'+icon+'" />'+poslabel+'</h2><a class="odl" href="'+pos+'">Visit page</a><div id="bodyContent">Loading...</div></div>'});
+			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content">' +
+				'<h2 id="title"><img class="icon" style="width:20px;" src="' + icon + '" />' + poslabel + '</h2>' +
+				'<a class="odl" href="' + pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
+			});
 		});
 		cont();
 	},'json');
-	$.get('polygons.php?v='+version, function(data,textstatus,xhr) {
+	$.get('polygons.php?v=' + version, function(data,textstatus,xhr) {
 		window.polygons = {};
 		window.polygoninfowindows = {};
 		window.polygonnames = {};
@@ -731,8 +769,10 @@ var initMarkers = function () {
 			new google.maps.Point(0, 0),
 			new google.maps.Point(10, 10)
 		);
-		data.map(function(markpt) {
-			if (markpt.length == 0) return;
+		data.map(function (markpt) {
+			if (markpt.length === 0) {
+				return;
+			}
 			var pos = markpt[0];
 			var poslabel = markpt[1];
 			var zindex = markpt[2];
@@ -740,39 +780,39 @@ var initMarkers = function () {
 			var ll = new google.maps.LatLng(markpt[5][1], markpt[5][0]).toString();
 			polygonnames[ll] = poslabel;
 			polygonlls[pos] = ll;
-			var paths = new Array();
+			var paths = [];
 			var i;
-			for(i=0; i < points.length-1; i++) {
+			for (i=0; i < points.length-1; i++) {
 				paths.push(new google.maps.LatLng(points[i][1], points[i][0])); 
 			}	
 			var polygonType = 'Building';
-			if(paths.length == 0) {
-				if(polygons[pos] === undefined) polygons[pos] = new Array();
+			if (paths.length == 0) {
+				if (polygons[pos] === undefined) {
+					polygons[pos] = [];
+				}
 				polygons[pos] = new google.maps.Marker({
 					position: new google.maps.LatLng(points[i][1], points[i][0]),
 					icon: buildingIcon,
 					map: window.map,
 					visible: true
 				});
-			}
-			else
-			{
+			} else {
 				var fillColor = '#694B28';
 				var strokeColor = '#694B28';
-				if(zindex == -10)
-				{
+				if (zindex === -10) {
 					fillColor = '#2B7413';
 					strokeColor = '#2B7413';
 					polygonType = 'Site';
 				}
 				
-				if(markpt[4] != '')
-				{
+				if (markpt[4] !== '') {
 					fillColor = markpt[4];
 					strokeColor = markpt[4];
 				}
 
-				if(polygons[pos] === undefined) polygons[pos] = new Array();
+				if (polygons[pos] === undefined) {
+					polygons[pos] = [];
+				}
 				polygons[pos].push(new google.maps.Polygon({
 					paths: paths,
 					title: poslabel,
@@ -798,7 +838,7 @@ var initMarkers = function () {
 				listener = polygons[pos][polygons[pos].length-1];
 				var bounds = new google.maps.LatLngBounds();
 					
-				listener.getPath().forEach(function(el, i) {
+				listener.getPath().forEach(function (el, i) {
 					bounds.extend(el);
 				});
 				position = bounds.getCenter();
@@ -808,17 +848,14 @@ var initMarkers = function () {
 				_gaq.push(['_trackEvent', 'InfoWindow', polygonType, pos]);
 				var infowindow = polygoninfowindows[pos];
 				var requireload = false;
-				if(polygonlls[pos] !== undefined && clusterInfowindows[polygonlls[pos]] !== undefined)
-				{
+				if (polygonlls[pos] !== undefined && clusterInfowindows[polygonlls[pos]] !== undefined) {
 					infowindow = clusterInfowindows[polygonlls[pos]];
-				}
-				else if(firstAtPos[polygonlls[pos]] && infowindows[firstAtPos[polygonlls[pos]]] !== undefined)
-				{
+				} else if (firstAtPos[polygonlls[pos]] && infowindows[firstAtPos[polygonlls[pos]]] !== undefined) {
 					infowindow = infowindows[firstAtPos[polygonlls[pos]]];
 					requireload = firstAtPos[polygonlls[pos]];
 				}
-				if(event !== undefined) {
-					if(event.latLng !== undefined) {
+				if (event !== undefined) {
+					if (event.latLng !== undefined) {
 						infowindow.setPosition(event.latLng);
 					} else {
 						infowindow.setPosition(position);
@@ -827,8 +864,7 @@ var initMarkers = function () {
 				} else {
 					infowindow.open(window.map, listener);
 				}
-				if(requireload)
-				{
+				if(requireload) {
 					loadWindow(requireload);
 				}
 			});
@@ -838,10 +874,10 @@ var initMarkers = function () {
 };
 
 var initMarkerEvents = function () {
-	for(var i in markers) {
-		with({i: i})
+	for (var i in markers) {
+		with ({i: i})
 		{
-			google.maps.event.addListener(markers[i], 'click', function() {
+			google.maps.event.addListener(markers[i], 'click', function () {
 				closeAll();
 				infowindows[i].open(map,markers[i]);
 				loadWindow(i);
