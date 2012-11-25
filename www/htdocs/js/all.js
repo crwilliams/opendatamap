@@ -421,13 +421,15 @@ var searchResults_processResponse = function (matches, labelmatches){
 			var onclick = "zoomTo('" + labelmatches[m][2] + "');" + 
 				"searchResults_setInputBox('');" + 
 				"searchResults_updateFunc();";
-			list.innerHTML += '<li id="li' + limit + '" onclick="' + onclick + '">';
+			var element = '<li id="li' + limit + '" onclick="' + onclick + '">';
 			if(labelmatches[m][3] !== undefined) {
-				list.innerHTML += '<img class="icon" src="' + labelmatches[m][3] + '" style="width:15px" />';
+				element += '<img class="icon" src="' + labelmatches[m][3] + '" />';
 			} else {
-				list.innerHTML += '<span style="font-size:0.5em">' + labelmatches[m][1] + ': </span>';
-			}		
-			list.innerHTML += dispStr + '</li>';
+				element += '<span style="font-size:0.5em">' + labelmatches[m][1] + ': </span>';
+			}
+			element += dispStr;
+			element += '</li>';
+			list.innerHTML += element;
 		} else {
 			var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
 			var onclick = "searchResults_setInputBox('^" + escapeLabelmatch + "$');" + 
