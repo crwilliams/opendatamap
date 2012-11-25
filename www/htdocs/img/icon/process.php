@@ -1,168 +1,130 @@
 <?
 
-$cat['128e4d'] = 'Nature';
-$cat['265cb2'] = 'Industry';
-$cat['3875d7'] = 'Offices';
-$cat['5ec8bd'] = 'Stores';
-$cat['66c547'] = 'Tourism';
-$cat['8c4eb8'] = 'Restaurants-and-Hotels';
-$cat['9d7050'] = 'Transportation';
-$cat['a8a8a8'] = 'Media';
-$cat['c03638'] = 'Events';
-$cat['c259b5'] = 'Culture-and-Entertainment';
-$cat['f34648'] = 'Health'; //Health-and-Education
-$cat['ff8a22'] = 'Sports';
-$cat['ffc11f'] = 'Education'; //Friends-and-Family
-$col['Nature'] = '128e4d';
-$col['Industry'] = '265cb2';
-$col['Offices'] = '3875d7';
-$col['Stores'] = '5ec8bd';
-$col['Tourism'] = '66c547';
-$col['Restaurants-and-Hotels'] = '8c4eb8';
-$col['Transportation'] = '9d7050';
-$col['Media'] = 'a8a8a8';
-$col['Events'] = 'c03638';
-$col['Culture-and-Entertainment'] = 'c259b5';
-$col['Health'] = 'f34648';
-$col['Sports'] = 'ff8a22';
-$col['Education'] = 'ffc11f';
-/*
-$col['Nature'] = 'a3a86b';
-$col['Industry'] = '51626f';
-$col['Offices'] = '005c84';
-$col['Stores'] = '0098c3';
-$col['Tourism'] = 'abc785';
-$col['Restaurants-and-Hotels'] = '6a4061';
-$col['Transportation'] = '9b6e51';
-$col['Media'] = '91baa3';
-$col['Events'] = '983222';
-$col['Culture-and-Entertainment'] = 'd490a8';
-$col['Health'] = 'c60c30';
-$col['Sports'] = 'dd4814';
-$col['Education'] = 'f0ab00';
-*/
+$cats['128e4d'] = 'Nature';
+$cats['265cb2'] = 'Industry';
+$cats['3875d7'] = 'Offices';
+$cats['5ec8bd'] = 'Stores';
+$cats['66c547'] = 'Tourism';
+$cats['8c4eb8'] = 'Restaurants-and-Hotels';
+$cats['9d7050'] = 'Transportation';
+$cats['a8a8a8'] = 'Media';
+$cats['c03638'] = 'Events';
+$cats['c259b5'] = 'Culture-and-Entertainment';
+$cats['f34648'] = 'Health'; //Health-and-Education
+$cats['ff8a22'] = 'Sports';
+$cats['ffc11f'] = 'Education'; //Friends-and-Family
+$cols['Nature'] = '128e4d';
+$cols['Industry'] = '265cb2';
+$cols['Offices'] = '3875d7';
+$cols['Stores'] = '5ec8bd';
+$cols['Tourism'] = '66c547';
+$cols['Restaurants-and-Hotels'] = '8c4eb8';
+$cols['Transportation'] = '9d7050';
+$cols['Media'] = 'a8a8a8';
+$cols['Events'] = 'c03638';
+$cols['Culture-and-Entertainment'] = 'c259b5';
+$cols['Health'] = 'f34648';
+$cols['Sports'] = 'ff8a22';
+$cols['Education'] = 'ffc11f';
 
-//while (false !== ($file = readdir($handle))) {
-//}
 error_reporting(0);
 processFile($argv[1], $argv[2]);
 
 function processFile($category, $file)
 {
 	echo "Processing $file in category $category.\n";
-	global $cat;
-	global $col;
+	global $cats;
+	global $cols;
 	global $argv;
 	
+	$no_tail = false;
+	$wide = false;
+	
+	// Process command line arguments.
 	if($argv[3] == 'nt')
-		$notail = true;
+	{
+		$no_tail = true;
+	}
 	if($argv[3] == 'ntw')
 	{
-		$notail = true;
+		$no_tail = true;
 		$wide = true;
 	}
 	
-	$color = $col[$category];
+	// Set base colour based on category.
+	$color = $cols[$category];
 	@mkdir($category.'/');
 	
 	$basecolorarr['r'] = hexdec(substr($color, 0, 2));
 	$basecolorarr['g'] = hexdec(substr($color, 2, 2));
 	$basecolorarr['b'] = hexdec(substr($color, 4, 2));
 	
+	// Check the icon file extension.
 	if(substr($file, -4, 4) != '.png')
 	{
 		echo "Not a png file.\n";
 		return;
 	}
+	
+	// Try to load the icon file.
 	$im = @imagecreatefrompng('src/'.$file);
+	
+	// Check the size of the icon file.
 	if(imagesx($im) != 32 || imagesy($im) != 37)
 	{
 		echo "File is wrong shape.\n";
 		return;
 	}
 	
+	// Copy the relevant part of the icon file into a new image object of size 24x24.
 	$dst_im = imagecreate(24, 24);
 	imagecopy($dst_im, $im, 0, 0, 4, 14, 24, 24);
 	
-	$gs = true;
 	/*
+	//$gs = true;
 	$colors = array();
+	
 	for($i = 2; $i <= 22; $i++)
 	{
-		$colors[(string)getColor($dst_im, 0, $i)]++;
-		$colors[(string)getColor($dst_im, 23, $i)]++;
-		$colors[(string)getColor($dst_im, $i, 0)]++;
-		$colors[(string)getColor($dst_im, $i, 23)]++;
+		$colors[(string)getAverageColor($dst_im, 0, $i)]++;
+		$colors[(string)getAverageColor($dst_im, 23, $i)]++;
+		$colors[(string)getAverageColor($dst_im, $i, 0)]++;
+		$colors[(string)getAverageColor($dst_im, $i, 23)]++;
 	}
+	
 	arsort($colors);
-	$color = array_shift(array_keys($colors));
+	//print_r(array_keys($colors));
 	
-	echo $color;
-	
-	$gs = true;
+	$color = 1 - array_shift(array_keys($colors));
+	//echo $color."\n";
 	*/
-	//if($color == "0")
-	{
-		$gs = true;
-		$colors = array();
-		
-		for($i = 2; $i <= 22; $i++)
-		{
-			$colors[(string)getAverageColor($dst_im, 0, $i)]++;
-			$colors[(string)getAverageColor($dst_im, 23, $i)]++;
-			$colors[(string)getAverageColor($dst_im, $i, 0)]++;
-			$colors[(string)getAverageColor($dst_im, $i, 23)]++;
-		}
-		
-		/*
-		$t = 2;
-		
-		$colors[(string)getAverageColor($dst_im, 0+$t, 0+$t)]++;
-		$colors[(string)getAverageColor($dst_im, 23-$t, 0+$t)]++;
-		$colors[(string)getAverageColor($dst_im, 0+$t, 23-$t)]++;
-		$colors[(string)getAverageColor($dst_im, 23-$t, 23-$t)]++;
-		*/
-		
-		arsort($colors);
-		//print_r($colors);
-		$color = array_shift(array_keys($colors));
-		//echo $color;
-	}
+
 	$color=1;
 	
-	//$maxsat = 0;
-	//$minsat = 1;
 	for($y = 0; $y < 24; $y++)
 	{
 		for($x = 0; $x < 24; $x++)
-		{	
-			/*
-			if($x + $y <= 1 || (23-$x) + $y <= 1 || $x + (23-$y) <= 1 || (23-$x) + (23-$y) <= 1)
-			{
-				$sat[$x][$y] = $color;
-				$sat[$x][$y] = 0;
-			}
-			else
-			{
-				*/
-				if($gs)
-					$sat[$x][$y] = getAverageColor($dst_im, $x, $y);
-				else
-					$sat[$x][$y] = getColor($dst_im, $x, $y);
-				/*
-			}
-			*/
-			
-			//$maxsat = max($maxsat, $sat[$x][$y]);
-			//$minsat = max($minsat, $sat[$x][$y]);
+		{
+			//if($gs)
+			//{
+				$sat[$x][$y] = getAverageColor($dst_im, $x, $y);
+			//}
+			//else
+			//{
+			//	$sat[$x][$y] = getColor($dst_im, $x, $y);
+			//}
 		}
 	}
 	
 	$w = 32;
-	if($notail)
+	if($no_tail)
+	{
 		$h = 32;
+	}
 	else
+	{
 		$h = 37;
+	}
 	if($wide)
 	{
 		$w = 240;
@@ -170,43 +132,23 @@ function processFile($category, $file)
 	}
 	
 	$gs_im = imagecreatetruecolor($w, $h);
-	/*
-	if($basecolor == 'default')
-	{
-		$primcolors = array();
-		for($i = 2; $i <= 22; $i++)
-		{
-			$primcolors[(string)getPrimaryColor($dst_im, 0, $i)]++;
-			$primcolors[(string)getPrimaryColor($dst_im, 23, $i)]++;
-			$primcolors[(string)getPrimaryColor($dst_im, $i, 0)]++;
-			$primcolors[(string)getPrimaryColor($dst_im, $i, 23)]++;
-		}
-		arsort($primcolors);
-		$primcolor = array_shift(array_keys($primcolors));
-		$primcolor = explode("/", $primcolor);
-		$primcolor = pickColor($primcolor);
-		$basecolorobj = imagecolorallocate($gs_im, $primcolor[0], $primcolor[1], $primcolor[2]);
-	}
-	else
-	{
-		*/
-		$basecolorobj = imagecolorallocate($gs_im, $basecolorarr['r'], $basecolorarr['g'], $basecolorarr['b']);
-		/*
-	}
-	*/
+	
+	$basecolorobj = imagecolorallocate($gs_im, $basecolorarr['r'], $basecolorarr['g'], $basecolorarr['b']);
 	
 	imagealphablending($gs_im,false);
 	imagefilledrectangle($gs_im, 0, 0, $w, $h, imagecolorallocatealpha($gs_im, 255, 255, 255, 127));
 	imagealphablending($gs_im, true);
 	
+	$bh = min($h, 32);
+	
 	$markershape = array(
 		1,0,
 		$w-2,0,
 		$w-1,1,
-		$w-1,$h-2,
-		$w-2,$h-1,
-		1,$h-1,
-		0,$h-2,
+		$w-1,$bh-2,
+		$w-2,$bh-1,
+		1,$bh-1,
+		0,$bh-2,
 		0,1,
 	);
 	$markershape2 = array(
@@ -215,11 +157,18 @@ function processFile($category, $file)
 		15,36,
 		11,32,
 	);
-	imagefilledpolygon($gs_im, $markershape, count($markershape)/2, $basecolorobj);
-	if(!$notail)
-		imagefilledpolygon($gs_im, $markershape2, count($markershape2)/2, $basecolorobj);
 	
-	if($notail)
+	// Draw the box (base colour only).
+	imagefilledpolygon($gs_im, $markershape, count($markershape)/2, $basecolorobj);
+	
+	if(!$no_tail)
+	{
+		// Draw the tail (base colour only).
+		imagefilledpolygon($gs_im, $markershape2, count($markershape2)/2, $basecolorobj);
+	}
+	
+	// Work out where the box gradient should stop.
+	if($no_tail)
 	{
 		$stoph = $h-2;
 		$stopw = $w-2;
@@ -229,16 +178,28 @@ function processFile($category, $file)
 		$stoph = 30;
 		$stopw = 30;
 	}
-	for($i = 1; $i <= $stoph; $i++)
-		imageline($gs_im, 1, $i, $stopw, $i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - $i));
-	if(!$notail)
-		for($i = 0; $i < 5; $i++)
-			imageline($gs_im, 11+$i, 31+$i, 20-$i, 31+$i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - (31+$i)));
 	
+	for($i = 1; $i <= $stoph; $i++)
+	{
+		// Build up the colour gradient on the box.
+		imageline($gs_im, 1, $i, $stopw, $i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - $i));
+	}
+	
+	if(!$no_tail)
+	{
+		for($i = 0; $i < 5; $i++)
+		{
+			// Build up the colour gradient on the tail.
+			imageline($gs_im, 11+$i, 31+$i, 20-$i, 31+$i, imagecolorallocatealpha($gs_im, 0, 0, 0, 127 - (31+$i)));
+		}
+	}
+	
+	// Allocate the border colour.
 	$border = imagecolorallocatealpha($gs_im, 0, 0, 0, 64);
 	
-	if(!$notail)
+	if(!$no_tail)
 	{
+		// Draw the border.
 		imageline($gs_im, 1, 0, 30, 0, $border);
 		imageline($gs_im, 0, 1, 0, 30, $border);
 		imageline($gs_im, 31, 1, 31, 30, $border);
@@ -249,36 +210,55 @@ function processFile($category, $file)
 	}
 	else
 	{
+		// Draw the border.
 		imageline($gs_im, 1, 0, $w-2, 0, $border);
 		imageline($gs_im, 0, 1, 0, $h-2, $border);
 		imageline($gs_im, $w-1, 1, $w-1, $h-2, $border);
 		imageline($gs_im, 1, $h-1, $w-2, $h-1, $border);
 	}
 	
+	// Save the 'blank' image.
 	imagesavealpha($gs_im, true);
-	if($notail)
+	if($no_tail)
 	{
 		if($wide)
+		{
 			imagepng($gs_im, $category.'/ntw.blank.png');
+		}
 		else
+		{
 			imagepng($gs_im, $category.'/nt.blank.png');
+		}
 		exit;
 	}
 	else
+	{
 		imagepng($gs_im, $category.'/blank.png');
+	}
 	
-	//print_r($sat);
+	// For all pixels in the icon.
 	for($y = 0; $y < 24; $y++)
 	{
 		for($x = 0; $x < 24; $x++)
 		{
+			// Get the pixel level.
 			$level = max(0, min(127, round(127*$sat[$x][$y]/$color, 0)));
+			
+			// Sanitise the pixel level.
 			if(floor($level) <= 24 && floor($level) >= 16)
+			{
 				$level = 0;
+			}
 			if(floor($level) <= 44 && floor($level) >= 44 && (($x == 1 || $x == 22) || ($y == 1 || $y == 22)))
+			{
 				$level = 0;
+			}
 			if(floor($level) <= 73 && floor($level) >= 73 && (($x == 1 || $x == 22) && ($y == 1 || $y == 22)))
+			{
 				$level = 0;
+			}
+			
+			// Set the pixel colour according to its level.
 			imagesetpixel($gs_im, $x+4, $y+4, imagecolorallocatealpha($gs_im, 255, 255, 255, 127-$level));
 		}
 	}
@@ -290,10 +270,16 @@ function getAverageColor($im, $x, $y)
 {
 	$color = imagecolorsforindex($im, imagecolorat($im, $x, $y));
 	if($y == 23)
+	{
 		return 0;
-	if($color['alpha'] == 127)
+	}
+	if($color['alpha'] >= 127 - 20)
+	{
 		return 0;
-	return 1 - (($color['red'] + $color['green'] + $color['blue']) / (3 * 255));
+	}
+	//echo ($color['alpha'])."\n";
+	
+	return 1 - ((($color['red'] + $color['green'] + $color['blue']) / (3 * 255)));
 }
 
 function getPrimaryColor($im, $x, $y)
