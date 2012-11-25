@@ -507,7 +507,7 @@ var searchResults_select = function () {
 };
 
 var searchResults_blursearch = function () {
-	removeHighlight();
+	searchResults_removeHighlight();
 	$('#inputbox').blur();
 };
 
