@@ -411,8 +411,8 @@ var searchResults_processResponse = function (matches, labelmatches){
 	selectIndex = -1;
 	list.innerHTML = "";
 	
-	var limit = 0;
 	var re = new RegExp('(' + $.trim(searchTerm) + ')',"gi");
+	limit = 0;
 	for (var m in labelmatches) {
 		// if it's the special last element, continue
 		if (m === undefined) {
