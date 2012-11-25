@@ -257,7 +257,8 @@ img.icon {
 }
 
 li img.icon {
-	position:relative; 
+	width:15px;
+	height:17.25px;
 	top:3px;
 	left:1px;
 }
