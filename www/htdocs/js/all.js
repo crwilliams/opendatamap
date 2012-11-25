@@ -162,7 +162,7 @@ var renderClusterItem = function (uri, ll) {
 	}
 };
 
-var cluster = function () {
+var cluster = function (reopen) {
 	closeAll();
 	for (var i in clusterMarkers) {
 		if (typeof (clusterMarkers[i]) === "object") {
@@ -258,6 +258,9 @@ var cluster = function () {
 				clusterInfowindows[i].open(map,clusterMarkers[i]);
 			});
 		}
+	}
+	if(reopen !== undefined) {
+		zoomTo(reopen, true, false);
 	}
 };
 
@@ -358,7 +361,7 @@ var searchResults_setInputBox = function (str, exact) {
 	$('#inputbox').get(0).value = str;
 };
 
-var searchResults_updateFunc = function (force) {
+var searchResults_updateFunc = function (force, reopen) {
 	if(force !== true) {
 		force = false;
 	}
@@ -391,12 +394,12 @@ var searchResults_updateFunc = function (force) {
 				matches = response_data[0];
 				labelmatches = response_data[1];
 			}
-			searchResults_processResponse(matches, labelmatches);
+			searchResults_processResponse(matches, labelmatches, reopen);
 		}
 	};
 };
 
-var searchResults_processResponse = function (matches, labelmatches){
+var searchResults_processResponse = function (matches, labelmatches, reopen){
 	var matchesd = {};
 	matches.map(function (x) {
 		if (x !== undefined) {
@@ -431,7 +434,7 @@ var searchResults_processResponse = function (matches, labelmatches){
 		if (labelmatches[m][2] !== undefined) {
 			var onclick = "zoomTo('" + labelmatches[m][2] + "');" + 
 				"searchResults_setInputBox('');" + 
-				"searchResults_updateFunc();";
+				"searchResults_updateFunc(false, '" + labelmatches[m][2] + "');";
 			var element = '<li id="li' + limit + '" onclick="' + onclick + '">';
 			if(labelmatches[m][3] !== undefined) {
 				element += '<img class="icon" src="' + labelmatches[m][3] + '" />';
@@ -452,7 +455,7 @@ var searchResults_processResponse = function (matches, labelmatches){
 	if(limit === 0) {
 		list.innerHTML += '<li><i>No results found</i></li>';
 	}
-	cluster();
+	cluster(reopen);
 	
 	if ($("#spinner").is(":visible")) {
 		$("#spinner").fadeOut();
