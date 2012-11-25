@@ -16,7 +16,8 @@ var tempInfowindow = undefined;
 var DEFAULT_SEARCH_ICON = "http://www.picol.org/images/icons/files/png/32/search_32.png";
 var CLEAR_SEARCH_ICON = "img/nt-left.png";
 
-var oldString = null;
+var searchTerm = null;
+var searchResults_exactMatch = false;
 var xmlhttp = undefined;
 
 var selecteddate = null;
@@ -348,7 +349,12 @@ var closeAll = function () {
 
 // Search functions.
 
-var searchResults_setInputBox = function (str) {
+var searchResults_setInputBox = function (str, exact) {
+	if (exact === true) {
+		searchResults_exactMatch = true;
+	} else {
+		searchResults_exactMatch = false;
+	}
 	$('#inputbox').get(0).value = str;
 };
 
@@ -360,17 +366,22 @@ var searchResults_updateFunc = function (force) {
 	resetSearchIcon();
 	var inputbox = $("#inputbox").get(0);
 	var list = $("#list").get(0);
-	if (!force && inputbox.value === oldString) {
+
+	var newSearchTerm = inputbox.value;
+	if (searchResults_exactMatch) {
+		newSearchTerm = '^' + newSearchTerm + '$';
+	}
+	if (!force && newSearchTerm === searchTerm) {
 		return;
 	}
-	oldString = inputbox.value;
+	searchTerm = newSearchTerm;
 
 	if (xmlhttp !== undefined) {
 		xmlhttp.abort();
 	}
 	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET","matches.php?v=" + version + "&q=" + inputbox.value + '&ec=' + enabledCategories,true);
-	_gaq.push(['_trackEvent', 'Search', 'Request', inputbox.value]);
+	xmlhttp.open("GET","matches.php?v=" + version + "&q=" + searchTerm + '&ec=' + enabledCategories,true);
+	_gaq.push(['_trackEvent', 'Search', 'Request', searchTerm]);
 	xmlhttp.send();
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
@@ -400,8 +411,8 @@ var searchResults_processResponse = function (matches, labelmatches){
 	selectIndex = -1;
 	list.innerHTML = "";
 	
-	var re = new RegExp('(' + $.trim(inputbox.value) + ')',"gi");
 	var limit = 0;
+	var re = new RegExp('(' + $.trim(searchTerm) + ')',"gi");
 	for (var m in labelmatches) {
 		// if it's the special last element, continue
 		if (m === undefined) {
@@ -413,7 +424,7 @@ var searchResults_processResponse = function (matches, labelmatches){
 		}
 		
 		var dispStr = labelmatches[m][0];
-		if (inputbox.value !== "") {
+		if (searchTerm !== "") {
 			dispStr = new String(dispStr).replace(re,
 				"<span style='background-color:#FFFF66'>$1</span>");
 		}
@@ -432,7 +443,7 @@ var searchResults_processResponse = function (matches, labelmatches){
 			list.innerHTML += element;
 		} else {
 			var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
-			var onclick = "searchResults_setInputBox('^" + escapeLabelmatch + "$');" + 
+			var onclick = "searchResults_setInputBox('" + escapeLabelmatch + "', true);" + 
 				"searchResults_updateFunc();";
 			list.innerHTML += '<li id="li' + limit + '" onclick="' + onclick + '">' + dispStr + '</li>';
 		} 
@@ -479,6 +490,13 @@ var searchResults_moveDown = function () {
 	}
 	searchResults_updateHighlight();
 	return false;
+};
+
+var searchResults_enter = function() {
+	searchResults_exactMatch = false;
+	searchResults_updateFunc();
+	show('list');
+	$('#search').css('z-index', 10);
 };
 
 var searchResults_select = function () {
