@@ -39,6 +39,8 @@ while (false !== ($file = readdir($handle))) {
 		while (false !== ($file2 = readdir($handle2))) {
 			if(substr($file2, -4, 4) != '.png')
 				continue;
+			if($file2 == 'blank.png' || $file2 == 'nt.blank.png' || $file2 == 'ntw.blank.png')
+				continue;
 			$files[] =  $file.'/'.$file2;
 		}
 		closedir($handle2);
@@ -53,6 +55,9 @@ foreach($files as $file)
 	if($cat != $head)
 	{
 		echo '<h3>'.$cat.'</h3>';
+		echo "<img id='blank' src='../img/icon/$cat/blank.png' alt='blank icon' title='blank' />";
+		//echo "<img id='nt.blank' src='../img/icon/$cat/nt.blank.png' alt='no tail blank icon' title='no tail blank' />";
+		//echo "<img id='ntw.blank' src='../img/icon/$cat/ntw.blank.png' alt='no tail wide blank icon' title='no tail wide blank' />";
 		$head = $cat;
 	}
 	echo "<img id='$filename' src='../img/icon/$file' alt='$filename icon' title='$filename' />";
