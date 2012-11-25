@@ -115,8 +115,8 @@ php process.php Industry dam.png
 php process.php Industry deepseafishing.png
 php process.php Industry expert.png
 php process.php Industry factory.png
-php process.php Industry fishingboat.png
 php process.php Industry fishing.png
+php process.php Industry fishingboat.png
 php process.php Industry jetfighter.png
 php process.php Industry laboratory.png
 php process.php Industry landfill.png
@@ -232,8 +232,8 @@ php process.php Offices currencyexchange.png
 php process.php Offices customs.png
 php process.php Offices disability.png
 php process.php Offices drinkingfountain.png
-php process.php Offices elevator_down.png
 php process.php Offices elevator.png
+php process.php Offices elevator_down.png
 php process.php Offices elevator_up.png
 php process.php Offices embassy.png
 php process.php Offices entrance.png
@@ -247,8 +247,8 @@ php process.php Offices laundromat.png
 php process.php Offices library.png
 php process.php Offices lockerrental.png
 php process.php Offices military.png
-php process.php Offices police2.png
 php process.php Offices police.png
+php process.php Offices police2.png
 php process.php Offices postal.png
 php process.php Offices presentation.png
 php process.php Offices printer-2.png
@@ -263,10 +263,10 @@ php process.php Offices trash.png
 php process.php Offices waiting.png
 php process.php Offices wifi.png
 php process.php Offices workoffice.png
-php process.php Restaurants-and-Hotels barbecue.png
+php process.php Restaurants-and-Hotels bar.png
 php process.php Restaurants-and-Hotels bar_coktail.png
 php process.php Restaurants-and-Hotels bar_juice.png
-php process.php Restaurants-and-Hotels bar.png
+php process.php Restaurants-and-Hotels barbecue.png
 php process.php Restaurants-and-Hotels cafetaria.png
 php process.php Restaurants-and-Hotels coffee.png
 php process.php Restaurants-and-Hotels cruiseship.png
@@ -284,6 +284,7 @@ php process.php Restaurants-and-Hotels lodging_0star.png
 php process.php Restaurants-and-Hotels motel-2.png
 php process.php Restaurants-and-Hotels pizzaria.png
 php process.php Restaurants-and-Hotels resort.png
+php process.php Restaurants-and-Hotels restaurant.png
 php process.php Restaurants-and-Hotels restaurant_african.png
 php process.php Restaurants-and-Hotels restaurant_breakfast.png
 php process.php Restaurants-and-Hotels restaurant_buffet.png
@@ -295,7 +296,6 @@ php process.php Restaurants-and-Hotels restaurant_italian.png
 php process.php Restaurants-and-Hotels restaurant_korean.png
 php process.php Restaurants-and-Hotels restaurant_mediterranean.png
 php process.php Restaurants-and-Hotels restaurant_mexican.png
-php process.php Restaurants-and-Hotels restaurant.png
 php process.php Restaurants-and-Hotels restaurant_romantic.png
 php process.php Restaurants-and-Hotels restaurant_steakhouse.png
 php process.php Restaurants-and-Hotels restaurant_tapas.png
@@ -326,8 +326,8 @@ php process.php Sports climbing.png
 php process.php Sports cricket.png
 php process.php Sports cup.png
 php process.php Sports curling-2.png
-php process.php Sports cycling_feed.png
 php process.php Sports cycling.png
+php process.php Sports cycling_feed.png
 php process.php Sports cycling_sprint.png
 php process.php Sports diving.png
 php process.php Sports finish.png
@@ -486,12 +486,12 @@ php process.php Tourism temple-2.png
 php process.php Tourism templehindu.png
 php process.php Tourism tower.png
 php process.php Tourism urbanpark.png
-php process.php Tourism worldheritagesite.png
 php process.php Tourism world.png
+php process.php Tourism worldheritagesite.png
 php process.php Transportation accesdenied.png
 php process.php Transportation aircraftsmall.png
-php process.php Transportation airport_apron.png
 php process.php Transportation airport.png
+php process.php Transportation airport_apron.png
 php process.php Transportation airport_runway.png
 php process.php Transportation airport_terminal.png
 php process.php Transportation barrier.png
@@ -518,8 +518,8 @@ php process.php Transportation levelcrossing.png
 php process.php Transportation mainroad.png
 php process.php Transportation motorcycle.png
 php process.php Transportation parkandride.png
-php process.php Transportation parking_bicycle.png
 php process.php Transportation parking.png
+php process.php Transportation parking_bicycle.png
 php process.php Transportation pedestriancrossing.png
 php process.php Transportation repair.png
 php process.php Transportation roadtype_gravel.png
