@@ -231,6 +231,7 @@ class SouthamptoncachedDataSource extends DataSource
 	
 	static function processSownURI($uri)
 	{
+		return self::processSouthamptonURI($uri);
 		return true;
 		echo '<div id="content">';
 		echo '<pre>';
