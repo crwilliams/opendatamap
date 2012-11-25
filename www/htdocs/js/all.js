@@ -512,11 +512,15 @@ var searchResults_blursearch = function () {
 };
 
 var searchResults_removeHighlight = function () {
-	if (selectIndex >= 0) { $('#li' + selectIndex).get(0).style.backgroundColor = 'inherit'; }
+	if (selectIndex >= 0) {
+		$('#li' + selectIndex).get(0).style.backgroundColor = 'inherit';
+	}
 };
 
 var searchResults_updateHighlight = function () {
-	if (selectIndex >= 0) { $('#li' + selectIndex).get(0).style.backgroundColor = '#CCCCFF'; }
+	if (selectIndex >= 0) {
+		$('#li' + selectIndex).get(0).style.backgroundColor = '#CCCCFF';
+	}
 };
 
 // Show and hide functions.
