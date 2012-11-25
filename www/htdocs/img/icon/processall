@@ -109,6 +109,7 @@ php process.php Education spa.png
 php process.php Education summercamp.png
 php process.php Education therapy.png
 php process.php Education toilets.png
+php process.php Education toilets_disability.png #extra
 php process.php Education toys.png
 php process.php Education university.png
 php process.php Education veterinary.png
@@ -187,6 +188,7 @@ php process.php Health sozialeeinrichtung.png
 php process.php Health spa.png
 php process.php Health therapy.png
 php process.php Health toilets.png
+php process.php Health toilets_disability.png #extra
 php process.php Health veterinary.png
 php process.php Industry air_fixwing.png
 php process.php Industry aircraftcarrier.png
@@ -267,7 +269,15 @@ php process.php Nature animal-shelter-export.png
 php process.php Nature ant-export.png
 php process.php Nature apple.png
 php process.php Nature bats.png
+php process.php Nature beach-export.png #extra
 php process.php Nature beach.png
+php process.php Nature beach_car.png #extra
+php process.php Nature beach_certified.png #extra
+php process.php Nature beach_handicapped.png #extra
+php process.php Nature beach_icon.png #extra
+php process.php Nature beach_nudists.png #extra
+php process.php Nature beach_pets.png #extra
+php process.php Nature beach_waves.png #extra
 php process.php Nature bear.png
 php process.php Nature beautifulview.png
 php process.php Nature birds-2.png
@@ -300,6 +310,7 @@ php process.php Nature fossils.png
 php process.php Nature fox1.png
 php process.php Nature frog-2.png
 php process.php Nature fruits.png
+php process.php Nature garden.png #extra
 php process.php Nature geyser-2.png
 php process.php Nature glacier-2.png
 php process.php Nature grass.png
@@ -363,8 +374,11 @@ php process.php Offices amphitheater.png
 php process.php Offices apartment-3.png
 php process.php Offices atm-2.png
 php process.php Offices atm.png #alt
+php process.php Offices atm_euro.png #extra
+php process.php Offices atm_pound.png #extra
 php process.php Offices award.png
 php process.php Offices bank.png
+php process.php Offices bank_euro.png #extra
 php process.php Offices bank_pound.png #alt
 php process.php Offices carrental.png
 php process.php Offices cctv.png
@@ -423,10 +437,12 @@ php process.php Offices star-3.png
 php process.php Offices telephone.png
 php process.php Offices text.png #extracategory
 php process.php Offices toilets.png
+php process.php Offices toilets_disability.png #extra
 php process.php Offices townhouse.png
 php process.php Offices trash.png
 php process.php Offices waiting.png
 php process.php Offices wifi.png
+php process.php Offices wifi_secured.png #extra
 php process.php Offices wiki-export.png
 php process.php Offices workoffice.png
 php process.php Restaurants-and-Hotels bar.png
@@ -445,14 +461,32 @@ php process.php Restaurants-and-Hotels foodtruck.png
 php process.php Restaurants-and-Hotels gay-female.png
 php process.php Restaurants-and-Hotels gay-male.png
 php process.php Restaurants-and-Hotels gourmet_0star.png
+php process.php Restaurants-and-Hotels gourmet_1star.png #extra
+php process.php Restaurants-and-Hotels gourmet_2stars.png #extra
+php process.php Restaurants-and-Hotels gourmet_3stars.png #extra
 php process.php Restaurants-and-Hotels hostel_0star.png
+php process.php Restaurants-and-Hotels hostel_1star.png #extra
+php process.php Restaurants-and-Hotels hostel_2stars.png #extra
+php process.php Restaurants-and-Hotels hostel_3stars.png #extra
+php process.php Restaurants-and-Hotels hostel_4stars.png #extra
+php process.php Restaurants-and-Hotels hostel_5stars.png #extra
 php process.php Restaurants-and-Hotels hotel_0star.png
+php process.php Restaurants-and-Hotels hotel_1star.png #extra
+php process.php Restaurants-and-Hotels hotel_2stars.png #extra
+php process.php Restaurants-and-Hotels hotel_3stars.png #extra
+php process.php Restaurants-and-Hotels hotel_4stars.png #extra
+php process.php Restaurants-and-Hotels hotel_5stars.png #extra
 php process.php Restaurants-and-Hotels icecream.png
 php process.php Restaurants-and-Hotels japanese-food.png
 php process.php Restaurants-and-Hotels japanese-sake.png
 php process.php Restaurants-and-Hotels kebab.png
 php process.php Restaurants-and-Hotels lattes.png #private
 php process.php Restaurants-and-Hotels lodging_0star.png
+php process.php Restaurants-and-Hotels lodging_1star.png #extra
+php process.php Restaurants-and-Hotels lodging_2stars.png #extra
+php process.php Restaurants-and-Hotels lodging_3stars.png #extra
+php process.php Restaurants-and-Hotels lodging_4stars.png #extra
+php process.php Restaurants-and-Hotels lodging_5stars.png #extra
 php process.php Restaurants-and-Hotels motel-2.png
 php process.php Restaurants-and-Hotels pizzaria.png
 php process.php Restaurants-and-Hotels resort.png
@@ -481,6 +515,7 @@ php process.php Restaurants-and-Hotels teahouse.png
 php process.php Restaurants-and-Hotels terrace.png
 php process.php Restaurants-and-Hotels villa.png
 php process.php Restaurants-and-Hotels wifi.png
+php process.php Restaurants-and-Hotels wifi_secured.png #extra
 php process.php Restaurants-and-Hotels winebar.png
 php process.php Restaurants-and-Hotels winetasting.png
 php process.php Restaurants-and-Hotels youthhostel.png
@@ -592,6 +627,7 @@ php process.php Stores cheese.png
 php process.php Stores christmasmarket.png
 php process.php Stores clothers_female.png
 php process.php Stores clothers_male.png
+php process.php Stores clothes.png #extra
 php process.php Stores coffee.png #extracategory
 php process.php Stores comics.png
 php process.php Stores computers.png
@@ -788,13 +824,25 @@ php process.php Transportation parkandride.png
 php process.php Transportation parking-meter-export.png
 php process.php Transportation parking.png #extra
 php process.php Transportation parking_bicycle.png #extra
+php process.php Transportation parking_disabled.png #extra
 php process.php Transportation parkinggarage.png
 php process.php Transportation pedestriancrossing.png
 php process.php Transportation repair.png
 php process.php Transportation road.png
 php process.php Transportation roadtype_gravel.png
 php process.php Transportation slipway.png
+php process.php Transportation speed_100.png #extra
+php process.php Transportation speed_110.png #extra
+php process.php Transportation speed_120.png #extra
+php process.php Transportation speed_130.png #extra
+php process.php Transportation speed_20.png #extra
+php process.php Transportation speed_30.png #extra
+php process.php Transportation speed_40.png #extra
 php process.php Transportation speed_50.png
+php process.php Transportation speed_60.png #extra
+php process.php Transportation speed_70.png #extra
+php process.php Transportation speed_80.png #extra
+php process.php Transportation speed_90.png #extra
 php process.php Transportation speedhump.png
 php process.php Transportation sportscar.png
 php process.php Transportation sportutilityvehicle.png
