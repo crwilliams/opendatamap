@@ -91,23 +91,23 @@ class SouthamptoncachedDataSource extends DataSource
 		return self::_query($q);
 	}
 	
-	static function getBuildings($str1, $str2)
+	static function getBuildings($name, $num)
 	{
-		if(trim($str1) == '')
+		if(trim($name) == '')
 		{
 			$q = 'SELECT uri, name, num FROM places WHERE type = "building"';
 			return self::_query($q);
 		}
-		else if(trim($str2) == '')
+		else if(trim($num) == '')
 		{
 			$q = 'SELECT uri, name, num FROM places WHERE type = "building" AND (name REGEXP ?)';
-			$p = array($str1);
+			$p = array($name);
 			return self::_query($q, $p);
 		}
 		else
 		{
-			$q = 'SELECT uri, name, num FROM places WHERE type = "building" AND (name REGEXP ? OR name REGEXP ?)';
-			$p = array($str1, $str2);
+			$q = 'SELECT uri, name, num FROM places WHERE type = "building" AND (name REGEXP ? OR num REGEXP ?)';
+			$p = array($name, $num);
 			return self::_query($q, $p);
 		}
 	}
