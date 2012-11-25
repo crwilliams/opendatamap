@@ -260,7 +260,7 @@ class SouthamptoncachedDataSource extends DataSource
 		echo "<h3> Served by: (click to show on map) </h3>";
 		echo "<ul class='offers'>"; 
 		foreach($allbus as $code) {
-			echo "<li ".self::routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
+			echo "<li ".self::routestyle($code['code'])."onclick=\"searchResults_setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."', true); searchResults_updateFunc();\">".$code['code']."</li>";
 		}
 		echo "</ul>";
 		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
@@ -433,7 +433,7 @@ class SouthamptoncachedDataSource extends DataSource
 			echo "<h3> Offers: (click to show on map) </h3>";
 			echo "<ul class='offers'>"; 
 			foreach($allpos as $point) {
-				echo "<li onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."$'); updateFunc();\">".$point['label']."</li>";
+				echo "<li onclick=\"searchResults_setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."', true); searchResults_updateFunc();\">".$point['label']."</li>";
 			}
 			echo "</ul>";
 		}
