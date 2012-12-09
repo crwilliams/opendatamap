@@ -99,7 +99,7 @@ function processFile($category, $file)
 	//echo $color."\n";
 	*/
 
-	$color=1;
+	$color=0;
 	
 	for($y = 0; $y < 24; $y++)
 	{
@@ -108,6 +108,7 @@ function processFile($category, $file)
 			//if($gs)
 			//{
 				$sat[$x][$y] = getAverageColor($dst_im, $x, $y);
+				$color = max($color, $sat[$x][$y]);
 			//}
 			//else
 			//{
