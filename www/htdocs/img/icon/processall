@@ -163,6 +163,7 @@ php process.php Events wind-2.png
 php process.php Events zombie-outbreak1.png
 php process.php Health acupuncture.png
 php process.php Health aed-2.png
+php process.php Health ambulanceboat.png
 php process.php Health barber.png
 php process.php Health beautysalon.png
 php process.php Health chiropractor.png
@@ -190,6 +191,7 @@ php process.php Health therapy.png
 php process.php Health toilets.png
 php process.php Health toilets_disability.png #extra
 php process.php Health veterinary.png
+php process.php Health x-ray.png
 php process.php Industry air_fixwing.png
 php process.php Industry aircraftcarrier.png
 php process.php Industry army.png
@@ -318,6 +320,7 @@ php process.php Nature hare1.png
 php process.php Nature haybale.png
 php process.php Nature honeycomb.png
 php process.php Nature hotspring.png
+php process.php Nature icon.png
 php process.php Nature lake.png
 php process.php Nature lobster-export.png
 php process.php Nature monkey-export.png
