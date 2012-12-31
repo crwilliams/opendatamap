@@ -225,9 +225,10 @@ class DataSource{
 
 function getEnabledCategories()
 {
+	global $config;
 	if($_GET['ec'] == "")
 	{
-		return array('Transportation','Restaurants-and-Hotels','Offices','Culture-and-Entertainment', 'Health', 'Tourism', 'Stores', 'Education', 'Sports');
+		return array_keys($config['categories']);
 	}
 	else
 	{
