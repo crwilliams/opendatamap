@@ -122,6 +122,7 @@ function getDataSetLinks($include)
 	$licencenames['http://reference.data.gov.uk/id/open-government-licence'] = "Open Government Licence";
 	$licencenames['http://creativecommons.org/licenses/by/2.0/uk/'] = "Creative Commons Attribution 2.0 UK: England & Wales License";
 	$licencenames['http://www.opendefinition.org/licenses/cc-zero'] = "Creative Commons CC Zero License";
+	$licencenames['http://www.food.gov.uk/ratings-terms-and-conditions'] = "FHRS/FHIS Brand Standard, terms and conditions";
 
 	$datasets = array();
 	foreach($config['datasource'] as $ds)
