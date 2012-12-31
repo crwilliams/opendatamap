@@ -20,26 +20,6 @@ if(true || !file_exists($filename))
 	}
 	$oimg = imagecreatefrompng("../img/icon/Education/computers.png");
 	$white = imagecolorallocate($oimg, 0, 0, 0);
-/*
-	switch(strlen($n))
-	{
-		case 1:
-			$fs = 20;
-			break;
-		case 2:
-			$fs = 15;
-			break;
-		case 3:
-			$fs = 10;
-			break;
-		case 4:
-			$fs = 8;
-			break;
-		default:
-			$fs = 0;
-			break;
-	}
-*/
 	$fs = 6;
 	$bbox = imagettfbbox($fs, 0, 'ubuntu.ttf', $n);
 	$w = $bbox[2] - $bbox[0];
