@@ -432,9 +432,16 @@ var searchResults_processResponse = function (matches, labelmatches, reopen){
 				"<span style='background-color:#FFFF66'>$1</span>");
 		}
 		if (labelmatches[m][2] !== undefined) {
-			var onclick = "zoomTo('" + labelmatches[m][2] + "');" + 
-				"searchResults_setInputBox('');" + 
-				"searchResults_updateFunc(false, '" + labelmatches[m][2] + "');";
+			var onclick = '';
+			if(labelmatches[m][2] !== null) {
+				onclick = "zoomTo('" + labelmatches[m][2] + "');" + 
+					"searchResults_setInputBox('');" + 
+					"searchResults_updateFunc(false, '" + labelmatches[m][2] + "');";
+			} else {
+				var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
+				onclick = "searchResults_setInputBox('" + escapeLabelmatch + "', true);" + 
+					"searchResults_updateFunc();";
+			}
 			var element = '<li id="li' + limit + '" onclick="' + onclick + '">';
 			if(labelmatches[m][3] !== undefined) {
 				element += '<img class="icon" src="' + labelmatches[m][3] + '" />';
