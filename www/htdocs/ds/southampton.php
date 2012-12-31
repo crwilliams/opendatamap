@@ -12,7 +12,6 @@ class SouthamptonDataSource extends DataSource
 		foreach(self::_getAllBusStops()	 		as $point) $points[] = $point;
 		foreach(self::_getAllWorkstationRooms()		as $point) $points[] = $point;
 		foreach(self::_getAllISolutionsWifiPoints()	as $point) $points[] = $point;
-		foreach(self::_getAllResidences()		as $point) $points[] = $point;
 		foreach(self::_getAllShowers()			as $point) $points[] = $point;
 		return $points;
 	}
