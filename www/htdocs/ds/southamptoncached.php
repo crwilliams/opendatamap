@@ -335,7 +335,23 @@ class SouthamptoncachedDataSource extends DataSource
 		");
 
 		echo "<h2><img class='icon' src='".($icon!=""?$icon:"img/blackness.png")."' />".$name;
-		if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri) && !$wifi)
+		if($type == 'event')
+		{
+			$eventdata = sparql_get(self::$endpoint, "
+		PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+		PREFIX dct: <http://purl.org/dc/terms/>
+
+		SELECT * WHERE {
+			<$uri> dct:description ?d .
+			OPTIONAL { <$uri> foaf:homepage ?h . }
+		}
+			");
+			if(isset($eventdata[0]['h']))
+			{
+				echo "<a class='odl' href='".$eventdata[0]['h']."'>Visit page</a>";
+			}
+		}
+		else if(preg_match('/http:\/\/id\.southampton\.ac\.uk\/.*/', $uri) && !$wifi)
 		{
 			echo "<a class='odl' href='".$uri."'>Visit page</a>";
 		}
@@ -393,6 +409,41 @@ class SouthamptoncachedDataSource extends DataSource
 		else if($type == 'wifi')
 		{
 			$allpos = array(array('label' => 'Wi-Fi Access'));
+		}
+		else if($type == 'event')
+		{
+			$eventtimes = sparql_get(self::$endpoint, "
+		PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+		PREFIX dct: <http://purl.org/dc/terms/>
+
+		SELECT ?s ?e WHERE {
+			<$uri> <http://purl.org/NET/c4dm/event.owl#time> ?t .
+			?t <http://purl.org/NET/c4dm/timeline.owl#start> ?s .
+			OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?e . }
+		}
+			");
+			date_default_timezone_set('Europe/London');
+			foreach($eventtimes as $eventtime)
+			{
+				$s = new DateTime($eventtime['s']);
+				echo $s->format('D jS M Y H:i');
+				if(isset($eventtime['e']))
+				{
+					echo ' - ';
+					$e = new DateTime($eventtime['e']);
+					if($s->format('D jS M Y') == $e->format('D jS M Y'))
+					{
+						echo $e->format('H:i');
+					}
+					else
+					{
+						echo $e->format('D jS M Y H:i');
+					}
+				}
+				echo '<br />';
+			}
+			echo '<hr />';
+			echo $eventdata[0]['d'];
 		}
 		else
 		{

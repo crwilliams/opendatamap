@@ -19,6 +19,7 @@ $config['categories']['Tourism'] = 'Tourism and Religion';
 $config['categories']['Stores'] = 'Retail';
 $config['categories']['Education'] = 'Education';
 $config['categories']['Sports'] = 'Sports';
+$config['categories']['Media'] = 'Events';
 
 error_reporting(0);
 $version = $_GET['v'];

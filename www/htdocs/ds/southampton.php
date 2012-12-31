@@ -13,6 +13,7 @@ class SouthamptonDataSource extends DataSource
 		foreach(self::_getAllWorkstationRooms()		as $point) $points[] = $point;
 		foreach(self::_getAllISolutionsWifiPoints()	as $point) $points[] = $point;
 		foreach(self::_getAllShowers()			as $point) $points[] = $point;
+		foreach(self::_getAllEvents()			as $point) $points[] = $point;
 		return $points;
 	}
 	
@@ -24,6 +25,7 @@ class SouthamptonDataSource extends DataSource
 		foreach(self::_getAllWorkstationRoomOfferings()		as $point) $points[] = $point;
 		foreach(self::_getAllISolutionsWifiPointOfferings()	as $point) $points[] = $point;
 		foreach(self::_getAllShowerOfferings()			as $point) $points[] = $point;
+		foreach(self::_getAllEventOfferings()			as $point) $points[] = $point;
 		return $points;
 	}
 
@@ -361,7 +363,115 @@ class SouthamptonDataSource extends DataSource
 		}
 		return $points;
 	}
+
+	private static function _getAllEvents()
+	{
+		$tpoints = sparql_get(self::$endpoint, "
+		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+		PREFIX org: <http://www.w3.org/ns/org#>
+		PREFIX gr: <http://purl.org/goodrelations/v1#>
 		
+		SELECT DISTINCT ?id ?lat ?lng ?label ?ts ?te WHERE {
+                  ?id a <http://purl.org/NET/c4dm/event.owl#Event> .
+		  ?id <http://purl.org/NET/c4dm/event.owl#time> ?t .
+		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
+		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
+                  ?id <http://purl.org/NET/c4dm/event.owl#place> ?p .
+                  ?id rdfs:label ?label .
+		  OPTIONAL { ?p spacerel:within ?b .
+		             ?b geo:lat ?lat . 
+		             ?b geo:long ?lng .
+		             ?b a <http://vocab.deri.ie/rooms#Building> .
+		           }
+		  OPTIONAL { ?p spacerel:within ?s .
+		             ?s geo:lat ?lat . 
+		             ?s geo:long ?lng .
+		             ?s a org:Site .
+		           }
+		  OPTIONAL { ?p geo:lat ?lat .
+		             ?p geo:long ?lng .
+		           }
+		  FILTER ( BOUND(?lng) && BOUND(?lat) )
+		} ORDER BY ?label
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$dates = static::_checkDates($point);
+			if(!$dates) continue;
+			$point['label'] = str_replace('\'', '\\\'', $point['label']);
+			$point['label'] = str_replace("\\", "\\\\", $point['label']);
+			//$point['label'] .= ' ' . $dates;
+			$point['type'] = 'event';
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Media/calendar-3.png";
+			$points[] = $point;
+		}
+		return $points;
+	}
+	
+	private static function _getAllEventOfferings()
+	{
+		$tpoints = sparql_get(self::$endpoint, "
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		
+		SELECT DISTINCT ?poslabel ?pos ?ts ?te WHERE {
+		  ?pos a <http://purl.org/NET/c4dm/event.owl#Event> .
+		  ?pos <http://purl.org/NET/c4dm/event.owl#time> ?t .
+		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
+		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
+		  ?pos rdfs:label ?poslabel .
+		} ORDER BY ?poslabel
+		");
+		$points = array();
+		foreach($tpoints as $point)
+		{
+			$dates = static::_checkDates($point);
+			if(!$dates) continue;
+			//$point['poslabel'] .= ' ' . $dates;
+			$point['type'] = 'event';
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Media/calendar-3.png";
+			$points[] = $point;
+		}
+		return $points;
+	}
+
+	private static function _checkDates($point)
+	{
+		date_default_timezone_set('Europe/London');
+		try
+		{
+			$n = new DateTime();
+			$ts = new DateTime($point['ts']);
+			if(isset($point['te']))
+			{
+				$te = new DateTime($point['te']);
+				if($te < $n || $ts > $n->add(new DateInterval('P1M')))
+				{
+					return false;
+				}
+				return $ts->format('c') . ' - ' . $te->format('c');
+			}
+			else
+			{
+				if($ts < $n || $ts > $n->add(new DateInterval('P1M')))
+				{
+					return false;
+				}
+				return $ts->format('c');
+			}
+		}
+		catch(Exception $ex)
+		{
+			if(isset($point['id'])) echo $point['id'];
+			if(isset($point['pos'])) echo $point['pos'];
+			echo $ex;
+			return false;
+		}
+		return '';
+	}
+
 	private static function _getAllBuildings()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
