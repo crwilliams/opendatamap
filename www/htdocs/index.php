@@ -39,7 +39,6 @@ $clickuri = $_GET['clickuri'];
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
-		<link rel="stylesheet" href="css/print.css" type="text/css" media="print">
 	</head>
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
