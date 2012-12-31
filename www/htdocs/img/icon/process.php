@@ -237,6 +237,11 @@ function processFile($category, $file)
 		imagepng($gs_im, $category.'/blank.png');
 	}
 	
+	$pl_im = imagecreatetruecolor(24, 24);
+	imagealphablending($pl_im,false);
+	imagefilledrectangle($pl_im, 0, 0, $w, $h, imagecolorallocatealpha($pl_im, 255, 255, 255, 127));
+	imagealphablending($pl_im, true);
+
 	// For all pixels in the icon.
 	for($y = 0; $y < 24; $y++)
 	{
@@ -261,9 +266,12 @@ function processFile($category, $file)
 			
 			// Set the pixel colour according to its level.
 			imagesetpixel($gs_im, $x+4, $y+4, imagecolorallocatealpha($gs_im, 255, 255, 255, 127-$level));
+			imagesetpixel($pl_im, $x, $y, imagecolorallocatealpha($pl_im, 0, 0, 0, 127-$level));
 		}
 	}
 	
+	imagesavealpha($pl_im, true);
+	imagepng($pl_im, 'plain/'.$file);
 	imagepng($gs_im, $category.'/'.$file);
 }
 
