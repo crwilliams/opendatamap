@@ -143,5 +143,6 @@ if(!file_exists($filename))
 	imagepng($oimg, $filename);
 }
 header('Content-type: image/png');
+header('Cache-Control: max-age=3600');
 fpassthru(fopen($filename, 'r'));
 ?>
