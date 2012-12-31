@@ -71,6 +71,10 @@ function getCategory($icon)
 	{
 		return 'Education';
 	}
+	elseif($category[3] == 'img' && $category[4] == 'icon')
+	{
+		return $category[5];
+	}
 	else
 	{
 		return '';
