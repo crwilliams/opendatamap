@@ -506,8 +506,15 @@ class SouthamptoncachedDataSource extends DataSource
 	static function routestyle($code)
 	{
 		$color['U1'] = array(  0, 142, 207);
+		$color['U1A'] = $color['U1'];
+		$color['U1C'] = $color['U1'];
+		$color['U1E'] = $color['U1'];
 		$color['U2'] = array(226,   2,  20);
+		$color['U2B'] = $color['U2'];
+		$color['U2C'] = $color['U2'];
 		$color['U6'] = array(246, 166,  24);
+		$color['U6C'] = $color['U6'];
+		$color['U6H'] = $color['U6'];
 		$color['U9'] = array(232,  84, 147);
 		if(isset($color[$code]))
 		{
