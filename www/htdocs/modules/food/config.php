@@ -12,7 +12,7 @@ $config['categories'] = array();
 $config['selection_required'] = true;
 for($i = 0; $i <= 5; $i++)
 {
-	$config['categories']['fhrs_'.$i.'_en-gb'] = 'Food Hygiene Rating: '.$i;
+	$config['categories']['food/fhrs_'.$i.'_en-gb'] = 'Food Hygiene Rating: '.$i;
 }
 
 foreach(glob('/home/opendatamap/FHRS/*.xml') as $version)

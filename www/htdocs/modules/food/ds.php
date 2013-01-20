@@ -37,7 +37,7 @@ class FoodDataSource extends DataSource
 		$icon = array();
 		$data = self::getPoints($q);
 		foreach($data as $point) {
-			if(!in_array(strtolower($point['ratingkey']), $cats))
+			if(!in_array('food/'.strtolower($point['ratingkey']), $cats))
 				continue;
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['poslabel']))
@@ -101,7 +101,7 @@ class FoodDataSource extends DataSource
 
 	static function getIcon($type, $ratingkey)
 	{
-		$icon = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/'.strtolower($ratingkey);
+		$icon = 'http://opendatamap.ecs.soton.ac.uk/modules/food/icons/'.strtolower($ratingkey);
 		switch($type)
 		{
 			case 'Restaurant/Cafe/Canteen':
