@@ -21,7 +21,7 @@ if($argc == 3)
 }
 elseif($argc == 2)
 {
-	include 'modules/'.$argv[1].'/icons.php';
+	include '../../modules/'.$argv[1].'/icons.php';
 	foreach($icons as $category => $caticons)
 	{
 		foreach($caticons as $icon)
