@@ -1,13 +1,19 @@
 <?
 class FoodDataSource extends DataSource
 {
-	//static $datafile = 'resources/FHRS877en-GB.xml';
-	static $datafile = 'resources/default.xml';
+	static function getDataFile()
+	{
+		global $config;
+		if(preg_match('/^[A-Za-z_-]+$/', $config['datafile']))
+		{
+			return simplexml_load_file('/home/opendatamap/FHRS/'.$config['datafile'].'.xml');
+		}
+	}
 
 	static function getAll()
 	{
 		$i = 0;
-		$data = simplexml_load_file(static::$datafile);
+		$data = static::getDataFile();
 		$points = array();
 		foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 		{
@@ -53,7 +59,7 @@ class FoodDataSource extends DataSource
 		if(substr($uri, 0, strlen('http://fhrs.example.com/')) == 'http://fhrs.example.com/')
 		{
 			$id = substr($uri, strlen('http://fhrs.example.com/'));
-			$data = simplexml_load_file(static::$datafile);
+			$data = static::getDataFile();
 			$points = array();
 			foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 			{
@@ -78,7 +84,7 @@ class FoodDataSource extends DataSource
 	static function getPoints($q)
 	{
 		$i = 0;
-		$data = simplexml_load_file(static::$datafile);
+		$data = static::getDataFile();
 		$points = array();
 		foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 		{
