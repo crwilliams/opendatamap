@@ -71,13 +71,26 @@ class FoodDataSource extends DataSource
 					echo $establishment->AddressLine3.'<br/>';
 					echo $establishment->AddressLine4.'<br/>';
 					echo $establishment->PostCode.'<br/><br/>';
-					echo "<a href='http://ratings.food.gov.uk/business/".$establishment->FHRSID."'><img src='img/fhrs/small/72ppi/".strtolower($establishment->RatingKey).".jpg' alt='Food hygiene rating: ".$establishment->RatingValue."' title='Food hygiene rating: ".$establishment->RatingValue."' /></a>";
+					echo "<a href='http://ratings.food.gov.uk/business/".$establishment->FHRSID."'><img src='".static::getRatingImage($establishment->RatingKey)."' alt='Food hygiene rating: ".$establishment->RatingValue."' title='Food hygiene rating: ".$establishment->RatingValue."' /></a>";
 					echo '<br /><br /><span style="font-size: 0.8em">as of '.$establishment->RatingDate.'</span><br/>';
 
 					return true;
 				}
 			}
 			return false;
+		}
+	}
+
+	static function getRatingImage($key)
+	{
+		global $config;
+		if($config['mode'] == 'FHIS')
+		{
+			return "img/fhrs/small/72ppi/".str_replace('_en-gb', '', strtolower($key)).".jpg";
+		}
+		else
+		{
+			return "img/fhrs/small/72ppi/".strtolower($key).".jpg";
 		}
 	}
 

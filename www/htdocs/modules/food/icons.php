@@ -1,25 +1,36 @@
 <?php
+$globalcols = $cols;
+
 $cols['fhrs_0_en-gb'] = 'c03638';
 $cols['fhrs_1_en-gb'] = 'f34648';
 $cols['fhrs_2_en-gb'] = 'ff8a22';
 $cols['fhrs_3_en-gb'] = 'ffc11f';
 $cols['fhrs_4_en-gb'] = '66c547';
 $cols['fhrs_5_en-gb'] = '128e4d';
-for($rating = 0; $rating <= 5; $rating++)
+
+$cols['fhis_improvement_required_en-gb'] = $cols['fhrs_1_en-gb'];
+$cols['fhis_pass_en-gb'] = $cols['fhrs_4_en-gb'];
+$cols['fhis_pass_and_eat_safe_en-gb'] = $cols['fhrs_5_en-gb'];
+
+foreach(array_keys($cols) as $code)
 {
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'bar_coktail.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'conveniencestore.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'factory.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'family.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'farm-2.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'foodtruck.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'fruits.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'lodging_0star.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'restaurant.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'school.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'supermarket.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'takeaway.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'teahouse.png';
-	$icons['fhrs_'.$rating.'_en-gb'][] = 'truck3.png';
+	if(array_key_exists($code, $globalcols))
+	{
+		continue;
+	}
+	$icons[$code][] = 'bar_coktail.png';
+	$icons[$code][] = 'conveniencestore.png';
+	$icons[$code][] = 'factory.png';
+	$icons[$code][] = 'family.png';
+	$icons[$code][] = 'farm-2.png';
+	$icons[$code][] = 'foodtruck.png';
+	$icons[$code][] = 'fruits.png';
+	$icons[$code][] = 'lodging_0star.png';
+	$icons[$code][] = 'restaurant.png';
+	$icons[$code][] = 'school.png';
+	$icons[$code][] = 'supermarket.png';
+	$icons[$code][] = 'takeaway.png';
+	$icons[$code][] = 'teahouse.png';
+	$icons[$code][] = 'truck3.png';
 }
 ?>
