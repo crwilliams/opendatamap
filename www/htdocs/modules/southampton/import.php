@@ -375,7 +375,9 @@ class SouthamptonDataSource
 		PREFIX gr: <http://purl.org/goodrelations/v1#>
 		
 		SELECT DISTINCT ?id ?lat ?lng ?label ?ts ?te WHERE {
-                  ?id a <http://purl.org/NET/c4dm/event.owl#Event> .
+		  GRAPH ?g {
+                    ?id a <http://purl.org/NET/c4dm/event.owl#Event> .
+		  }
 		  ?id <http://purl.org/NET/c4dm/event.owl#time> ?t .
 		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
 		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
@@ -394,7 +396,10 @@ class SouthamptonDataSource
 		  OPTIONAL { ?p geo:lat ?lat .
 		             ?p geo:long ?lng .
 		           }
-		  FILTER ( BOUND(?lng) && BOUND(?lat) )
+		  FILTER ( BOUND(?lng) && BOUND(?lat) && 
+		           ( ?g = <http://id.southampton.ac.uk/dataset/events-diary/latest> ||
+		             ?g = <http://id.southampton.ac.uk/dataset/susu-events/latest> )
+		         )
 		} ORDER BY ?label
 		");
 		$points = array();
@@ -421,7 +426,9 @@ class SouthamptonDataSource
 		PREFIX org: <http://www.w3.org/ns/org#>
 		
 		SELECT DISTINCT ?poslabel ?pos ?ts ?te WHERE {
-		  ?pos a <http://purl.org/NET/c4dm/event.owl#Event> .
+		  GRAPH ?g {
+		    ?pos a <http://purl.org/NET/c4dm/event.owl#Event> .
+		  }
 		  ?pos <http://purl.org/NET/c4dm/event.owl#time> ?t .
 		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
 		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
@@ -440,7 +447,10 @@ class SouthamptonDataSource
 		  OPTIONAL { ?p geo:lat ?lat .
 		             ?p geo:long ?lng .
 		           }
-		  FILTER ( BOUND(?lng) && BOUND(?lat) )
+		  FILTER ( BOUND(?lng) && BOUND(?lat) && 
+		           ( ?g = <http://id.southampton.ac.uk/dataset/events-diary/latest> ||
+		             ?g = <http://id.southampton.ac.uk/dataset/susu-events/latest> )
+		         )
 		} ORDER BY ?poslabel
 		");
 		$points = array();
