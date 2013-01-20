@@ -679,7 +679,7 @@ var hashChange = function () {
 // Category functions.
 
 var toggle = function (category) {
-	var cEl = $('#'+category).get(0);
+	var cEl = $('#'+category.replace('/', '\\/')).get(0);
 	if (cEl.checked) {
 		cEl.checked = false;
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 0]);
