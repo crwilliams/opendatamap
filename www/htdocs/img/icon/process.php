@@ -26,12 +26,26 @@ $cols['Culture-and-Entertainment'] = 'c259b5';
 $cols['Health'] = 'f34648';
 $cols['Sports'] = 'ff8a22';
 $cols['Education'] = 'ffc11f';
+$cols['fhrs_0_en-gb'] = 'c03638';
+$cols['fhrs_1_en-gb'] = 'f34648';
+$cols['fhrs_2_en-gb'] = 'ff8a22';
+$cols['fhrs_3_en-gb'] = 'ffc11f';
+$cols['fhrs_4_en-gb'] = '66c547';
+$cols['fhrs_5_en-gb'] = '128e4d';
 
 error_reporting(0);
 processFile($argv[1], $argv[2]);
 
 function processFile($category, $file)
 {
+	if($category == 'fhrs')
+	{
+		for($rating = 0; $rating <= 5; $rating++)
+		{
+			processFile('fhrs_'.$rating.'_en-gb', $file);
+		}
+		return;
+	}
 	echo "Processing $file in category $category.\n";
 	global $cats;
 	global $cols;

@@ -21,7 +21,7 @@ class FoodDataSource extends DataSource
 			$point['label'] = (string)str_replace('"', '', $establishment->BusinessName);
 			$point['lat'] = (string)$establishment->Geocode->Latitude;
 			$point['long'] = (string)$establishment->Geocode->Longitude;
-			$point['icon'] = static::getIcon((string)$establishment->BusinessType);
+			$point['icon'] = static::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey);
 			if($point['lat'] == '' || $point['long'] == '') continue;
 			$points[] = $point;
 		}
@@ -65,7 +65,7 @@ class FoodDataSource extends DataSource
 			{
 				if($establishment->LocalAuthorityBusinessID == $id)
 				{
-					echo "<h2><img class='icon' src='".self::getIcon((string)$establishment->BusinessType)."' />".$establishment->BusinessName."<h2>";
+					echo "<h2><img class='icon' src='".self::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey)."' />".$establishment->BusinessName."<h2>";
 					echo $establishment->AddressLine1.'<br/>';
 					echo $establishment->AddressLine2.'<br/>';
 					echo $establishment->AddressLine3.'<br/>';
@@ -91,7 +91,7 @@ class FoodDataSource extends DataSource
 			$point['pos'] = 'http://fhrs.example.com/'.$establishment->LocalAuthorityBusinessID;
 			$point['ratingkey'] = (string)$establishment->RatingKey;
 			$point['poslabel'] = (string)str_replace('"', '', $establishment->BusinessName);
-			$point['icon'] = static::getIcon((string)$establishment->BusinessType);
+			$point['icon'] = static::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey);
 			if(!preg_match('/'.$q.'/i', $point['poslabel']))
 				continue;
 			$points[] = $point;
@@ -99,42 +99,43 @@ class FoodDataSource extends DataSource
 		return $points;
 	}
 
-	static function getIcon($type)
+	static function getIcon($type, $ratingkey)
 	{
+		$icon = 'http://opendatamap.ecs.soton.ac.uk/dev/colin/img/icon/'.strtolower($ratingkey);
 		switch($type)
 		{
 			case 'Restaurant/Cafe/Canteen':
-				return self::$iconpath.'Restaurants-and-Hotels/restaurant.png';
+				return $icon.'/restaurant.png';
 			case 'Hotel/bed & breakfast/guest house':
-				return self::$iconpath.'Restaurants-and-Hotels/lodging_0star.png';
+				return $icon.'/lodging_0star.png';
 			case 'Retailers - supermarkets/hypermarkets':
 			case 'Supermarket/Hypermarket':
-				return self::$iconpath.'Stores/supermarket.png';
+				return $icon.'/supermarket.png';
 			case 'Hospitals/Childcare/Caring Premises':
-				return self::$iconpath.'Education/family.png';
+				return $icon.'/family.png';
 			case 'Other catering premises':
-				return self::$iconpath.'Restaurants-and-Hotels/teahouse.png';
+				return $icon.'/teahouse.png';
 			case 'Distributors/Transporters':
-				return self::$iconpath.'Transportation/truck3.png';
+				return $icon.'/truck3.png';
 			case 'Pub/bar/nightclub':
-				return self::$iconpath.'Restaurants-and-Hotels/bar_coktail.png';
+				return $icon.'/bar_coktail.png';
 			case 'Takeaway/sandwich shop':
-				return self::$iconpath.'Restaurants-and-Hotels/takeaway.png';
+				return $icon.'/takeaway.png';
 			case 'School/college/university':
-				return self::$iconpath.'Education/school.png';
+				return $icon.'/school.png';
 			case 'Mobile caterer':
-				return self::$iconpath.'Restaurants-and-Hotels/foodtruck.png';
+				return $icon.'/foodtruck.png';
 			case 'Manufacturers/packers':
-				return self::$iconpath.'Industry/factory.png';
+				return $icon.'/factory.png';
 			case 'Importers/Exporters':
-				return self::$iconpath.'Transportation/truck3.png';
-				return self::$iconpath.'Industry/boatcrane.png';
+				return $icon.'/truck3.png';
+				return $icon.'/boatcrane.png';
 			case 'Farmers/growers':
-				return self::$iconpath.'Nature/farm-2.png';
+				return $icon.'/farm-2.png';
 			case 'Retailers - other':
-				return self::$iconpath.'Stores/conveniencestore.png';
+				return $icon.'/conveniencestore.png';
 			default:
-				return self::$iconpath.'Nature/fruits.png';
+				return $icon.'/fruits.png';
 		}
 	}
 }
