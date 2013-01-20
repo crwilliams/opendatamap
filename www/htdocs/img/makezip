@@ -1,2 +1,2 @@
 rm ../iconset/opendatamap-iconset.zip
-zip ../iconset/opendatamap-iconset.zip icon/*/*.png icon/README -x icon/\*/lattes.png -x icon/fhrs\*
+zip ../iconset/opendatamap-iconset.zip icon/*/*.png icon/README -x icon/\*/lattes.png

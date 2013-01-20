@@ -13,26 +13,26 @@ $cols['Culture-and-Entertainment'] = 'c259b5';
 $cols['Health'] = 'f34648';
 $cols['Sports'] = 'ff8a22';
 $cols['Education'] = 'ffc11f';
-$cols['fhrs_0_en-gb'] = 'c03638';
-$cols['fhrs_1_en-gb'] = 'f34648';
-$cols['fhrs_2_en-gb'] = 'ff8a22';
-$cols['fhrs_3_en-gb'] = 'ffc11f';
-$cols['fhrs_4_en-gb'] = '66c547';
-$cols['fhrs_5_en-gb'] = '128e4d';
 
 error_reporting(0);
-processFile($argv[1], $argv[2]);
-
-function processFile($category, $file)
+if($argc == 3)
 {
-	if($category == 'fhrs')
+	processFile($argv[1], $argv[2]);
+}
+elseif($argc == 2)
+{
+	include 'modules/'.$argv[1].'/icons.php';
+	foreach($icons as $category => $caticons)
 	{
-		for($rating = 0; $rating <= 5; $rating++)
+		foreach($caticons as $icon)
 		{
-			processFile('fhrs_'.$rating.'_en-gb', $file);
+			processFile($category, $icon, '../../modules/'.$argv[1].'/icons/');
 		}
-		return;
 	}
+}
+
+function processFile($category, $file, $outputdir="")
+{
 	echo "Processing $file in category $category.\n";
 	global $cols;
 	global $argv;
@@ -198,17 +198,17 @@ function processFile($category, $file)
 	{
 		if($wide)
 		{
-			imagepng($gs_im, $category.'/ntw.blank.png');
+			imagepng($gs_im, $outputdir.$category.'/ntw.blank.png');
 		}
 		else
 		{
-			imagepng($gs_im, $category.'/nt.blank.png');
+			imagepng($gs_im, $outputdir.$category.'/nt.blank.png');
 		}
 		exit;
 	}
 	else
 	{
-		imagepng($gs_im, $category.'/blank.png');
+		imagepng($gs_im, $outputdir.$category.'/blank.png');
 	}
 	
 	$pl_im = imagecreatetruecolor(24, 24);
@@ -245,8 +245,8 @@ function processFile($category, $file)
 	}
 	
 	imagesavealpha($pl_im, true);
-	imagepng($pl_im, 'plain/'.$file);
-	imagepng($gs_im, $category.'/'.$file);
+	imagepng($pl_im, $outputdir.'plain/'.$file);
+	imagepng($gs_im, $outputdir.$category.'/'.$file);
 }
 
 function getAverageColor($im, $x, $y)
