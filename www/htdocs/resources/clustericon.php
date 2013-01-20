@@ -19,6 +19,7 @@ function catsort($a, $b)
 {
 	$cats['Special'] = 1;
 	$cats['Education'] = 2;
+	$cats['Health'] = 3;
 	if(array_key_exists($a, $cats) && !array_key_exists($b, $cats))
 	{
 		return -1;
