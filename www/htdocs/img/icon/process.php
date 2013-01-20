@@ -15,7 +15,11 @@ $cols['Sports'] = 'ff8a22';
 $cols['Education'] = 'ffc11f';
 
 error_reporting(0);
-if($argc == 3)
+if($argc == 4)
+{
+	processFile($argv[1], $argv[2], $argv[3]);
+}
+elseif($argc == 3)
 {
 	processFile($argv[1], $argv[2]);
 }
@@ -26,26 +30,29 @@ elseif($argc == 2)
 	{
 		foreach($caticons as $icon)
 		{
-			processFile($category, $icon, '../../modules/'.$argv[1].'/icons/');
+			processFile($category, $icon, null, '../../modules/'.$argv[1].'/icons/');
 		}
+	}
+	foreach(array_keys($icons) as $category)
+	{
+		processFile($category, 'library.png', 'ntw', '../../modules/'.$argv[1].'/icons/');
 	}
 }
 
-function processFile($category, $file, $outputdir="")
+function processFile($category, $file, $nt=null, $outputdir="")
 {
 	echo "Processing $file in category $category.\n";
 	global $cols;
-	global $argv;
 	
 	$no_tail = false;
 	$wide = false;
 	
 	// Process command line arguments.
-	if($argv[3] == 'nt')
+	if($nt == 'nt')
 	{
 		$no_tail = true;
 	}
-	if($argv[3] == 'ntw')
+	if($nt == 'ntw')
 	{
 		$no_tail = true;
 		$wide = true;
@@ -53,7 +60,7 @@ function processFile($category, $file, $outputdir="")
 	
 	// Set base colour based on category.
 	$color = $cols[$category];
-	@mkdir($category.'/');
+	@mkdir($outputdir.$category.'/');
 	
 	$basecolorarr['r'] = hexdec(substr($color, 0, 2));
 	$basecolorarr['g'] = hexdec(substr($color, 2, 2));
@@ -204,7 +211,7 @@ function processFile($category, $file, $outputdir="")
 		{
 			imagepng($gs_im, $outputdir.$category.'/nt.blank.png');
 		}
-		exit;
+		return;
 	}
 	else
 	{
