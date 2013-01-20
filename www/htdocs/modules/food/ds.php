@@ -1,12 +1,12 @@
 <?
 class FoodDataSource extends DataSource
 {
-	static function getDataFile()
+	static function getDataFile($lang='en-gb')
 	{
 		global $config;
 		if(preg_match('/^[A-Za-z_-]+$/', $config['datafile']))
 		{
-			return simplexml_load_file('/home/opendatamap/FHRS/'.$config['datafile'].'.xml');
+			return simplexml_load_file('/home/opendatamap/FHRS/'.$lang.'/'.$config['datafile'].'.xml');
 		}
 	}
 
@@ -56,29 +56,46 @@ class FoodDataSource extends DataSource
 	}
 
 	static function processURI($uri){
+		global $config;
 		if(substr($uri, 0, strlen('http://fhrs.example.com/')) == 'http://fhrs.example.com/')
 		{
 			$id = substr($uri, strlen('http://fhrs.example.com/'));
-			$data = static::getDataFile();
-			$points = array();
-			foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
+			$result = false;
+			foreach($config['langs'] as $lang)
 			{
-				if($establishment->LocalAuthorityBusinessID == $id)
+				$data = static::getDataFile($lang);
+				$points = array();
+				foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 				{
-					echo "<h2><img class='icon' src='".self::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey)."' />".$establishment->BusinessName."<h2>";
-					echo $establishment->AddressLine1.'<br/>';
-					echo $establishment->AddressLine2.'<br/>';
-					echo $establishment->AddressLine3.'<br/>';
-					echo $establishment->AddressLine4.'<br/>';
-					echo $establishment->PostCode.'<br/><br/>';
-					echo "<a href='http://ratings.food.gov.uk/business/".$establishment->FHRSID."'><img src='".static::getRatingImage($establishment->RatingKey)."' alt='Food hygiene rating: ".$establishment->RatingValue."' title='Food hygiene rating: ".$establishment->RatingValue."' /></a>";
-					echo '<br /><br /><span style="font-size: 0.8em">as of '.$establishment->RatingDate.'</span><br/>';
-
-					return true;
+					if($establishment->LocalAuthorityBusinessID == $id)
+					{
+						echo "<div style='float:left'>";
+						echo "<h2><img class='icon' src='".self::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey)."' />".$establishment->BusinessName."<h2>";
+						echo $establishment->AddressLine1.'<br/>';
+						echo $establishment->AddressLine2.'<br/>';
+						echo $establishment->AddressLine3.'<br/>';
+						echo $establishment->AddressLine4.'<br/>';
+						echo $establishment->PostCode.'<br/><br/>';
+						echo "<a href='http://ratings.food.gov.uk/business/".$establishment->FHRSID."'><img src='".static::getRatingImage($establishment->RatingKey)."' alt='".static::getImageTitle($establishment->RatingValue, $lang)."' title='".static::getImageTitle($establishment->RatingValue, $lang)."' /></a>";
+						echo '<br /><br /><span style="font-size: 0.8em">as of '.$establishment->RatingDate.'</span><br/>';
+						echo "</div>";
+	
+						$result = true;
+						break;
+					}
 				}
 			}
-			return false;
+			return $result;
 		}
+	}
+
+	static function getImageTitle($value, $lang)
+	{
+		if($lang == 'cy-gb')
+		{
+			return "Sgôr hylendid bwyd: ".$value;
+		}
+		return "Food hygiene rating: ".$value;
 	}
 
 	static function getRatingImage($key)
@@ -114,7 +131,7 @@ class FoodDataSource extends DataSource
 
 	static function getIcon($type, $ratingkey)
 	{
-		$icon = 'http://opendatamap.ecs.soton.ac.uk/modules/food/icons/'.strtolower($ratingkey);
+		$icon = 'http://opendatamap.ecs.soton.ac.uk/modules/food/icons/'.str_replace('cy-gb', 'en-gb', strtolower($ratingkey));
 		switch($type)
 		{
 			case 'Restaurant/Cafe/Canteen':

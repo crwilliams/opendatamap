@@ -36,9 +36,11 @@ $scotland = array(
 'West_Dunbartonshire',
 );
 
-foreach(glob('/home/opendatamap/FHRS/*.xml') as $version)
+foreach(glob('/home/opendatamap/FHRS/*/*.xml') as $version)
 {
 	$version = str_replace(array('/home/opendatamap/FHRS/', '.xml'), '', $version);
+	list($lang, $version) = explode('/', $version, 2);
+	$config['versions'][$version]['langs'][] = $lang;
 	if(in_array($version, $scotland))
 	{
 		$config['versions'][$version]['mode'] = 'FHIS';
@@ -74,7 +76,23 @@ else
 {
 	for($i = 0; $i <= 5; $i++)
 	{
-		$config['categories']['food/fhrs_'.$i.'_en-gb'] = 'Food Hygiene Rating: '.$i;
+		if(count($config['langs']) > 1)
+		{
+			foreach($config['langs'] as $lang)
+			{
+				$config['categories']['food/fhrs_'.$i.'_en-gb'][$lang] = t('Food Hygiene Rating', $lang).': '.$i;
+			}
+			$config['categories']['food/fhrs_'.$i.'_en-gb'] = '<div style="float:left; position:relative; top:-2px; width:90%; font-size: 0.7em;">'.implode('<br />', $config['categories']['food/fhrs_'.$i.'_en-gb']).'</div>';
+		}
 	}
+}
+
+function t($str, $lang)
+{
+	if($str == 'Food Hygiene Rating' && $lang == 'cy-gb')
+	{
+		return 'Sgôr Hylendid Bwyd';
+	}
+	return $str;
 }
 ?>
