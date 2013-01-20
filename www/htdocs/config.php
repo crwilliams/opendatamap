@@ -67,7 +67,7 @@ function getAllMatches($q, $cats)
 
 	foreach($config['datasource'] as $ds)
 	{
-		$dsclass = ucwords($ds).'DataSource';
+		$dsclass = str_replace(' ', '', ucwords(str_replace('/', ' ', $ds))).'DataSource';
 		list($npos, $nlabel, $ntype, $nurl, $nicon) = call_user_func(array($dsclass, 'getEntries'), $q, $cats);
 		foreach($npos as $k => $v)
 			$pos[$k] += $v;
@@ -239,6 +239,10 @@ function getEnabledCategories()
 
 foreach($config['datasource'] as $ds)
 {
-	include_once 'ds/'.$ds.'.php';
+	if(strpos('/', $ds) === false)
+	{
+		$ds .= '/ds';
+	}
+	include_once 'modules/'.$ds.'.php';
 }
 ?>

@@ -1,7 +1,7 @@
 <?
 include_once "inc/sparqllib.php";
 
-class SouthamptonopendayDataSource extends DataSource
+class OpendayDataSource extends DataSource
 {
 	static $endpoint = "http://sparql.data.southampton.ac.uk";
 	static $dates = array('2012/07/06', '2012/07/07');

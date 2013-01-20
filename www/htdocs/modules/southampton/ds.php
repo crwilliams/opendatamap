@@ -2,7 +2,7 @@
 include_once "inc/sparqllib.php";
 include_once('/home/opendatamap/mysql-pdo.inc.php');
 
-class SouthamptoncachedDataSource extends DataSource
+class SouthamptonDataSource extends DataSource
 {
 	static $endpoint = 'http://sparql.data.southampton.ac.uk';
 	static $handlers = array(

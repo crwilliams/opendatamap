@@ -1,5 +1,5 @@
 <?
-include_once('ds/schools.php');
+include_once('modules/schools/ds.php');
 
 class IsleOfWightSchoolsDataSource extends SchoolsDataSource
 {

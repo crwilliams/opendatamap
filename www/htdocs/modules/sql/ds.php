@@ -1,7 +1,7 @@
 <?
 mysql_connect('localhost', 'user', 'pass');
 
-class SqldemoDataSource extends DataSource
+class SqlDataSource extends DataSource
 {
 	static function getAll()
 	{
