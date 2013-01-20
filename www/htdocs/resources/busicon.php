@@ -22,7 +22,12 @@ if(!file_exists($filename))
 	{
 		if(!isset($color[$r]))
 			continue;
-		imagefilledrectangle($oimg, 26, 1+($i*6), 30, 5+($i*6), $color[$r]);
+		$colors[] = $color[$r];
+	}
+	$colors = array_unique($colors);
+	foreach($colors as $c)
+	{
+		imagefilledrectangle($oimg, 26, 1+($i*6), 30, 5+($i*6), $c);
 		$i++;
 	}
 	imagesavealpha($oimg,true);
