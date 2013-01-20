@@ -32,6 +32,8 @@ var uri;
 
 var contcount = 0;
 
+var bb;
+
 // Subject functions.
 
 var refreshSubjectChoice = function () {
@@ -576,6 +578,9 @@ var cont = function () {
 		hashstring = '';
 	}
 	searchResults_updateFunc();
+	if(bb !== undefined) {
+		map.fitBounds(bb);
+	}
 	if (uri !== '') { zoomTo(uri, true, true); }
 	if (zoomuri !== '')
 	{
@@ -703,8 +708,11 @@ var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion,
 	clickuri = pclickuri;
 	uri = puri;
 	version = pversion;
+        if(zoom < 0) {
+		bb = new google.maps.LatLngBounds();
+	}
 	map = new google.maps.Map($('#map_canvas').get(0), {
-		zoom: zoom,
+		zoom: Math.abs(zoom),
 		center: new google.maps.LatLng(lat, long),
 		mapTypeControlOptions: {
 			mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
@@ -783,8 +791,9 @@ var initMarkers = function () {
 			var lon = markpt[2];
 			var poslabel = markpt[3];
 			var icon = markpt[4];
+			var ll = new google.maps.LatLng(lat, lon);
 			markers[pos] = new google.maps.Marker({
-				position: new google.maps.LatLng(lat, lon), 
+				position: ll, 
 				title: poslabel.replace('\\\'', '\''),
 				map: window.map,
 				icon: icon,
@@ -794,6 +803,9 @@ var initMarkers = function () {
 				'<h2 id="title"><img class="icon" style="width:20px;" src="' + icon + '" />' + poslabel + '</h2>' +
 				'<a class="odl" href="' + pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
 			});
+			if(bb !== undefined) {
+				bb.extend(ll);
+			}
 		});
 		cont();
 	},'json');
