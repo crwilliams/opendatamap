@@ -9,6 +9,7 @@ $config['default zoom'] = -6;
 $config['datasource'] = array('food');
 $config['enabled'] = array('search', 'geobutton', 'toggleicons');
 $config['categories'] = array();
+$config['selection_required'] = true;
 for($i = 0; $i <= 5; $i++)
 {
 	$config['categories']['fhrs_'.$i.'_en-gb'] = 'Food Hygiene Rating: '.$i;
