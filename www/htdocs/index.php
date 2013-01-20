@@ -129,8 +129,17 @@ $clickuri = $_GET['clickuri'];
 <?
 foreach($config['categories'] as $catid => $catname)
 {
+	$catidparts = explode('/', $catid, 2);
+	if(count($catidparts) == 2)
+	{
+		$imgpath = 'modules/'.$catidparts[0].'/icons/'.$catidparts[1];
+	}
+	else
+	{
+		$imgpath = 'img/icon/'.$catid;
+	}
 ?>
-			<div title='<?= $catname ?>' class='togglebutton' style='background-image:url(img/icon/<?= $catid ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')">
+			<div title='<?= $catname ?>' class='togglebutton' style='background-image:url(<?= $imgpath ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')">
 				<span class='label'><?= str_replace(' and ', ' <span style=\'font-size:0.8em\'>&amp;</span> ', $catname) ?></span>
 				<input class='togglebox' style='cursor:pointer' type='checkbox' name='<?= $catname ?>' id='<?= $catid ?>' onclick="toggle('<?= $catid ?>');" <?= isset($config['selected'][$catid]) ? 'checked=\'checked\'' : '' ?>/>
 			</div>
