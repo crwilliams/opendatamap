@@ -53,6 +53,12 @@ function show($id) {
 	}
 }
 
+function tidyCatName($name) {
+	$name = str_replace('<br />', ' / ', $name);
+	$name = preg_replace('/<[^>]*>/', '', $name);
+	return $name;
+}
+
 function getAllMatches($q, $cats)
 {
 	global $config;
