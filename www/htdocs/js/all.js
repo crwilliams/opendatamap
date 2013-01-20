@@ -579,7 +579,31 @@ var cont = function () {
 	}
 	searchResults_updateFunc();
 	if(bb !== undefined) {
-		map.fitBounds(bb);
+		var llnelat = new Array();
+		var llnelng = new Array();
+		var llswlat = new Array();
+		var llswlng = new Array();
+		for(var i = 0; i < 100; i++)
+		{
+			if(!bb[i].isEmpty())
+			{
+				llnelat.push(bb[i].getNorthEast().lat());
+				llnelng.push(bb[i].getNorthEast().lng());
+				llswlat.push(bb[i].getSouthWest().lat());
+				llswlng.push(bb[i].getSouthWest().lng());
+			}
+		}
+		llnelat.sort();
+		llnelng.sort();
+		llswlat.sort();
+		llswlng.sort();
+		llnelat.reverse();
+		llnelng.reverse();
+		console.log(llnelat);
+		console.log(llnelng);
+		console.log(llswlat);
+		console.log(llswlng);
+		map.fitBounds(new google.maps.LatLngBounds(new google.maps.LatLng(llswlat[10], llswlng[10]), new google.maps.LatLng(llnelat[10], llnelng[10])));
 	}
 	if (uri !== '') { zoomTo(uri, true, true); }
 	if (zoomuri !== '')
@@ -709,7 +733,11 @@ var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion,
 	uri = puri;
 	version = pversion;
         if(zoom < 0) {
-		bb = new google.maps.LatLngBounds();
+		bb = new Array();
+		for (var i = 0; i < 100; i++)
+		{
+			bb[i] = new google.maps.LatLngBounds();
+		}
 	}
 	map = new google.maps.Map($('#map_canvas').get(0), {
 		zoom: Math.abs(zoom),
@@ -804,7 +832,7 @@ var initMarkers = function () {
 				'<a class="odl" href="' + pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
 			});
 			if(bb !== undefined) {
-				bb.extend(ll);
+				bb[Math.floor(Math.random()*100)].extend(ll);
 			}
 		});
 		cont();
