@@ -1,9 +1,10 @@
 <?
 include_once "inc/sparqllib.php";
 
-class SouthamptonDataSource extends DataSource
+class SouthamptonDataSource
 {
 	static $endpoint = 'http://sparql.data.southampton.ac.uk';
+	static $iconpath = 'http://data.southampton.ac.uk/map-icons/';
 
 	static function getAll()
 	{

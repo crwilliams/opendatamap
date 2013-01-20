@@ -1,6 +1,5 @@
 <?
-$_GET['v'] = 'cache';
-include 'config.php';
+include 'import.php';
 error_reporting(E_ERROR);
 include '/home/opendatamap/mysql-pdo.inc.php';
 
