@@ -6,4 +6,5 @@ $config['default lat'] = 50.9355;
 $config['default long'] = -1.39595;
 $config['default zoom'] = 5;
 $config['datasource'] = array('sqldemo');
+$config['hidden'] = true;
 ?>

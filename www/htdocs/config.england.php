@@ -8,4 +8,5 @@ $config['default zoom'] = 6;
 //$config['datasource'] = array('southampton', 'oxford', 'lincoln', 'cambridge', 'postcode', 'uk');
 $config['datasource'] = array('england', 'postcode');
 $config['enabled'] = array('search', 'geobutton');
+$config['hidden'] = true;
 ?>

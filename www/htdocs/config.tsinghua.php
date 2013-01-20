@@ -14,4 +14,5 @@ if($versionparts[1] == 'embed')
 	$config['Site title'] = "embed";
 	$config['enabled'] = array();
 }
+$config['hidden'] = true;
 ?>
