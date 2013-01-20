@@ -20,17 +20,27 @@ foreach(glob('modules/*/config.php') as $cfg_file)
 	}
 	$path = explode("/", $cfg_file);
 	$path = $path[1];
-	if($path == 'local')
+	if($path == 'default')
 	{
 		$path = '';
 	}
 	$maps[$path] = $config;
+	if(is_link(dirname($cfg_file)))
+	{
+		$dst = readlink(dirname($cfg_file));
+		$dst = explode("/", $dst);
+		$symlinks[] = $dst[0];
+	}
 }
 ksort($maps);
 
 echo "<ul>";
 foreach($maps as $path => $config)
 {
+	if(in_array($path, $symlinks))
+	{
+		continue;
+	}
 	echo "<li>";
 	echo "<a href='".format($path)."'>".$config['Site title']."</a>";
 	if(isset($config['versions']))
