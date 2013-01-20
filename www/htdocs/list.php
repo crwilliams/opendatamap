@@ -10,7 +10,7 @@
 <h2>list of available maps</h2>
 <? include_once 'googleanalytics.php'; ?>
 <?php
-foreach(glob('config.*.php') as $cfg_file)
+foreach(glob('modules/*/config.php') as $cfg_file)
 {
 	$config = array();
 	include $cfg_file;
@@ -18,7 +18,7 @@ foreach(glob('config.*.php') as $cfg_file)
 	{
 		continue;
 	}
-	$path = explode(".", $cfg_file);
+	$path = explode("/", $cfg_file);
 	$path = $path[1];
 	if($path == 'local')
 	{
