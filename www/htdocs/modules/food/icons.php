@@ -9,8 +9,8 @@ $cols['fhrs_4_en-gb'] = '66c547';
 $cols['fhrs_5_en-gb'] = '128e4d';
 
 $cols['fhis_improvement_required_en-gb'] = $cols['fhrs_1_en-gb'];
-$cols['fhis_pass_en-gb'] = $cols['fhrs_4_en-gb'];
-$cols['fhis_pass_and_eat_safe_en-gb'] = $cols['fhrs_5_en-gb'];
+$cols['fhis_pass_en-gb'] = '3875d7';
+$cols['fhis_pass_and_eat_safe_en-gb'] = '5ec8bd';
 
 foreach(array_keys($cols) as $code)
 {
