@@ -84,6 +84,10 @@ else
 			}
 			$config['categories']['food/fhrs_'.$i.'_en-gb'] = '<div style="float:left; position:relative; top:-2px; width:90%; font-size: 0.7em;">'.implode('<br />', $config['categories']['food/fhrs_'.$i.'_en-gb']).'</div>';
 		}
+		else
+		{
+			$config['categories']['food/fhrs_'.$i.'_en-gb'] = t('Food Hygiene Rating', $lang).': '.$i;
+		}
 	}
 }
 
