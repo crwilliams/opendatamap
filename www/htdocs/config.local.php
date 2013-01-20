@@ -9,16 +9,16 @@ $config['datasource'] = array('southamptoncached', 'postcode', 'sucu', /*'oxford
 $config['prefix'] = "http://id.southampton.ac.uk/";
 
 $config['versions']['embed']['Site title'] = "embed";
-$config['versions']['embed']['enabled'] = array();
+$config['versions']['embed']['enabled'] = array('-title');
 $config['versions']['embed']['hidden'] = true;
 
 $config['versions']['catering']['Site title'] = "Catering map";
-$config['versions']['catering']['enabled'] = array('search', 'geobutton');
+$config['versions']['catering']['enabled'] = array('search', 'geobutton', '-title');
 $config['versions']['catering']['datasource'] = array('southamptoncached', 'postcode');
 $config['versions']['catering']['unused-datasets'] = array('http://id.southampton.ac.uk/dataset/bus-routes', 'http://id.southampton.ac.uk/dataset/bus-stops', 'http://id.southampton.ac.uk/dataset/room-features', 'http://id.southampton.ac.uk/dataset/wifi', 'http://data.ordnancesurvey.co.uk');
 
 $config['versions']['isolutions-wifi']['Site title'] = "iSolutions WiFi map";
-$config['versions']['isolutions-wifi']['enabled'] = array('geobutton');
+$config['versions']['isolutions-wifi']['enabled'] = array('geobutton', '-title');
 $config['versions']['isolutions-wifi']['datasource'] = array('southamptoncached');
 $config['versions']['isolutions-wifi']['unused-datasets'] = array('http://id.southampton.ac.uk/dataset/amenities', 'http://id.southampton.ac.uk/dataset/bus-routes', 'http://id.southampton.ac.uk/dataset/bus-stops', 'http://id.southampton.ac.uk/dataset/room-features', 'http://id.southampton.ac.uk/dataset/catering', 'http://data.ordnancesurvey.co.uk');
 

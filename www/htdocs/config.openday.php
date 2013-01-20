@@ -36,11 +36,11 @@ $config['datasource'] = array('southamptonopenday', 'postcode', /*'oxford', 'cam
 //	$q = $versionparts[2].'/'.$;
 if($versionparts[1] == 'iframe')
 {
-	$config['enabled'] = array('opendayhidden', 'bookmarks');
+	$config['enabled'] = array('opendayhidden', 'bookmarks', '-title');
 }
 else
 {
-	$config['enabled'] = array('openday', 'bookmarks'/*, 'search'*/);
+	$config['enabled'] = array('openday', 'bookmarks', '-title'/*, 'search'*/);
 	$config['map style'] = 'left:300px;';
 }
 ?>
