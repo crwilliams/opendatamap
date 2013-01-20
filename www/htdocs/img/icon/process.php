@@ -1,18 +1,5 @@
 <?
 
-$cats['128e4d'] = 'Nature';
-$cats['265cb2'] = 'Industry';
-$cats['3875d7'] = 'Offices';
-$cats['5ec8bd'] = 'Stores';
-$cats['66c547'] = 'Tourism';
-$cats['8c4eb8'] = 'Restaurants-and-Hotels';
-$cats['9d7050'] = 'Transportation';
-$cats['a8a8a8'] = 'Media';
-$cats['c03638'] = 'Events';
-$cats['c259b5'] = 'Culture-and-Entertainment';
-$cats['f34648'] = 'Health'; //Health-and-Education
-$cats['ff8a22'] = 'Sports';
-$cats['ffc11f'] = 'Education'; //Friends-and-Family
 $cols['Nature'] = '128e4d';
 $cols['Industry'] = '265cb2';
 $cols['Offices'] = '3875d7';
@@ -47,7 +34,6 @@ function processFile($category, $file)
 		return;
 	}
 	echo "Processing $file in category $category.\n";
-	global $cats;
 	global $cols;
 	global $argv;
 	
@@ -94,40 +80,14 @@ function processFile($category, $file)
 	$dst_im = imagecreate(24, 24);
 	imagecopy($dst_im, $im, 0, 0, 4, 14, 24, 24);
 	
-	/*
-	//$gs = true;
-	$colors = array();
-	
-	for($i = 2; $i <= 22; $i++)
-	{
-		$colors[(string)getAverageColor($dst_im, 0, $i)]++;
-		$colors[(string)getAverageColor($dst_im, 23, $i)]++;
-		$colors[(string)getAverageColor($dst_im, $i, 0)]++;
-		$colors[(string)getAverageColor($dst_im, $i, 23)]++;
-	}
-	
-	arsort($colors);
-	//print_r(array_keys($colors));
-	
-	$color = 1 - array_shift(array_keys($colors));
-	//echo $color."\n";
-	*/
-
 	$color=0;
 	
 	for($y = 0; $y < 24; $y++)
 	{
 		for($x = 0; $x < 24; $x++)
 		{
-			//if($gs)
-			//{
-				$sat[$x][$y] = getAverageColor($dst_im, $x, $y);
-				$color = max($color, $sat[$x][$y]);
-			//}
-			//else
-			//{
-			//	$sat[$x][$y] = getColor($dst_im, $x, $y);
-			//}
+			$sat[$x][$y] = getAverageColor($dst_im, $x, $y);
+			$color = max($color, $sat[$x][$y]);
 		}
 	}
 	
@@ -300,7 +260,6 @@ function getAverageColor($im, $x, $y)
 	{
 		return 0;
 	}
-	//echo ($color['alpha'])."\n";
 	
 	return 1 - ((($color['red'] + $color['green'] + $color['blue']) / (3 * 255)));
 }
