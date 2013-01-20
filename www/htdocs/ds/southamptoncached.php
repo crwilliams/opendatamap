@@ -22,9 +22,9 @@ class SouthamptoncachedDataSource extends DataSource
 		$url = array();
 		$icon = array();
 		
+		self::_createEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createBuildingEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		self::createSiteEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		self::_createEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		
 		return array($pos, $label, $type, $url, $icon);
 	}
