@@ -112,7 +112,7 @@ var zoomTo = function (uri, click, pan) {
 		}
 		*/
 		_gaq.push(['_trackEvent', 'JumpTo', 'Postcode', postcodeData[0]]);
-		if (pan) { map.panTo(latlng); }
+		if (pan) { map.panTo(latlng); map.setZoom(15); }
 	} else if (polygons[uri] !== undefined) {
 		if (polygons[uri].length !== undefined) {
 			_gaq.push(['_trackEvent', 'JumpTo', 'Polygon', uri]);
