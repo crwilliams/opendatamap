@@ -23,7 +23,7 @@ $config['categories']['Media'] = 'Events';
 
 error_reporting(0);
 $version = $_GET['v'];
-$versionparts = explode('_', $version);
+$versionparts = explode('_', $version, 2);
 
 @include 'config.local.php';
 
@@ -87,7 +87,7 @@ function getAllMatches($q, $cats)
 	}
 	asort($label);
 	if(count($label) > $labellimit)
-		$label = array_slice($label, 0,$labellimit);
+		$label = array_slice($label, 0, $labellimit);
 
 	return array($pos, $label, $type, $url, $icon);
 }
