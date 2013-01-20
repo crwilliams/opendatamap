@@ -1,6 +1,6 @@
 <?
 error_reporting(E_ALL);
-$config['Site title'] = "Food Hygiene Open Data Map";
+$config['Site title'] = "Food Hygiene Map";
 $config['Site keywords'] = "Food Hygiene,map,interactive";
 $config['Site description'] = "Interactive map showing food establishments and their hygiene ratings";
 $config['default lat'] = 50.92;
