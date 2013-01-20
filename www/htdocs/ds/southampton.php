@@ -414,7 +414,10 @@ class SouthamptonDataSource extends DataSource
 	private static function _getAllEventOfferings()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
+		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
+		PREFIX org: <http://www.w3.org/ns/org#>
 		
 		SELECT DISTINCT ?poslabel ?pos ?ts ?te WHERE {
 		  ?pos a <http://purl.org/NET/c4dm/event.owl#Event> .
@@ -422,6 +425,21 @@ class SouthamptonDataSource extends DataSource
 		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
 		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
 		  ?pos rdfs:label ?poslabel .
+                  ?pos <http://purl.org/NET/c4dm/event.owl#place> ?p .
+		  OPTIONAL { ?p spacerel:within ?b .
+		             ?b geo:lat ?lat . 
+		             ?b geo:long ?lng .
+		             ?b a <http://vocab.deri.ie/rooms#Building> .
+		           }
+		  OPTIONAL { ?p spacerel:within ?s .
+		             ?s geo:lat ?lat . 
+		             ?s geo:long ?lng .
+		             ?s a org:Site .
+		           }
+		  OPTIONAL { ?p geo:lat ?lat .
+		             ?p geo:long ?lng .
+		           }
+		  FILTER ( BOUND(?lng) && BOUND(?lat) )
 		} ORDER BY ?poslabel
 		");
 		$points = array();
