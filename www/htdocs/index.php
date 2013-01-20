@@ -57,7 +57,15 @@ $clickuri = $_GET['clickuri'];
 			<?php include 'resources/opendaysubjects.php' ?>
 		</div>
 <?php } ?>
-		<div id="map_canvas" style='<?php echo $config['map style'] ?>'></div>
+<?php if(!has('-title')) { ?>
+		<div style='height:2em; padding:0.5em;'>
+			<?php echo $config['Site title'] ?>
+			<span style='font-size: 0.5em'>
+				<a href='list'>Select different map</a>
+			</span>
+		</div>
+<?php } ?>
+		<div id="map_canvas" style='<?php echo $config['map style'] ?><?php if(!has('-title')) { echo " top:2em;"; } ?>'></div>
 		<img id="geobutton" <?php show('geobutton') ?> src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
 		<div class="toggleicons" id="toggleicons" <?php show('toggleicons') ?>>
 <?
