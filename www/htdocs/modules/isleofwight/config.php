@@ -15,5 +15,6 @@ $config['categories']['Tourism'] = 'Tourism and Religion';
 $config['selected']['Education'] = true;
 $config['selected']['Offices'] = true;
 $config['selected']['Tourism'] = true;
+$config['hidden'] = true;
 
 ?>
