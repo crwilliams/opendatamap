@@ -245,7 +245,7 @@ function getEnabledCategories()
 
 foreach($config['datasource'] as $ds)
 {
-	if(strpos('/', $ds) === false)
+	if(strpos($ds, '/') === false)
 	{
 		$ds .= '/ds';
 	}
