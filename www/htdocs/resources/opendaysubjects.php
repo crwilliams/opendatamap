@@ -1,5 +1,5 @@
-<div id='day'><?
-foreach(SouthamptonopendayDataSource::$dates as $d)
+<div id='day'><?php
+foreach(OpendayDataSource::$dates as $d)
 {
 	$d = strtotime($d);
 	echo "<a title='Show ".date('l', $d)."&apos;s events (".date('jS F Y', $d).")' id='link_".date('Y-m-d', $d)."' onclick=\"updateHash('day', '".strtolower(date('l', $d))."')\">".date('l', $d)."</a>";
@@ -8,7 +8,7 @@ foreach(SouthamptonopendayDataSource::$dates as $d)
 <div id='selectedsubject'>Choose a subject:</div>
 <div id='subjects'>
 <ul style='overflow:scroll; position:absolute; top:100px; bottom:0px; width:300px;'>
-<?
+<?php
 function sortinstances($a, $b)
 {
 	$astart = '24:00';
@@ -50,7 +50,7 @@ function sortdate($a, $b)
 	return 0;
 }
 
-	foreach(SouthamptonopendayDataSource::getAllTimetables() as $timetableevent)
+	foreach(OpendayDataSource::getAllTimetables() as $timetableevent)
 	{
 	//	print_r($timetableevent);
 		$subjname[(string)$timetableevent['uri']] = (string)$timetableevent['label'];
@@ -60,12 +60,12 @@ function sortdate($a, $b)
 	//print_r($timetable);
 	foreach($subjname as $uri => $name)
 	{
-		$short = str_replace('http://id.southampton.ac.uk/opendays/'.date('Y/m', strtotime(SouthamptonopendayDataSource::$dates[0])).'/subject/', '', $uri);
+		$short = str_replace('http://id.southampton.ac.uk/opendays/'.date('Y/m', strtotime(OpendayDataSource::$dates[0])).'/subject/', '', $uri);
 		if($subjbroader[$uri] == 'Subject')
 			echo "<li class='".$subjbroader[$uri]." subj_".$short."'><h2 id='subj_".$short."' class='clickable' onclick='chooseSubject(\"".$name."\"); updateHash(\"subject\", \"".$short."\")' title='Select ".htmlspecialchars($name, ENT_QUOTES)."'>".$name."</h2>";
 		else
 			echo "<li style='display:none' class='".str_replace(' ', '', $subjbroader[$uri])."'><h2>".$name."</h2>";
-		foreach(SouthamptonopendayDataSource::$dates as $date)
+		foreach(OpendayDataSource::$dates as $date)
 		{
 			$date = str_replace('/', '-', $date);
 			echo "<div class='_$date'>";

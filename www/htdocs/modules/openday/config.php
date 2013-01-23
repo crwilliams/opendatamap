@@ -31,7 +31,7 @@ $config['default lat'] = 50.9355;
 $config['default long'] = -1.39595;
 $config['default zoom'] = 13;
 //$config['default map'] = "google.maps.MapTypeId.SATELLITE";
-$config['datasource'] = array('southamptonopenday', 'postcode', /*'oxford', 'cambridge'*/);
+$config['datasource'] = array('openday', 'postcode', /*'oxford', 'cambridge'*/);
 //if(isset($versionparts[2]) && isset($versionparts[3])
 //	$q = $versionparts[2].'/'.$;
 if($versionparts[1] == 'iframe')

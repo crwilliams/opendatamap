@@ -1,7 +1,7 @@
 <?
 include_once "inc/sparqllib.php";
 
-class IsleOfWightBusDataSource extends DataSource
+class IsleofwightBusDataSource extends DataSource
 {
 	static $endpoint = 'http://sparql.data.southampton.ac.uk';
 

@@ -1,7 +1,7 @@
 <?
 include_once('modules/schools/ds.php');
 
-class IsleOfWightSchoolsDataSource extends SchoolsDataSource
+class IsleofwightSchoolsDataSource extends SchoolsDataSource
 {
 	static function getFilter($v)
 	{
