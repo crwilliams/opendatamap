@@ -11,12 +11,12 @@ if(true || !file_exists($filename))
 		$n = 0;
 		foreach($pos as $p)
 		{
-			$n += SouthamptoncachedDataSource::getFreeSeats($p);
+			$n += SouthamptonDataSource::getFreeSeats($p);
 		}
 	}
 	else
 	{
-		$n = SouthamptoncachedDataSource::getFreeSeats($pos);
+		$n = SouthamptonDataSource::getFreeSeats($pos);
 	}
 	$oimg = imagecreatefrompng("../img/icon/Education/computers.png");
 	$white = imagecolorallocate($oimg, 0, 0, 0);
