@@ -33,45 +33,6 @@ div#bookmarks li {
 	padding:2px;
 	margin:2px;
 }
-div#subjects li,div#subjects li h2 {
-	margin-left:2px;
-	margin-right:2px;
-	margin-bottom:2px;
-}
-div#subjects li h2 {
-	margin-top:5px;
-	padding:2px;
-}
-div#bookmarks li,div#subjects li h2 {
-	background-color:#007C92;
-	color:white;
-}
-
-._2011-07-08, ._2011-07-09 {
-	display:none;
-}
-
-div#subjects li.event {
-	border:solid 2px #007C92;
-	padding:5px;
-}
-
-div#subjects li.event .location .icon {
-	top:8px;
-}
-
-div#subjects li.event .location {
-	position:relative;
-	top:-5px;
-	padding-left:30px;
-	text-indent:-30px;
-	font-style:italic;
-}
-
-div#subjects li.event .description {
-	font-size:0.8em;
-	text-align:justify;
-}
 
 a {
 	color:#7777CC;
