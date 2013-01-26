@@ -105,14 +105,14 @@ $clickuri = $_GET['clickuri'];
 			<br/>
 			<br/>Please wait while the map loads...
 		</div>
-<?php if(has('openday')) { ?>
-		<div id="openday">
-			<?php include 'resources/opendaysubjects.php' ?>
+<?php if(has('sidebar')) { ?>
+		<div id="sidebar">
+			<?php include 'sidebar.php' ?>
 		</div>
 <?php } ?>
-<?php if(has('opendayhidden')) { ?>
-		<div id="openday" style='display:none'>
-			<?php include 'resources/opendaysubjects.php' ?>
+<?php if(has('sidebar-hidden')) { ?>
+		<div id="sidebar" style='display:none'>
+			<?php include 'sidebar.php' ?>
 		</div>
 <?php } ?>
 <?php if(!has('-title')) { ?>
@@ -157,7 +157,7 @@ foreach($config['categories'] as $catid => $catname)
 		</form>
 <?php if(has('bookmarks')) { ?>
 		<div id="bookmarks" style='display:none'>
-			<?php include 'resources/opendaybookmarks.php' ?>
+			<?php include 'bookmarks.php' ?>
 		</div>
 <?php } ?>
 		<div id="search-small" <?php show('search') ?>>

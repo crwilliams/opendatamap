@@ -36,11 +36,11 @@ $config['datasource'] = array('openday', 'postcode', /*'oxford', 'cambridge'*/);
 //	$q = $versionparts[2].'/'.$;
 if($versionparts[1] == 'iframe')
 {
-	$config['enabled'] = array('opendayhidden', 'bookmarks', '-title');
+	$config['enabled'] = array('sidebarhidden', 'bookmarks', '-title');
 }
 else
 {
-	$config['enabled'] = array('openday', 'bookmarks', '-title'/*, 'search'*/);
+	$config['enabled'] = array('sidebar', 'bookmarks', '-title'/*, 'search'*/);
 	$config['map style'] = 'left:300px;';
 }
 ?>

@@ -32,8 +32,15 @@ if(preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['v']))
 {
 	$version = $versionparts[0];
 	$path = $version;
-	@include 'modules/'.$version.'/config.php';
 }
+
+if(!preg_match('/^[a-zA-Z0-9-]+$/', $version))
+{
+	// Version name may be unsafe.
+	die();
+}
+
+@include 'modules/'.$version.'/config.php';
 
 if(!is_array($config['datasource']))
 {
@@ -98,6 +105,22 @@ function getAllMatches($q, $cats)
 	return array($pos, $label, $type, $url, $icon);
 }
 
+function getAllBookmarks()
+{
+	global $config;
+
+	$bookmarks = array();
+	foreach($config['datasource'] as $ds)
+	{
+		$dsclass = str_replace(' ', '', ucwords(str_replace('/', ' ', $ds))).'DataSource';
+		foreach(call_user_func(array($dsclass, 'getBookmarks')) as $bookmark)
+		{
+			$bookmarks[] = $bookmark;
+		}
+	}
+	return $bookmarks;
+}
+
 class DataSource{
 	static function getAll(){return array();}
 	static function getEntries($q, $cats){return array();}
@@ -106,6 +129,7 @@ class DataSource{
 	static function getAllSites(){return array();}
 	static function getAllBuildings(){return array();}
 	static function processURI($uri){return false;}
+	static function getBookmarks(){return array();}
 	
 	static $iconpath = 'http://data.southampton.ac.uk/map-icons/';
 	

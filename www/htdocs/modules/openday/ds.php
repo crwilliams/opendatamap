@@ -47,6 +47,7 @@ class OpendayDataSource extends DataSource
 
 	static function getBookmarks()
 	{
+		$bookmarks[] = array('img' => 'http://users.ecs.soton.ac.uk/crw104/img/logo/uos.png');
 		$bookmarks[] = array('area' => 'http://id.southampton.ac.uk/site/1', 'label' => 'Highfield Campus');
 		$bookmarks[] = array('area' => 'http://id.southampton.ac.uk/site/3', 'label' => 'Avenue Campus');
 		$bookmarks[] = array('area' => 'http://id.southampton.ac.uk/site/6', 'label' => 'Oceanography Campus');
