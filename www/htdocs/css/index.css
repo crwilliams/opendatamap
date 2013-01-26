@@ -8,13 +8,6 @@ body {
 .odl {
 	font-size: 0.8em;
 	padding-left:5px;
-/*
-	display:block;
-	width:100%;
-	text-align:left;
-	margin-left:30px;
-	padding-bottom:5px;
-*/
 }
 .back {
 	font-size: 0.8em;
@@ -38,17 +31,13 @@ a {
 	color:#7777CC;
 }
 #credits a {
-	/*color:black;*/
 }
 #credits a:visited {
-	/*color:black;*/
 	text-decoration:none;
 }
 #credits a:link:hover {
-	/*color:blue;*/
 }
 #credits a:link {
-	/*color:black;*/
 	text-decoration:none;
 }
 #spinner {
@@ -65,35 +54,6 @@ a {
 #map_canvas {
 	position:absolute;
 	top:0px; bottom:0px; left:0px; right:0px;
-}
-#selectedsubject {
-	display:block;
-	clear:both;
-	text-align:center;
-	margin-left:5px;
-	margin-top:5px;
-	padding-top:10px;
-	padding-bottom:10px;
-	vertical-align:bottom;
-	height:45px;
-	width:290px;
-}
-#day {
-	margin:5px;
-	width:290px;
-	display:block;
-	clear:both;
-}
-#day a {
-	display:block;
-	float:left;
-	width:50%;
-	text-align:center;
-	padding-top:5px;
-	padding-bottom:5px;
-	text-decoration:none;
-	color:black;
-	cursor:pointer;
 }
 .clickable {
 	cursor:pointer;
@@ -200,7 +160,6 @@ form ul {
 .location {
 	line-height:1.2em;
 	padding-left:0px;
-	/*text-indent:-30px;*/
 }
 #clear {
 	position:absolute;
@@ -337,17 +296,6 @@ div.listcontent-footer {
 	.toggleicons img.deselected:hover {
 		opacity:0.5;
 	}
-/*
-	#todayopenings {
-		display: none;
-	}
-*/
-}
-
-#day .selected {
-	background-color:#007C92;
-	color:white;
-	cursor:default;
 }
 
 .deselected {

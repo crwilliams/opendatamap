@@ -34,3 +34,38 @@ div#subjects li.event .description {
 	text-align:justify;
 }
 
+#day .selected {
+	background-color:#007C92;
+	color:white;
+	cursor:default;
+}
+
+#selectedsubject {
+	display:block;
+	clear:both;
+	text-align:center;
+	margin-left:5px;
+	margin-top:5px;
+	padding-top:10px;
+	padding-bottom:10px;
+	vertical-align:bottom;
+	height:45px;
+	width:290px;
+}
+#day {
+	margin:5px;
+	width:290px;
+	display:block;
+	clear:both;
+}
+#day a {
+	display:block;
+	float:left;
+	width:50%;
+	text-align:center;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-decoration:none;
+	color:black;
+	cursor:pointer;
+}
