@@ -9,47 +9,6 @@ foreach(OpendayDataSource::$dates as $d)
 <div id='subjects'>
 <ul style='overflow:scroll; position:absolute; top:100px; bottom:0px; width:300px;'>
 <?php
-function sortinstances($a, $b)
-{
-	$astart = '24:00';
-	foreach($a as $ac)
-		$astart = min(substr($ac['start'], 11, 5), $astart);
-	$bstart = '24:00';
-	foreach($b as $bc)
-		$bstart = min(substr($bc['start'], 11, 5), $bstart);
-	if($astart != $bstart)
-		return ($astart < $bstart) ? -1 : 1;
-	return 0;
-}
-function sortdate($a, $b)
-{
-	$astart = '24:00';
-	foreach($a as $ac)
-		$astart = min(substr($ac['start'], 11, 5), $astart);
-	$bstart = '24:00';
-	foreach($b as $bc)
-		$bstart = min(substr($bc['start'], 11, 5), $bstart);
-	if($astart != $bstart)
-		return ($astart < $bstart) ? -1 : 1;
-	
-	$aend = '00:00';
-	foreach($a as $ac)
-		$aend = max(substr($ac['end'], 11, 5), $aend);
-	$bend = '00:00';
-	foreach($b as $bc)
-		$bend = min(substr($bc['end'], 11, 5), $bend);
-	if($aend != $bend)
-		return ($aend < $bend) ? -1 : 1;
-	
-	if(count($a) != $count($b))
-		return (count($a) < count($b)) ? -1 : 1;
-
-	if($a[0]['desc'] != $b[0]['desc'])
-		return ($a[0]['desc'] < $b[0]['desc']) ? -1 : 1;
-	
-	return 0;
-}
-
 	foreach(OpendayDataSource::getAllTimetables() as $timetableevent)
 	{
 	//	print_r($timetableevent);
@@ -120,3 +79,45 @@ function sortdate($a, $b)
 ?>
 </ul>
 </div>
+<?php
+function sortinstances($a, $b)
+{
+	$astart = '24:00';
+	foreach($a as $ac)
+		$astart = min(substr($ac['start'], 11, 5), $astart);
+	$bstart = '24:00';
+	foreach($b as $bc)
+		$bstart = min(substr($bc['start'], 11, 5), $bstart);
+	if($astart != $bstart)
+		return ($astart < $bstart) ? -1 : 1;
+	return 0;
+}
+function sortdate($a, $b)
+{
+	$astart = '24:00';
+	foreach($a as $ac)
+		$astart = min(substr($ac['start'], 11, 5), $astart);
+	$bstart = '24:00';
+	foreach($b as $bc)
+		$bstart = min(substr($bc['start'], 11, 5), $bstart);
+	if($astart != $bstart)
+		return ($astart < $bstart) ? -1 : 1;
+	
+	$aend = '00:00';
+	foreach($a as $ac)
+		$aend = max(substr($ac['end'], 11, 5), $aend);
+	$bend = '00:00';
+	foreach($b as $bc)
+		$bend = min(substr($bc['end'], 11, 5), $bend);
+	if($aend != $bend)
+		return ($aend < $bend) ? -1 : 1;
+	
+	if(count($a) != $count($b))
+		return (count($a) < count($b)) ? -1 : 1;
+
+	if($a[0]['desc'] != $b[0]['desc'])
+		return ($a[0]['desc'] < $b[0]['desc']) ? -1 : 1;
+	
+	return 0;
+}
+?>
