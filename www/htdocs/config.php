@@ -34,7 +34,7 @@ if(preg_match('/^[a-zA-Z0-9_-]+$/', $_GET['v']))
 	$path = $version;
 }
 
-if(!preg_match('/^[a-zA-Z0-9-]+$/', $version))
+if(!preg_match('/^[a-zA-Z0-9-]*$/', $version))
 {
 	// Version name may be unsafe.
 	die();
