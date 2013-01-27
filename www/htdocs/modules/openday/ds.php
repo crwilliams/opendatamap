@@ -74,7 +74,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 
 	static function getDataSetExtras()
 	{
-		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.  Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
+		return array("Contains Ordnance Survey data &copy; Crown copyright and database right 2011.", "Contains Royal Mail data &copy; Royal Mail copyright and database right 2011.");
 	}
 
 	static function getAllPointsOfService()
