@@ -95,6 +95,12 @@ else
 	echo "</ul>";
 	echo "The library is available under the <a href='http://creativecommons.org/licenses/by/3.0' title='Creative Commons - Attribution 3.0 Unported'>CC BY 3.0</a> licence.";
 	echo "</p>";
+	echo "<p>It also uses the <a href='http://sourceforge.net/projects/simplehtmldom/'>Simple HTML DOM Library</a>, developed by:";
+	echo "<ul>";
+	echo "<li><a href='https://sourceforge.net/projects/php-html/'>Jose Solorzano</a></li>";
+	echo "</ul>";
+	echo "The library is available under the MIT licence.";
+	echo "</p>";
 ?>
 <h3>Source</h3>
 	<p>The opendatamap <a href='http://opendatamap.ecs.soton.ac.uk/source'>source code</a> is available under the <a href='http://creativecommons.org/licenses/by-sa/3.0' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap</em>, with a link provided to <a href='http://opendatamap.ecs.soton.ac.uk/source'>http://opendatamap.ecs.soton.ac.uk/source</a>.</p>
