@@ -36,9 +36,9 @@ $scotland = array(
 'West_Dunbartonshire',
 );
 
-foreach(glob('/home/opendatamap/FHRS/*/*.xml') as $version)
+foreach(glob('modules/food/resources/*/*.xml') as $version)
 {
-	$version = str_replace(array('/home/opendatamap/FHRS/', '.xml'), '', $version);
+	$version = str_replace(array('modules/food/resources/', '.xml'), '', $version);
 	list($lang, $version) = explode('/', $version, 2);
 	$config['versions'][$version]['langs'][] = $lang;
 	if(in_array($version, $scotland))
