@@ -17,7 +17,7 @@ class FoodDataSource extends DataSource
 		$points = array();
 		foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 		{
-			$point['id'] = 'http://fhrs.example.com/'.$establishment->LocalAuthorityBusinessID;
+			$point['id'] = 'http://ratings.food.gov.uk/business/'.$establishment->FHRSID;
 			$point['label'] = (string)str_replace('"', '', $establishment->BusinessName);
 			$point['lat'] = (string)$establishment->Geocode->Latitude;
 			$point['long'] = (string)$establishment->Geocode->Longitude;
@@ -57,9 +57,9 @@ class FoodDataSource extends DataSource
 
 	static function processURI($uri){
 		global $config;
-		if(substr($uri, 0, strlen('http://fhrs.example.com/')) == 'http://fhrs.example.com/')
+		if(substr($uri, 0, strlen('http://ratings.food.gov.uk/business/')) == 'http://ratings.food.gov.uk/business/')
 		{
-			$id = substr($uri, strlen('http://fhrs.example.com/'));
+			$id = substr($uri, strlen('http://ratings.food.gov.uk/business/'));
 			$result = false;
 			foreach($config['langs'] as $lang)
 			{
@@ -67,7 +67,7 @@ class FoodDataSource extends DataSource
 				$points = array();
 				foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 				{
-					if($establishment->LocalAuthorityBusinessID == $id)
+					if($establishment->FHRSID == $id)
 					{
 						echo "<div style='float:left'>";
 						echo "<h2><img class='icon' src='".self::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey)."' />".$establishment->BusinessName."<h2>";
@@ -118,7 +118,7 @@ class FoodDataSource extends DataSource
 		$points = array();
 		foreach($data->EstablishmentCollection->EstablishmentDetail as $establishment)
 		{
-			$point['pos'] = 'http://fhrs.example.com/'.$establishment->LocalAuthorityBusinessID;
+			$point['pos'] = 'http://ratings.food.gov.uk/business/'.$establishment->FHRSID;
 			$point['ratingkey'] = (string)$establishment->RatingKey;
 			$point['poslabel'] = (string)str_replace('"', '', $establishment->BusinessName);
 			$point['icon'] = static::getIcon((string)$establishment->BusinessType, (string)$establishment->RatingKey);
