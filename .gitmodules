@@ -1,0 +1,3 @@
+[submodule "www/htdocs/mymap"]
+	path = www/htdocs/mymap
+	url = git@github.com:crwilliams/mymap.git
