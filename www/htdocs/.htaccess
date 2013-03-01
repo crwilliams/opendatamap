@@ -12,7 +12,8 @@ RewriteRule ^layar-api/?$ extras/layar-api.php
 RewriteRule ^bus-route-finder/?$ extras/bus-route-finder.php
 RewriteRule ^resources/jquery-1.5.min.js$ /js/jquery-1.5.min.js
 
-RewriteRule ^([A-Za-z_-]+)/?$ index.php?v=$1&%{QUERY_STRING}
+RewriteRule ^([A-Za-z_-]+)/$ /$1 [R,L]
+RewriteRule ^([A-Za-z_-]+)$ index.php?v=$1&%{QUERY_STRING}
 RewriteRule ^([A-Za-z_-]+)/((credits)?)$ $2.php?v=$1&%{QUERY_STRING}
 
 <IfModule mod_deflate.c>
