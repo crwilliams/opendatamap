@@ -23,7 +23,7 @@ if(!$html)
 	// * Label of marker
 	// * URL to marker icon
 	foreach($points as $point) {
-		echo '["'.$point['id'].'",'.$point['lat'].','.$point['long'].',"'.$point['label'].'","'.$point['icon'].'"],';
+		echo '["'.$point['id'].'",'.$point['lat'].','.$point['long'].',"'.str_replace('"', '\"', $point['label']).'","'.$point['icon'].'"],';
 	}
 	//End response (including empty element for convenience (required))
 	echo "[]]";

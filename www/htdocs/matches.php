@@ -34,7 +34,7 @@ foreach (array_keys($label) as $x)
 	//If the entry has a related marker, the array can also contain:
 	// * ID of marker (may be null)
 	// * URL to marker icon (optional)
-	echo '["'.$x.'","'.$type[$x].'"';
+	echo '["'.str_replace('"', '\"', $x).'","'.$type[$x].'"';
 	if($type[$x] == 'building' || $type[$x] == 'site' || $type[$x] == 'bus-stop' || $type[$x] == 'point-of-service' || $type[$x] == 'workstation' || $type[$x] == 'postcode' )
 	{
 		echo ',';
