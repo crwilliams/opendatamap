@@ -1,7 +1,7 @@
 <?php
 $globalcols = $cols;
 
-$cols['fhrs_0_en-gb'] = 'c03638';
+$cols['fhrs_0_en-gb'] = 'a01618';
 $cols['fhrs_1_en-gb'] = 'f34648';
 $cols['fhrs_2_en-gb'] = 'ff8a22';
 $cols['fhrs_3_en-gb'] = 'ffc11f';
