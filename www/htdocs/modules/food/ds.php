@@ -52,7 +52,16 @@ class FoodDataSource extends DataSource
 	}
 	
 	static function getDataSets(){
-		return array(array('name' => 'Food Hygiene Rating Scheme', 'uri' => 'http://ratings.food.gov.uk/open-data/en-GB', 'l' => 'http://www.food.gov.uk/ratings-terms-and-conditions'));
+		global $config;
+		if(isset($config['datafile']))
+		{
+			$lastmodified = ' (last updated '.date('Y/m/d H:i', filemtime('modules/food/resources/en-gb/'.$config['datafile'].'.xml')).')';
+		}
+		else
+		{
+			$lastmodified = '';
+		}
+		return array(array('name' => 'Food Hygiene Rating Scheme'.$lastmodified, 'uri' => 'http://ratings.food.gov.uk/open-data/en-GB', 'l' => 'http://www.food.gov.uk/ratings-terms-and-conditions'));
 	}
 
 	static function processURI($uri){
