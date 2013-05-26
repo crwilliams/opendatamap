@@ -67,7 +67,7 @@ $clickuri = $_GET['clickuri'];
 		</div>
 <?php } ?>
 <?php if(!has('-title')) { ?>
-		<div style='height:2em; padding:0.5em;'>
+		<div id="title" style='height:2em; padding:0.5em;'>
 			<?php echo $config['Site title'] ?>
 			<span style='font-size: 0.5em'>
 				<a href='list'>Select different map</a>
