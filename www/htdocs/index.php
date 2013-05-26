@@ -48,6 +48,18 @@ $clickuri = $_GET['clickuri'];
 <?php if(file_exists('modules/'.$version.'/style.css')) { ?>
 		<link rel="stylesheet" href="modules/<?php echo $version ?>/style.css" type="text/css">
 <?php } ?>
+<?php
+foreach(glob('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/'.$versionparts[1].'_*.png') as $image)
+{
+	$image = str_replace('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/', '', $image);
+?>
+                <meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/food/<?= $image ?>" />
+<?php
+}
+?>
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="<?php echo $config['Site title'] ?>" />
+		<meta property="og:description" content="<?php echo $config['Site description'] ?>" />
 	</head>
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
