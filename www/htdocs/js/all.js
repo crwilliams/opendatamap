@@ -34,6 +34,10 @@ var contcount = 0;
 
 var bb;
 
+function compare(a,b){
+	return b-a;
+}
+
 // Subject functions.
 
 var refreshSubjectChoice = function () {
@@ -593,12 +597,12 @@ var cont = function () {
 				llswlng.push(bb[i].getSouthWest().lng());
 			}
 		}
-		llnelat.sort();
-		llnelng.sort();
-		llswlat.sort();
-		llswlng.sort();
-		llnelat.reverse();
-		llnelng.reverse();
+		llnelat.sort(compare);
+		llnelng.sort(compare);
+		llswlat.sort(compare);
+		llswlng.sort(compare);
+		llswlat.reverse();
+		llswlng.reverse();
 		console.log(llnelat);
 		console.log(llnelng);
 		console.log(llswlat);
