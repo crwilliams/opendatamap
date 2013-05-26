@@ -2,6 +2,8 @@
 date_default_timezone_set('Europe/London');
 include 'inc/simple_html_dom.php';
 $html = file_get_html('http://ratings.food.gov.uk/open-data/en-GB');
+$fetchcount = 0;
+$skipcount = 0;
 foreach($html->find('table') as $table)
 {
 	foreach($table->find('tr') as $row)
@@ -33,14 +35,18 @@ foreach($html->find('table') as $table)
 				// Update mtime
 				touch($filename, $rdate);
 				echo "Fetched $filename\n";
+				$fetchcount++;
 				// Sleep
 				sleep(1);
 			}
 			else
 			{
 				echo "Skipped $filename\n";
+				$skipcount++;
 			}
 		}
 	}
 }
+echo "Fetched total of ".$fetchcount."\n";
+echo "Skipped total of ".$skipcount."\n";
 ?>
