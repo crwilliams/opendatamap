@@ -22,7 +22,7 @@ foreach($creators as $creator)
 	$creatorlinks[]=  "<a href='".$creator['uri']."'>".$creator['name']."</a>";
 }
 */
-$creatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23977'>Colin R. Williams</a>";
+$creatorlinks[]=  "<a href='http://www.crwilliams.co.uk/'>Colin R. Williams</a>";
 $addcreatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/24273'>electronic Max</a>";
 $addcreatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23796'>Jarutas Pattanaphanchai</a>";
 $addcreatorlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/23470'>Harry Rose</a>";
