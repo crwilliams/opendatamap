@@ -108,7 +108,6 @@ else
 ?>
 <h3>Other</h3>
 <?
-	echo "<p>The information presented on our opendatamap is also available via the <a href='http://m.layar.com/open/universityofsouthampton'>University of Southampton layer</a>, which has been developed for the <a href='http://www.layar.com'>layar</a> application, available on Android, iPhone and Nokia Ovi.</p>";
 	echo "<p>Thanks also to suggestions from:";
 	echo "<ul>";
 	foreach($suggestionlinks as $suggestionlink)
