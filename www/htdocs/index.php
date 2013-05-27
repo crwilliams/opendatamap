@@ -49,17 +49,44 @@ $clickuri = $_GET['clickuri'];
 		<link rel="stylesheet" href="modules/<?php echo $version ?>/style.css" type="text/css">
 <?php } ?>
 <?php
-foreach(glob('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/'.$versionparts[1].'_*.png') as $image)
+if(isset($uri) && $uri != "")
 {
-	$image = str_replace('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/', '', $image);
+	$singlepoint = $uri;
+}
+if(isset($clickuri) && $clickuri != "")
+{
+	$singlepoint = $clickuri;
+}
+if(isset($singlepoint))
+{
+	$singlepoint = getPointInfo($uri);
+}
+if(is_array($singlepoint))
+{
 ?>
-                <meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/food/<?= $image ?>" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="<?php echo $singlepoint['label'].' on '.$config['Site title'] ?>" />
+		<meta property="og:description" content="<?php echo $singlepoint['label'].' on '.$config['Site description'] ?>" />
+		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/MAP/<?= $_GET['v'] ?>/?uri=<?= urlencode($singlepoint['id']) ?>" />
+		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/SAT/<?= $_GET['v'] ?>/?uri=<?= urlencode($singlepoint['id']) ?>" />
 <?php
 }
+else
+{
+	foreach(glob('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/'.$versionparts[1].'_*.png') as $image)
+	{
+		$image = str_replace('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/', '', $image);
+?>
+		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/<?= $versionparts[0] ?>/<?= $image ?>" />
+<?php
+	}
 ?>
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="<?php echo $config['Site title'] ?>" />
 		<meta property="og:description" content="<?php echo $config['Site description'] ?>" />
+<?php
+}
+?>
 	</head>
 	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
 <? include_once 'googleanalytics.php'; ?>
