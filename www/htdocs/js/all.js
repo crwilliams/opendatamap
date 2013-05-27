@@ -581,7 +581,13 @@ var cont = function () {
 	} else {
 		hashstring = '';
 	}
-	searchResults_updateFunc();
+	if(uri) {
+		searchResults_updateFunc(false, uri);
+	} else if(clickuri) {
+		searchResults_updateFunc(false, clickuri);
+	} else {
+		searchResults_updateFunc(false, false);
+	}
 	if(bb !== undefined) {
 		var llnelat = new Array();
 		var llnelng = new Array();
