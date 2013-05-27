@@ -73,9 +73,18 @@ if(is_array($singlepoint))
 }
 else
 {
-	foreach(glob('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/'.$versionparts[1].'_*.png') as $image)
+	if($version == '')
 	{
-		$image = str_replace('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$versionparts[0].'/resources/thumbnails/', '', $image);
+		$module = 'default';
+	}
+	else
+	{
+		$module = $version;
+	}
+	$p = '/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/'.$module.'/';
+	foreach(glob($p.'resources/thumbnails/'.$versionparts[1].'_*.png') as $image)
+	{
+		$image = str_replace($p.'resources/thumbnails/', '', $image);
 ?>
 		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/<?= $versionparts[0] ?>/<?= $image ?>" />
 <?php
