@@ -34,7 +34,7 @@ if($include)
 {
 	echo "Application created by ";
 	echo implode(", ", $creatorlinks);
-	echo " and <a href='".$path."/credits' title='Full Application Credits'>others</a>";
+	echo " and <a href='".$_GET['v']."/credits' title='Full Application Credits'>others</a>";
 	//echo ", ".implode(", ", $addcreatorlinks);
 	echo "<br/>using the following datasets: ";
 	echo implode(", ", $datasetlinks);
@@ -47,18 +47,18 @@ else
 ?>
 <html>
 <head>
-	<link rel="stylesheet" href="css/reset.css" type="text/css">
-	<link rel="stylesheet" href="css/index.css" type="text/css">
-	<link rel="stylesheet" href="css/credits.css" type="text/css">
-	<title>opendatamap | credits</title>
+	<link rel="stylesheet" href="/css/reset.css" type="text/css">
+	<link rel="stylesheet" href="/css/index.css" type="text/css">
+	<link rel="stylesheet" href="/css/credits.css" type="text/css">
+	<title><?= $config['Site title'] ?> | credits</title>
 </head>
 <body>
 <? include_once 'googleanalytics.php'; ?>
-<h1>opendatamap</h1>
+<h1><?= $config['Site title'] ?></h1>
 <h2>credits</h2>
 <h3>Development</h3>
 <?php
-	echo "<p>The <a href='.'>linked open data map</a> was developed by:";
+	echo "<p>The <a href='.'>opendatamap ".$config['Site title']."</a> was developed by:";
 	echo "<ul>";
 	foreach($creatorlinks as $creatorlink)
 		echo "<li>$creatorlink</li>";
