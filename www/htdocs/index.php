@@ -121,6 +121,7 @@ else
 			<?php echo $config['Site title'] ?>
 			<span style='font-size: 0.5em'>
 				<a href='list'>Select different map</a>
+				| <a href="http://www.facebook.com/sharer.php?u=<?= urlencode('http://opendatamap.ecs.soton.ac.uk/'.$_GET['v']) ?>">Share on Facebook</a>
 			</span>
 		</div>
 <?php } ?>
