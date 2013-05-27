@@ -121,6 +121,22 @@ function getAllBookmarks()
 	return $bookmarks;
 }
 
+function getPointInfo($uri)
+{
+	global $config;
+
+	$pointinfos = array();
+	foreach($config['datasource'] as $ds)
+	{
+		$dsclass = str_replace(' ', '', ucwords(str_replace('/', ' ', $ds))).'DataSource';
+		foreach(call_user_func(array($dsclass, 'getPointInfo'), $uri) as $pointinfo)
+		{
+			$pointinfos[] = $pointinfo;
+		}
+	}
+	return $pointinfos;
+}
+
 class DataSource{
 	static function getAll(){return array();}
 	static function getEntries($q, $cats){return array();}
@@ -130,6 +146,7 @@ class DataSource{
 	static function getAllBuildings(){return array();}
 	static function processURI($uri){return false;}
 	static function getBookmarks(){return array();}
+	static function getPointInfo(){return array();}
 	
 	static $iconpath = 'http://data.southampton.ac.uk/map-icons/';
 	

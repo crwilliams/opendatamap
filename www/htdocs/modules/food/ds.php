@@ -120,6 +120,19 @@ class FoodDataSource extends DataSource
 		}
 	}
 
+	static function getPointInfo($uri)
+	{
+		$points = static::getAll();
+		foreach($points as $point)
+		{
+			if($point['id'] == $uri)
+			{
+				return $point;
+			}
+		}
+		return array();
+	}
+
 	static function getPoints($q)
 	{
 		$i = 0;
