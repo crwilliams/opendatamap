@@ -86,7 +86,7 @@ else
 	{
 		$image = str_replace($p.'resources/thumbnails/', '', $image);
 ?>
-		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/<?= $versionparts[0] ?>/<?= $image ?>" />
+		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/<?= $module ?>/<?= $image ?>" />
 <?php
 	}
 ?>
