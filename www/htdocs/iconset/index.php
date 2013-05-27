@@ -12,17 +12,43 @@ $cats['c259b5'] = 'Culture-and-Entertainment';
 $cats['f34648'] = 'Health'; //Health-and-Education
 $cats['ff8a22'] = 'Sports';
 $cats['ffc11f'] = 'Education'; //Friends-and-Family
+function include_stylesheet($filename)
+{
+	if(isset($_GET['i']))
+	{
+		echo '<style>'."\n";
+		echo '/* Stylesheet included from '.$filename.' */'."\n";
+		include $filename;
+		echo "\n".'</style>'."\n";
+	}
+	else
+	{
+		echo '<link rel="stylesheet" href="'.$filename.'" type="text/css">'."\n";
+	}
+}
+function img($filename)
+{
+	if(isset($_GET['i']))
+	{
+		$filename = str_replace('../img/icon/', '', $filename);
+	}
+	return '<img src="'.$filename.'" />';
+}
 ?>
 <html>
 <head>
-	<link rel="stylesheet" href="../css/reset.css" type="text/css">
-	<link rel="stylesheet" href="../css/index.css" type="text/css">
-	<link rel="stylesheet" href="../css/credits.css" type="text/css">
+	<?php include_stylesheet('../css/reset.css') ?>
+	<?php include_stylesheet('../css/index.css') ?>
+	<?php include_stylesheet('../css/credits.css') ?>
 	<title>opendatamap iconset</title>
 </head>
 <body>
-<? include_once '../googleanalytics.php'; ?>
 <?
+if(!isset($_GET['i']))
+{
+	include_once '../googleanalytics.php';
+}
+
 $total = 0;
 foreach($cats as $color => $cat)
 {
@@ -59,8 +85,8 @@ foreach($cats as $color => $cat)
 	$table[] = array(
 		'<td class="fw"><div class="rot90">'.str_replace('-and-', ' &amp; ', $cat).'</div></td>',
 		'<td style="background-color:#'.$color.'; color:white; font-size:0.8em; padding:5px;">'.strtoupper($color).'</td>',
-		'<td style="padding:5px;"><img src="../img/icon/'.$cat.'/blank.png" /></td>',
-		'<td style="padding:5px;"><img src="'.$files[$cat][rand(0, count($files[$cat])-1)].'" /></td>',
+		'<td style="padding:5px;">'.img('../img/icon/'.$cat.'/blank.png').'</td>',
+		'<td style="padding:5px;">'.img($files[$cat][rand(0, count($files[$cat])-1)]).'</td>',
 	);
 }
 for($rid=0; $rid<4; $rid++)
@@ -78,7 +104,7 @@ for($rid=0; $rid<4; $rid++)
 <ul>
 </ul>
 <p>
-	<a href='view'>Show all core icons</a>
+	<a href='view<? if(isset($_GET['i'])) echo '.html' ?>'>Show all core icons</a>
 </p>
 <?
 $cats['000000'] = null;
@@ -92,8 +118,8 @@ $cats['000000'] = null;
 <?
 foreach(array_keys($cats) as $color)
 {
-	echo '<img src="../img/icon/numbers/'.$color.'/0.png" />';
-	echo '<img src="../img/icon/numbers/'.$color.'/9.png" />';
+	echo img('../img/icon/numbers/'.$color.'/0.png');
+	echo img('../img/icon/numbers/'.$color.'/9.png');
 }
 ?>
 	</li>
@@ -102,8 +128,8 @@ foreach(array_keys($cats) as $color)
 <?
 foreach(array_keys($cats) as $color)
 {
-	echo '<img src="../img/icon/numbers/'.$color.'/00.png" />';
-	echo '<img src="../img/icon/numbers/'.$color.'/99.png" />';
+	echo img('../img/icon/numbers/'.$color.'/00.png');
+	echo img('../img/icon/numbers/'.$color.'/99.png');
 }
 ?>
 	</li>
@@ -112,8 +138,8 @@ foreach(array_keys($cats) as $color)
 <?
 foreach(array_keys($cats) as $color)
 {
-	echo '<img src="../img/icon/numbers/'.$color.'/000.png" />';
-	echo '<img src="../img/icon/numbers/'.$color.'/999.png" />';
+	echo img('../img/icon/numbers/'.$color.'/000.png');
+	echo img('../img/icon/numbers/'.$color.'/999.png');
 }
 ?>
 	</li>
@@ -127,8 +153,8 @@ foreach(array_keys($cats) as $color)
 <?
 foreach(array_keys($cats) as $color)
 {
-	echo '<img src="../img/icon/letters/'.$color.'/A.png" />';
-	echo '<img src="../img/icon/letters/'.$color.'/Z.png" />';
+	echo img('../img/icon/letters/'.$color.'/A.png');
+	echo img('../img/icon/letters/'.$color.'/Z.png');
 }
 ?>
 	</li>
@@ -148,14 +174,29 @@ function fileinfo($filename)
 }
 ?>
 <h3>Downloads</h3>
-	<ul>
-		<li><a href='opendatamap-iconset.zip'>opendatamap iconset (core)</a> <?= fileinfo('opendatamap-iconset.zip') ?></li>
-		<li><a href='opendatamap-iconset-numbers.zip'>opendatamap iconset (numbers)</a> <?= fileinfo('opendatamap-iconset-numbers.zip') ?></li>
-		<li><a href='opendatamap-iconset-letters.zip'>opendatamap iconset (letters)</a> <?= fileinfo('opendatamap-iconset-letters.zip') ?></li>
-	</ul>
+<?
+if(isset($_GET['i']))
+{
+?>
+<p>
+	The latest version of the opendatamap iconset can be downloaded from <a href='http://opendatamap.ecs.soton.ac.uk/iconset'>http://opendatamap.ecs.soton.ac.uk/iconset</a>.
+</p>
+<?
+}
+else
+{
+?>
+<ul>
+	<li><a href='opendatamap-iconset.zip'>opendatamap iconset (core)</a> <?= fileinfo('opendatamap-iconset.zip') ?></li>
+	<li><a href='opendatamap-iconset-numbers.zip'>opendatamap iconset (numbers)</a> <?= fileinfo('opendatamap-iconset-numbers.zip') ?></li>
+	<li><a href='opendatamap-iconset-letters.zip'>opendatamap iconset (letters)</a> <?= fileinfo('opendatamap-iconset-letters.zip') ?></li>
+</ul>
 <h3>Licence</h3>
 <p>
 	This iconset is based on the <a href='http://mapicons.nicolasmollet.com'>Map Icons Collection</a>.  Our iconset is available under the <a href='http://creativecommons.org/licenses/by-sa/3.0/' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap iconset</em>, with a link provided to this page (<a href='http://opendatamap.ecs.soton.ac.uk/iconset'>http://opendatamap.ecs.soton.ac.uk/iconset</a>).
 </p>
+<?
+}
+?>
 </body>
 </html>

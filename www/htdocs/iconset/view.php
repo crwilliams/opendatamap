@@ -1,9 +1,25 @@
+<?
+function include_stylesheet($filename)
+{
+	if(isset($_GET['i']))
+	{
+		echo '<style>'."\n";
+		echo '/* Stylesheet included from '.$filename.' */'."\n";
+		include $filename;
+		echo "\n".'</style>'."\n";
+	}
+	else
+	{
+		echo '<link rel="stylesheet" href="'.$filename.'" type="text/css">'."\n";
+	}
+}
+?>
 <html>
 <head>
-	<link rel="stylesheet" href="../css/reset.css" type="text/css">
-	<link rel="stylesheet" href="../css/index.css" type="text/css">
-	<link rel="stylesheet" href="../css/credits.css" type="text/css">
-	<script type="text/javascript" src="../js/jquery-1.6.1.min.js"></script>
+	<?php include_stylesheet('../css/reset.css') ?>
+	<?php include_stylesheet('../css/index.css') ?>
+	<?php include_stylesheet('../css/credits.css') ?>
+	<script type="text/javascript" src="<? if(!isset($_GET['i'])) echo '../js/'; ?>jquery-1.6.1.min.js"></script>
 	<title>opendatamap iconset | listing</title>
 <script type='text/javascript' lang='javascript'>
 function searchyou()
@@ -19,7 +35,12 @@ function searchyou()
 </script>
 </head>
 <body>
-<? include_once '../googleanalytics.php'; ?>
+<?
+if(!isset($_GET['i']))
+{
+	include_once '../googleanalytics.php';
+}
+?>
 <h1>opendatamap iconset</h1>
 <h2>Listing</h2>
 <p>Below is a listing of all icons in the <a href='.'>opendatamap iconset</a>.</p>
@@ -55,12 +76,26 @@ foreach($files as $file)
 	if($cat != $head)
 	{
 		echo '<h3>'.$cat.'</h3>';
-		echo "<img id='blank' src='../img/icon/$cat/blank.png' alt='blank icon' title='blank' />";
+		if(isset($_GET['i']))
+		{
+			echo "<img id='blank' src='$cat/blank.png' alt='blank icon' title='blank' />";
+		}
+		else
+		{
+			echo "<img id='blank' src='../img/icon/$cat/blank.png' alt='blank icon' title='blank' />";
+		}
 		//echo "<img id='nt.blank' src='../img/icon/$cat/nt.blank.png' alt='no tail blank icon' title='no tail blank' />";
 		//echo "<img id='ntw.blank' src='../img/icon/$cat/ntw.blank.png' alt='no tail wide blank icon' title='no tail wide blank' />";
 		$head = $cat;
 	}
-	echo "<img id='$filename' src='../img/icon/$file' alt='$filename icon' title='$filename' />";
+	if(isset($_GET['i']))
+	{
+		echo "<img id='$filename' src='$file' alt='$filename icon' title='$filename' />";
+	}
+	else
+	{
+		echo "<img id='$filename' src='../img/icon/$file' alt='$filename icon' title='$filename' />";
+	}
 }
 ?>
 </body>
