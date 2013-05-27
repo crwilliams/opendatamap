@@ -129,12 +129,13 @@ function getPointInfo($uri)
 	foreach($config['datasource'] as $ds)
 	{
 		$dsclass = str_replace(' ', '', ucwords(str_replace('/', ' ', $ds))).'DataSource';
-		foreach(call_user_func(array($dsclass, 'getPointInfo'), $uri) as $pointinfo)
+		$pointinfo = call_user_func(array($dsclass, 'getPointInfo'), $uri);
+		if(count($pointinfo) > 0)
 		{
-			$pointinfos[] = $pointinfo;
+			return $pointinfo;
 		}
 	}
-	return $pointinfos;
+	return null;
 }
 
 class DataSource{
