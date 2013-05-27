@@ -56,6 +56,19 @@ class SouthamptonDataSource extends DataSource
 		return self::_query($q);
 	}
 	
+	static function getPointInfo($uri)
+	{
+		$points = static::getAll();
+		foreach($points as $point)
+		{
+			if($point['id'] == $uri)
+			{
+				return $point;
+			}
+		}
+		return array();
+	}
+
 	static function _query($q, $p = array())
 	{
 		global $dbh;
