@@ -34,47 +34,45 @@ foreach(glob('modules/*/config.php') as $cfg_file)
 }
 ksort($maps);
 
-echo "<ul>";
 foreach($maps as $path => $config)
 {
 	if(in_array($path, $symlinks))
 	{
 		continue;
 	}
-	echo "<li>";
-	echo "<a href='".format($path)."'>".$config['Site title']."</a>";
+	echo "<a href='".format($path)."'>";
+	echo "<div style='width: 200px; float:left; padding: 5px'>";
+	echo "<div style='height: 3em; text-align: center'>";
+	echo $config['Site title'];
+	echo "</div>";
+	echo "<img src='/thumbnails/".format($path, 'default')."/_MAP.png' />";
+	echo "</div>";
+	echo "</a>";
 	if(isset($config['versions']))
 	{
-		$open = false;
 		foreach($config['versions'] as $version => $subconfig)
 		{
 			if($subconfig['hidden'])
 			{
 				continue;
 			}
-			if(!$open)
-			{
-				echo "<ul>";
-				$open = true;
-			}
-			echo "<li>";
-			echo "<a href='".format($path."_".$version)."'>".$subconfig['Site title']."</a>";
-			echo "</li>";
-		}
-		if($open)
-		{
-			echo "</ul>";
+			echo "<a href='".format($path."_".$version)."'>";
+			echo "<div style='width: 200px; float:left; padding: 5px;'>";
+			echo "<div style='height: 3em; text-align: center'>";
+			echo $subconfig['Site title'];
+			echo "</div>";
+			echo "<img src='/thumbnails/".format($path, 'default')."/".$version."_MAP.png' />";
+			echo "</div>";
+			echo "</a>";
 		}
 	}
-	echo "</li>";
 }
-echo "</ul>";
 
-function format($path)
+function format($path, $default='.')
 {
 	if($path == '')
 	{
-		$path = '.';
+		$path = $default;
 	}
 	return $path;
 }
