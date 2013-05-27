@@ -586,7 +586,7 @@ var cont = function () {
 	} else if(clickuri) {
 		searchResults_updateFunc(false, clickuri);
 	} else {
-		searchResults_updateFunc(false, false);
+		searchResults_updateFunc(false, undefined);
 	}
 	if(bb !== undefined) {
 		var llnelat = new Array();
