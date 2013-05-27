@@ -61,23 +61,24 @@ if(isset($singlepoint))
 {
 	$singlepoint = getPointInfo($uri);
 }
+$module = 'default';
 if(is_array($singlepoint))
 {
+	if($_GET['v'] != '')
+	{
+		$module = $_GET['v'];
+	}
 ?>
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="<?php echo $singlepoint['label'].' on '.$config['Site title'] ?>" />
 		<meta property="og:description" content="<?php echo $singlepoint['label'].' on '.$config['Site description'] ?>" />
-		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/MAP/<?= $_GET['v'] ?>/?uri=<?= urlencode($singlepoint['id']) ?>" />
-		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/SAT/<?= $_GET['v'] ?>/?uri=<?= urlencode($singlepoint['id']) ?>" />
+		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/MAP/<?= $module ?>/?uri=<?= urlencode($singlepoint['id']) ?>" />
+		<meta property="og:image" content="http://opendatamap.ecs.soton.ac.uk/thumbnails/SAT/<?= $module ?>/?uri=<?= urlencode($singlepoint['id']) ?>" />
 <?php
 }
 else
 {
-	if($version == '')
-	{
-		$module = 'default';
-	}
-	else
+	if($version != '')
 	{
 		$module = $version;
 	}
