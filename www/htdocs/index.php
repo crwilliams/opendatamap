@@ -59,7 +59,7 @@ if(isset($clickuri) && $clickuri != "")
 }
 if(isset($singlepoint))
 {
-	$singlepoint = getPointInfo($uri);
+	$singlepoint = getPointInfo($singlepoint);
 }
 $module = 'default';
 if(is_array($singlepoint))
