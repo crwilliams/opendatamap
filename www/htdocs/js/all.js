@@ -1,3 +1,5 @@
+google.maps.visualRefresh = true;
+
 var map;
 var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};

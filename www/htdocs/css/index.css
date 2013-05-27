@@ -1,5 +1,5 @@
 body {
-	font-family: 'Ubuntu', 'Helvetica', 'Arial', serif; 
+	font-family: 'Roboto', 'Ubuntu', 'Helvetica', 'Arial', serif; 
 	height: 100%;
 	margin: 0px;
 	padding: 0px;
@@ -64,7 +64,8 @@ a {
 	padding-right:3px;
 	bottom: 0px;
 	right:0px;
-	font-size: 0.75em;
+	font-size: 0.65em;
+	color: rgb(68, 68, 68);
 }
 #credits-small {
 	display:none;
