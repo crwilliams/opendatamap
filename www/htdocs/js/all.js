@@ -609,7 +609,10 @@ var cont = function () {
 		console.log(llswlng);
 		map.fitBounds(new google.maps.LatLngBounds(new google.maps.LatLng(llswlat[10], llswlng[10]), new google.maps.LatLng(llnelat[10], llnelng[10])));
 	}
-	if (uri !== '') { zoomTo(uri, true, true); }
+	if (uri !== '')
+	{
+		zoomTo(uri, true, true);
+	}
 	if (zoomuri !== '')
 	{
 		zoomTo(zoomuri, false, true);
