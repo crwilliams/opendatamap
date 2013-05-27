@@ -12,7 +12,7 @@
 	The source code to the University of Southampton's <a href='http://opendatamap.ecs.soton.ac.uk'>linked open data map</a> is available for use under the <a href='http://creativecommons.org/licenses/by-sa/3.0' title='Creative Commons - Attribution-ShareAlike 3.0 Unported'>CC BY-SA 3.0</a> licence.  The attribution should be to <em>opendatamap</em>, with a link provided to this page (<a href='http://opendatamap.ecs.soton.ac.uk/source'>http://opendatamap.ecs.soton.ac.uk/source</a>).
 </p>
 <ul>
-	<li><a href='opendatamap-source.zip'>Download</a></li>
+	<li>The source code is available via <a href='http://github.com/crwilliams/opendatamap'>Github</a></li>
 </ul>
 <p>
 The source code includes the following external packages:	
