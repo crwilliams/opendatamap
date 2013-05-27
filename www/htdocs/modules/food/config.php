@@ -40,26 +40,26 @@ $scotland = array(
 'West_Dunbartonshire',
 );
 
-foreach(glob('modules/food/resources/*/*.xml') as $version)
+foreach(glob('modules/food/resources/*/*.xml') as $v)
 {
-	$version = str_replace(array('modules/food/resources/', '.xml'), '', $version);
-	list($lang, $version) = explode('/', $version, 2);
-	$config['versions'][$version]['langs'][] = $lang;
-	if(in_array($version, $scotland))
+	$v = str_replace(array('modules/food/resources/', '.xml'), '', $v);
+	list($lang, $v) = explode('/', $v, 2);
+	$config['versions'][$v]['langs'][] = $lang;
+	if(in_array($v, $scotland))
 	{
-		$config['versions'][$version]['mode'] = 'FHIS';
+		$config['versions'][$v]['mode'] = 'FHIS';
 	}
 	else
 	{
-		$config['versions'][$version]['mode'] = 'FHRS';
+		$config['versions'][$v]['mode'] = 'FHRS';
 	}
-	$placename = str_replace('_', ' ', $version);
-	$config['versions'][$version]['datafile'] = $version;
-	$config['versions'][$version]['Site title'] = "Food Hygiene Map for ".$placename;
-	$config['versions'][$version]['Site subtitle'] = $placename;
-	$config['versions'][$version]['Site description'] = "Interactive map showing food establishments in ".$placename." and their hygiene ratings";
-	$config['versions'][$version]['Site keywords'] = "Food Hygiene,map,interactive,".$placename;
-	$config['versions'][$version]['hidden'] = true;
+	$placename = str_replace('_', ' ', $v);
+	$config['versions'][$v]['datafile'] = $v;
+	$config['versions'][$v]['Site title'] = "Food Hygiene Map for ".$placename;
+	$config['versions'][$v]['Site subtitle'] = $placename;
+	$config['versions'][$v]['Site description'] = "Interactive map showing food establishments in ".$placename." and their hygiene ratings";
+	$config['versions'][$v]['Site keywords'] = "Food Hygiene,map,interactive,".$placename;
+	$config['versions'][$v]['hidden'] = true;
 }
 
 if(isset($config['versions'][$versionparts[1]]))
