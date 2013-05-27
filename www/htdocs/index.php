@@ -83,6 +83,7 @@ else
 ?>
 		<meta property="og:type" content="website" />
 		<meta property="og:title" content="<?php echo $config['Site title'] ?>" />
+		<meta property="og:url" content="<?php echo 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REDIRECT_URL'] ?>" />
 		<meta property="og:description" content="<?php echo $config['Site description'] ?>" />
 <?php
 }
