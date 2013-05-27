@@ -12,6 +12,7 @@ RewriteRule ^layar-api/?$ extras/layar-api.php
 RewriteRule ^bus-route-finder/?$ extras/bus-route-finder.php
 RewriteRule ^resources/jquery-1.5.min.js$ /js/jquery-1.5.min.js
 RewriteRule ^thumbnails/([A-Za-z_-]+)/([A-Za-z_-]+).png$ /modules/$1/resources/thumbnails/$2.png
+RewriteRule ^thumbnails/([A-Z]+)/([A-Za-z_-]+)/$ /dev/colin/resources/thumbnail.php?type=$1&v=$2&%{QUERY_STRING}
 
 RewriteRule ^([A-Za-z_-]+)/$ /$1 [R,L]
 RewriteRule ^([A-Za-z_-]+)$ index.php?v=$1&%{QUERY_STRING}
