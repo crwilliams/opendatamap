@@ -62,7 +62,7 @@ function getCategory($icon)
 	{
 		return $category[4];
 	}
-	elseif(substr($category[4], 0, 12) == 'busicon.php?')
+	elseif(substr($category[4], 0, 7) == 'busicon')
 	{
 		return 'Transportation';
 	}

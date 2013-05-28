@@ -1,4 +1,6 @@
 <?php
+$_SERVER['QUERY_STRING'] = str_replace('+', '/', $_SERVER['QUERY_STRING']);
+$_GET['r'] = str_replace('+', '/', $_GET['r']);
 $hash = md5($_SERVER['QUERY_STRING']);
 $filename = 'cache/bi_'.$hash.'.png';
 if(!file_exists($filename))
