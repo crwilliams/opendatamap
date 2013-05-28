@@ -73,7 +73,7 @@ class IsleofwightBusDataSource extends DataSource
 		foreach($data as $point) {
 //			if(!self::visibleCategory($point['icon'], $cats))
 //				continue;
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
+			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon/", $point['icon']);
 			$pos[$point['pos']] ++;
 			if(preg_match('/'.$q.'/i', $point['label']))
 				$label[$point['label']] ++;

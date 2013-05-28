@@ -1,5 +1,6 @@
 <?
 include_once "inc/sparqllib.php";
+include_once "inc/icons.php";
 
 class OpendayDataSource extends DataSource
 {
@@ -300,11 +301,8 @@ SELECT DISTINCT ?uri ?label WHERE {
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$codes = explode(' ', $point['codes']);
-			sort($codes);
-			$codes = array_unique($codes);
-			$codes = implode('/', $codes);
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".$codes;
+			$codes = implode('+', reduceBusIcons(explode(' ', $point['codes'])));
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon/".$codes;
 			$points[] = $point;
 		}
 		return $points;
@@ -525,7 +523,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		$codes = array();
 		foreach($allbus as $code)
 			$codes[] = $code['code'];
-		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos[0]['name'];
+		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon/".implode('+', reduceBusCodes($codes))."' />".$allpos[0]['name'];
 		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
 		echo "<h3> Served by: </h3>";
 		echo "<ul class='offers'>"; 

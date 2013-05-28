@@ -119,9 +119,7 @@ class IsleOfWightDataSource extends DataSource
 
 	static function processURI($uri)
 	{
-		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
-			return self::processSouthamptonBusStopURI($uri);
-		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
+		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
 			return self::processSouthamptonURI($uri);
 		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
 			return self::processSouthamptonURI($uri);
@@ -138,32 +136,6 @@ class IsleOfWightDataSource extends DataSource
 		print_r($data);
 		echo '</pre>';
 		echo '</div>';
-		return true;
-	}
-	
-	static function processSouthamptonBusStopURI($uri)
-	{	
-		$allpos = self::getURIInfo($uri);
-		$allbus = sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?code WHERE {
-		  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
-		  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> <$uri> .
-		  ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
-		  FILTER ( REGEX( ?code, '^U', 'i') )
-		} ORDER BY ?code
-		");
-		$codes = array();
-		foreach($allbus as $code)
-			$codes[] = $code['code'];
-		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos[0]['name'];
-		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
-		echo "<h3> Served by: (click to filter) </h3>";
-		echo "<ul class='offers'>"; 
-		foreach($allbus as $code) {
-			echo "<li ".self::routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
-		}
-		echo "</ul>";
-		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
 		return true;
 	}
 

@@ -9,7 +9,6 @@ class TsinghuaDataSource extends DataSource
 	{
 		$points = array();
 		//foreach(self::getAllPointsOfService()		as $point) $points[] = $point;
-		//foreach(self::getAllBusStops()	 		as $point) $points[] = $point;
 		//foreach(self::getAllWorkstationRooms()		as $point) $points[] = $point;
 		//foreach(self::getAllISolutionsWifiPoints()	as $point) $points[] = $point;
 		//foreach(self::getAllResidences()		as $point) $points[] = $point;
@@ -27,7 +26,6 @@ class TsinghuaDataSource extends DataSource
 		$url = array();
 		$icon = array();
 		//self::createPointOfServiceEntries($pos, $label, $type, $url, $icon, $q, $cats);
-		//self::createBusEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		//self::createWorkstationEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		//self::createISolutionsWifiPointEntries($pos, $label, $type, $url, $icon, $q, $cats);
 		//self::createShowerEntries($pos, $label, $type, $url, $icon, $q, $cats);
@@ -115,58 +113,6 @@ class TsinghuaDataSource extends DataSource
 	  ?pos rdfs:label ?poslabel .
 	  ?pos <http://purl.org/openorg/mapIcon> ?icon .
 	  $filter
-	} ORDER BY ?poslabel
-		");
-	}
-
-	static function getAllBusStops()
-	{
-		$tpoints = sparql_get(self::$endpoint, "
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-	PREFIX org: <http://www.w3.org/ns/org#>
-
-	SELECT ?id ?lat ?long ?label (GROUP_CONCAT(?code) as ?codes) WHERE {
-	  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
-	  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> ?id .
-	  ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
-	  ?id rdfs:label ?label .
-	  ?id geo:lat ?lat .
-	  ?id geo:long ?long .
-	} GROUP BY ?id ?label ?lat ?long ORDER BY ?label
-		");
-	  //FILTER ( REGEX( ?code, '^U', 'i') )
-		$points = array();
-		foreach($tpoints as $point)
-		{
-			$codes = explode(' ', $point['codes']);
-			sort($codes);
-			$codes = array_unique($codes);
-			$codes = implode('/', $codes);
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".$codes;
-			$points[] = $point;
-		}
-		return $points;
-	}
-
-	static function getBusStops($q)
-	{
-		return array();
-		return sparql_get(self::$endpoint, "
-	PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX spacerel: <http://data.ordnancesurvey.co.uk/ontology/spatialrelations/>
-	PREFIX org: <http://www.w3.org/ns/org#>
-
-	SELECT DISTINCT ?poslabel ?label ?pos ?icon WHERE {
-	  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
-	  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> ?pos .
-	  ?route <http://www.w3.org/2004/02/skos/core#notation> ?label .
-	  ?pos rdfs:label ?poslabel .
-	  ?pos <http://purl.org/openorg/mapIcon> ?icon .
-	  FILTER ( ( REGEX( ?label, '$q', 'i') || REGEX( ?poslabel, '$q', 'i')
-	  ) && REGEX( ?label, '^U', 'i') )
 	} ORDER BY ?poslabel
 		");
 	}
@@ -555,29 +501,6 @@ class TsinghuaDataSource extends DataSource
 		}
 	}
 
-	// Process bus data
-	static function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
-	{
-		$data = self::getBusStops($q);
-		foreach($data as $point) {
-			if(!self::visibleCategory($point['icon'], $cats))
-				continue;
-			$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
-			$pos[$point['pos']] ++;
-			if(preg_match('/'.$q.'/i', $point['label']))
-				$label[$point['label']] ++;
-				$type[$point['label']] = "bus-route";
-			if(preg_match('/'.$q.'/i', $point['poslabel']))
-			{
-				$routes[$point['poslabel']][] = $point['label'];
-				$label[$point['poslabel']] += 10;
-				$type[$point['poslabel']] = "bus-stop";
-				$url[$point['poslabel']] = $point['pos'];
-				$icon[$point['poslabel']] = $point['icon'].'?r='.implode('/', $routes[$point['poslabel']]);
-			}
-		}
-	}
-
 	// Process workstation data
 	static function createWorkstationEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	{
@@ -703,9 +626,7 @@ class TsinghuaDataSource extends DataSource
 	
 	static function processURI($uri)
 	{
-		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/bus-stop/')) == 'http://id.southampton.ac.uk/bus-stop/')
-			return self::processSouthamptonBusStopURI($uri);
-		else if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
+		if(substr($uri, 0, strlen('http://id.southampton.ac.uk/')) == 'http://id.southampton.ac.uk/')
 			return self::processSouthamptonURI($uri);
 		else if(substr($uri, 0, strlen('http://id.sown.org.uk/')) == 'http://id.sown.org.uk/')
 			return self::processSouthamptonURI($uri);
@@ -725,32 +646,6 @@ class TsinghuaDataSource extends DataSource
 		return true;
 	}
 	
-	static function processSouthamptonBusStopURI($uri)
-	{	
-		$allpos = self::getURIInfo($uri);
-		$allbus = sparql_get(self::$endpoint, "
-		SELECT DISTINCT ?code WHERE {
-		  ?rstop <http://id.southampton.ac.uk/ns/inBusRoute> ?route .
-		  ?rstop <http://id.southampton.ac.uk/ns/busStoppingAt> <$uri> .
-		  ?route <http://www.w3.org/2004/02/skos/core#notation> ?code .
-		  FILTER ( REGEX( ?code, '^U', 'i') )
-		} ORDER BY ?code
-		");
-		$codes = array();
-		foreach($allbus as $code)
-			$codes[] = $code['code'];
-		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".implode('/', $codes)."' />".$allpos[0]['name'];
-		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
-		echo "<h3> Served by: (click to filter) </h3>";
-		echo "<ul class='offers'>"; 
-		foreach($allbus as $code) {
-			echo "<li ".self::routestyle($code['code'])."onclick=\"setInputBox('^".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."$'); updateFunc();\">".$code['code']."</li>";
-		}
-		echo "</ul>";
-		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
-		return true;
-	}
-
 	static function getURIInfo($uri)
 	{
 		return sparql_get(self::$endpoint, "

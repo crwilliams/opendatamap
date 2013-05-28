@@ -48,7 +48,7 @@ runQuery($dbh->prepare('UPDATE matches SET icon = "http://data.southampton.ac.uk
 runQuery($dbh->prepare('UPDATE matches SET type = "workstation" WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
 runQuery($dbh->prepare('UPDATE points SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
 runQuery($dbh->prepare('UPDATE matches SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
-runQuery($dbh->prepare('UPDATE matches SET icon = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php" WHERE icon = "http://google-maps-icons.googlecode.com/files/bus.png"'));
+runQuery($dbh->prepare('UPDATE matches SET icon = "http://opendatamap.ecs.soton.ac.uk/resources/busicon/" WHERE icon = "http://google-maps-icons.googlecode.com/files/bus.png"'));
 //runQuery('COMMIT TRANSACTION');
 
 function getCategory($icon)

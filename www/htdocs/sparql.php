@@ -1,5 +1,6 @@
 <?
 include_once "inc/sparqllib.php";
+include_once "inc/icons.php";
 
 $endpoint = "http://sparql.data.southampton.ac.uk";
 
@@ -137,11 +138,8 @@ SELECT ?id ?lat ?long ?label (GROUP_CONCAT(?code) as ?codes) WHERE {
 	$points = array();
 	foreach($tpoints as $point)
 	{
-		$codes = explode(' ', $point['codes']);
-		sort($codes);
-		$codes = array_unique($codes);
-		$codes = implode('/', $codes);
-		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php?r=".$codes;
+		$codes = implode('+', reduceBusCodes(explode(' ', $point['codes'])));
+		$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/busicon/".$codes;
 		$points[] = $point;
 	}
 	return $points;
@@ -487,7 +485,7 @@ function createBusEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 	foreach($data as $point) {
 		if(!visibleCategory($point['icon'], $cats))
 			continue;
-		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon.php", $point['icon']);
+		$point['icon'] = str_replace("http://google-maps-icons.googlecode.com/files/bus.png", "http://opendatamap.ecs.soton.ac.uk/resources/busicon/", $point['icon']);
 		$pos[$point['pos']] ++;
 		if(preg_match('/'.$q.'/i', $point['label']))
 			$label[$point['label']] ++;

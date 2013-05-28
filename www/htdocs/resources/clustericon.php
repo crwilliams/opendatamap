@@ -73,7 +73,7 @@ if(!file_exists($filename))
 		{
 			$cat = $parts[4];
 		}
-		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/busicon.php|', $img))
+		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/busicon/|', $img))
 		{
 			$cat = 'Special';
 		}

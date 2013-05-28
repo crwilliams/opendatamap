@@ -1,5 +1,6 @@
 <?
 include_once "inc/sparqllib.php";
+include_once "inc/icons.php";
 include_once('/home/opendatamap/mysql-pdo.inc.php');
 
 class SouthamptonDataSource extends DataSource
@@ -255,34 +256,6 @@ class SouthamptonDataSource extends DataSource
 		return true;
 	}
 	
-	static function reduceBusCodes($codes)
-	{
-		$mapping = array(
-			'U1'	=> 'U1',
-			'U1A'	=> 'U1',
-			'U1C'	=> 'U1',
-			'U1E'	=> 'U1',
-			'U2'	=> 'U2',
-			'U2B'	=> 'U2',
-			'U2C'	=> 'U2',
-			'U6'	=> 'U6',
-			'U6C'	=> 'U6',
-			'U6H'	=> 'U6',
-			'U9'	=> 'U9',
-		);
-		$outcodes = array();
-		foreach($codes as $code)
-		{
-			if(array_key_exists($code, $mapping))
-			{
-				$outcodes[$mapping[$code]] = true;
-			}
-		}
-		$outcodes = array_keys($outcodes);
-		asort($outcodes);
-		return $outcodes;
-	}
-
 	static function processSouthamptonBusStopURI($uri)
 	{	
 		$allpos = self::getURIInfo($uri);
@@ -297,7 +270,7 @@ class SouthamptonDataSource extends DataSource
 		$codes = array();
 		foreach($allbus as $code)
 			$codes[] = $code['code'];
-		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon/".implode('+', self::reduceBusCodes($codes))."' />".$allpos['name'];
+		echo "<h2><img class='icon' src='http://opendatamap.ecs.soton.ac.uk/resources/busicon/".implode('+', reduceBusCodes($codes))."' />".$allpos['name'];
 		echo "<a class='odl' href='$uri'>Visit&nbsp;page</a></h2>";
 		echo "<h3> Served by: (click to show on map) </h3>";
 		echo "<ul class='offers'>"; 
