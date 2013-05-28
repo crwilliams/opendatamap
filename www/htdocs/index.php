@@ -40,14 +40,14 @@ $clickuri = $_GET['clickuri'];
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
 		<link rel="stylesheet" href="css/index.css" type="text/css">
+<?php if(file_exists('modules/'.$version.'/style.css')) { ?>
+		<link rel="stylesheet" href="modules/<?php echo $version ?>/style.css" type="text/css">
+<?php } ?>
 		<script src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript" src="js/fixie.js"></script>
 		<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="js/all.js"></script>
-<?php if(file_exists('modules/'.$version.'/style.css')) { ?>
-		<link rel="stylesheet" href="modules/<?php echo $version ?>/style.css" type="text/css">
-<?php } ?>
 <?php
 if(isset($uri) && $uri != "")
 {
