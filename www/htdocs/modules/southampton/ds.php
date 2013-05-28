@@ -200,7 +200,7 @@ class SouthamptonDataSource extends DataSource
 					$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
 				$url[$point['name']] = $point['uri'];
-				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['num'];
+				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['num'];
 			}
 			if(preg_match('/'.$qbd.'/i', $point['num']))
 			{
@@ -210,7 +210,7 @@ class SouthamptonDataSource extends DataSource
 					$label['Building '.$point['num']] += 100;
 				$type['Building '.$point['num']] = "building";
 				$url['Building '.$point['num']] = $point['uri'];
-				$icon['Building '.$point['num']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['num'];
+				$icon['Building '.$point['num']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['num'];
 			}
 		}
 	}
@@ -229,7 +229,7 @@ class SouthamptonDataSource extends DataSource
 			}
 			$type[$point['name']] = "site";
 			$url[$point['name']] = $point['uri'];
-			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
+			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.substr($point['name'], 0, 1);
 		}
 	}
 	

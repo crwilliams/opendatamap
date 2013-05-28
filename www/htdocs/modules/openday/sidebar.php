@@ -62,7 +62,7 @@ foreach(OpendayDataSource::$dates as $d)
 					}
 					echo "</div>";
 					echo "<div class='location clickable' onclick='zoomTo(\"".$sites[$place]."\", false, true); zoomTo(\"".$buildings[$place]."\", true, false)' title='Jump to ".htmlspecialchars($names[$place], ENT_QUOTES)."'>";
-					echo "<img class='icon' src='resources/numbericon.php?n=".$numbers[$place]."' />";
+					echo "<img class='icon' src='resources/numbericon/".$numbers[$place]."' />";
 					echo $place;
 					echo "</div>";
 				}

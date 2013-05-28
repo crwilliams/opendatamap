@@ -99,7 +99,7 @@ SELECT DISTINCT ?uri ?label WHERE {
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
 			if($point['icon'] == "")
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n=".$point['number'];
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/numbericon/".$point['number'];
 			$points[] = $point;
 		}
 		$tpoints = sparql_get(self::$endpoint, "
@@ -472,14 +472,14 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 				$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
 				$url[$point['name']] = $point['url'];
-				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['number'];
 			}
 			if(preg_match('/'.$qbd.'/i', $point['number']))
 			{
 				$label['Building '.$point['number']] += 100;
 				$type['Building '.$point['number']] = "building";
 				$url['Building '.$point['number']] = $point['url'];
-				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['number'];
 			}
 		}
 	}
@@ -493,7 +493,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 			$label[$point['name']] += 1000;
 			$type[$point['name']] = "site";
 			$url[$point['name']] = $point['url'];
-			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
+			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.substr($point['name'], 0, 1);
 		}
 	}
 	
@@ -557,7 +557,7 @@ SELECT DISTINCT ?uri ?broader ?label ?event ?start ?end ?desc ?building ?site ?p
 		  <$uri> <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 		  <$uri> <http://www.w3.org/2004/02/skos/core#notation> ?number .
 		}");
-		echo "<h2><img class='icon' src='resources/numbericon.php?n=".$allpos[0]['number']."' />".$allpos[0]['name'];
+		echo "<h2><img class='icon' src='resources/numbericon/".$allpos[0]['number']."' />".$allpos[0]['name'];
 		echo "<a class='odl' href='".$uri."'>Visit page</a>";
 		echo "</h2>";
 		return true;

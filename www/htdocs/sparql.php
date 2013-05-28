@@ -584,14 +584,14 @@ function createBuildingEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 			$label[$point['name']] += 100;
 			$type[$point['name']] = "building";
 			$url[$point['name']] = $point['url'];
-			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['number'];
 		}
 		if(preg_match('/'.$qbd.'/i', $point['number']))
 		{
 			$label['Building '.$point['number']] += 100;
 			$type['Building '.$point['number']] = "building";
 			$url['Building '.$point['number']] = $point['url'];
-			$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['number'];
+			$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['number'];
 		}
 	}
 }
@@ -605,7 +605,7 @@ function createSiteEntries(&$pos, &$label, &$type, &$url, &$icon, $q, $cats)
 		$label[$point['name']] += 1000;
 		$type[$point['name']] = "site";
 		$url[$point['name']] = $point['url'];
-		$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
+		$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.substr($point['name'], 0, 1);
 	}
 }
 

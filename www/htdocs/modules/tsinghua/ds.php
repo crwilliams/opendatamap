@@ -591,7 +591,7 @@ class TsinghuaDataSource extends DataSource
 				//	$label[$point['name']] += 100;
 				$type[$point['name']] = "building";
 				$url[$point['name']] = $point['url'];
-				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['smallnumber'];
+				$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['smallnumber'];
 			}
 			if(preg_match('/^'.$qbd.'/i', $point['number']))
 			{
@@ -601,7 +601,7 @@ class TsinghuaDataSource extends DataSource
 				//	$label['Building '.$point['number']] += 100;
 				$type['Building '.$point['number']] = "building";
 				$url['Building '.$point['number']] = $point['url'];
-				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.$point['smallnumber'];
+				$icon['Building '.$point['number']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.$point['smallnumber'];
 			}
 		}
 	}
@@ -620,7 +620,7 @@ class TsinghuaDataSource extends DataSource
 			}
 			$type[$point['name']] = "site";
 			$url[$point['name']] = $point['url'];
-			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon.php?n='.substr($point['name'], 0, 1);
+			$icon[$point['name']] = 'http://opendatamap.ecs.soton.ac.uk/resources/numbericon/'.substr($point['name'], 0, 1);
 		}
 	}
 	

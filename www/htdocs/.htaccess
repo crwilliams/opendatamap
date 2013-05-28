@@ -15,6 +15,7 @@ RewriteRule ^resources/jquery-1.5.min.js$ /js/jquery-1.5.min.js
 RewriteRule ^thumbnails/([A-Za-z_-]+)/([A-Za-z_-]+).png$ /modules/$1/resources/thumbnails/$2.png
 RewriteRule ^thumbnails/([A-Z]+)/([A-Za-z_-]+)/$ /resources/thumbnail.php?type=$1&v=$2&%{QUERY_STRING}
 RewriteRule ^resources/busicon/([A-Z0-9+]*)$ /resources/busicon.php?r=$1
+RewriteRule ^resources/numbericon/([A-Z0-9-]*)$ /resources/numbericon.php?n=$1
 
 RewriteRule ^([A-Za-z_-]+)/$ /$1 [R,L]
 RewriteRule ^([A-Za-z_-]+)$ index.php?v=$1&%{QUERY_STRING}
