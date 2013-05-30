@@ -60,6 +60,7 @@ function processFile($category, $file, $nt=null, $outputdir="")
 	
 	// Set base colour based on category.
 	$color = $cols[$category];
+	@mkdir($outputdir.'plain/');
 	@mkdir($outputdir.$category.'/');
 	
 	$basecolorarr['r'] = hexdec(substr($color, 0, 2));
