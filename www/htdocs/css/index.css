@@ -64,7 +64,7 @@ a {
 	padding-right:3px;
 	bottom: 0px;
 	right:0px;
-	font-size: 0.65em;
+	font-size: 0.9em;
 	color: rgb(68, 68, 68);
 }
 #credits-small {
@@ -153,10 +153,11 @@ form ul {
 	max-height:497px;
 }
 #list li {
-	line-height:1.2em;
+	line-height:1.3em;
 	border-radius:3px;
 	padding-left:30px;
 	text-indent:-30px;
+	font-size:1.2em;
 }
 .location {
 	line-height:1.2em;
@@ -263,6 +264,7 @@ div.listcontent-footer {
 	height:18px;
 	position:relative;
 	text-align:right;
+	font-size:1.4em;
 }
 
 .togglebutton input {
