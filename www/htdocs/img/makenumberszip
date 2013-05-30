@@ -1,0 +1,4 @@
+rm ../iconset/opendatamap-iconset-numbers.zip
+zip ../iconset/opendatamap-iconset-numbers.zip icon/numbers/*/*.png
+rm ../iconset/opendatamap-iconset-letters.zip
+zip ../iconset/opendatamap-iconset-letters.zip icon/letters/*/*.png

@@ -1,0 +1,8 @@
+rm ../iconset/opendatamap-iconset-full.zip
+curl http://opendatamap.ecs.soton.ac.uk/iconset/?i > icon/index.html
+curl http://opendatamap.ecs.soton.ac.uk/iconset/view?i > icon/view.html
+curl http://opendatamap.ecs.soton.ac.uk/js/jquery-1.6.1.min.js > icon/jquery-1.6.1.min.js
+zip ../iconset/opendatamap-iconset-full.zip icon/*/*.png icon/numbers/*/*.png icon/letters/*/*.png icon/README icon/index.html icon/view.html icon/jquery-1.6.1.min.js -x icon/plain/*.png -x icon/src/*.png
+rm icon/index.html
+rm icon/view.html
+rm icon/jquery-1.6.1.min.js
