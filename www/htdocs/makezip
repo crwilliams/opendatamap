@@ -1,2 +1,0 @@
-rm source/opendatamap-source.zip
-zip source/opendatamap-source.zip config.sql.php *.php *.csv css/* ds/* img/*.png img/*.gif img/icon/*/*.png img/icon/README inc/* js/* resources/clustericon.php resources/cache README -x config.local.php -x img/icon/*/lattes.png
