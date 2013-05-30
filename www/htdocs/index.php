@@ -28,6 +28,10 @@ else
 $uri = $_GET['uri'];
 $zoomuri = $_GET['zoomuri'];
 $clickuri = $_GET['clickuri'];
+if(isset($_GET['notitle']))
+{
+	$config['enabled'][] = '-title';
+}
 ?>
 <html>
 	<head>
