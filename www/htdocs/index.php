@@ -21,6 +21,10 @@ if(isset($_GET['zoom']) && $_GET['zoom'] != "")
 	$zoom = $_GET['zoom'];
 else
 	$zoom = $config['default zoom'];;
+if(isset($_GET['map']) && $_GET['map'] != "")
+	$map = $_GET['map'];
+else
+	$map = $config['default map'];;
 $uri = $_GET['uri'];
 $zoomuri = $_GET['zoomuri'];
 $clickuri = $_GET['clickuri'];
@@ -99,7 +103,7 @@ else
 }
 ?>
 	</head>
-	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$config['default map'] ?>)">
+	<body onload="initialize(<?php echo $lat.', '.$long.', '.$zoom.", '".$uri."', '".$zoomuri."', '".$clickuri."', '".$_GET['v']."', ".$map ?>)">
 <? include_once 'googleanalytics.php'; ?>
 		<div id="spinner">
 			<img src="img/ajax-loader.gif" />
