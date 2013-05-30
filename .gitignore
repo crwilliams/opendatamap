@@ -1,0 +1,14 @@
+www/cache
+www/htdocs/dev
+www/htdocs/google26649b7f0fa7d612.html
+www/htdocs/iconset/opendatamap-iconset-local.zip
+www/htdocs/img/fhrs
+www/htdocs/img/icon/letters
+www/htdocs/img/icon/numbers
+www/htdocs/img/icon/plain
+www/htdocs/modules/default
+www/htdocs/modules/food/resources/en-gb/*.xml
+www/htdocs/modules/food/resources/cy-gb/*.xml
+www/htdocs/modules/*/resources/thumbnails
+www/htdocs/modules/*/resources
+www/htdocs/resources/cache/*
