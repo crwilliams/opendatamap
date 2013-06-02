@@ -755,7 +755,7 @@ var initGeoloc = function () {
 function PointsOfInterestCollection() {
 	this.pointsOfInterest = {};
 	this.uris = new Array();
-	this.pointsOfInterestByLocation = new Array();
+	this.pointsOfInterestByLocation = {};
 	this.locations = new Array();
 	this.clusters = {};
 	this.visibleClusterMarkers = new Array();
