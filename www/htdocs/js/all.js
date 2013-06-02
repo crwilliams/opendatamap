@@ -1014,11 +1014,13 @@ var renderContent = function(visiblePointsOfInterest, location) {
 	}
 	var id = location.replace(/[^0-9]/g, '_');
 	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
-	var post = '<div class="listcontent-footer">click icon for more information</div></div>'+
-		'<div id="' + id + '-content"></div>';
+	var post = '</div><div id="' + id + '-content"></div>';
 	var params = new Array();
 	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
 		params.push(renderClusterItem(visiblePointsOfInterest[i].getURI(), location));
+	}
+	if (visiblePointsOfInterest.length > 0) {
+		post = '<div class="listcontent-footer">click icon for more information</div>' + post;
 	}
 	return pre + params.join('') + post;
 }
