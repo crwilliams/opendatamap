@@ -764,13 +764,13 @@ function PointsOfInterestCollection() {
 PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
 	var uri = pointOfInterest.getURI();
 	this.pointsOfInterest[uri] = pointOfInterest;
-	this.uris[] = uri;
+	this.uris.push(uri);
 	var ll = marker.getPosition().toString();
 	if(this.pointsOfInterestByLocation[ll] === undefined) {
 		this.pointsOfInterestByLocation[ll] = new Array();
-		this.locations[] = ll;
+		this.locations.push(ll);
 	}
-	this.pointsOfInterestByLocation[ll][] = pointOfInterest;
+	this.pointsOfInterestByLocation[ll].push(pointOfInterest);
 }
 
 PointsOfInterestCollection.prototype.prepareClusters = function() {
@@ -792,7 +792,7 @@ PointsOfInterestCollection.prototype.cluster = function() {
 		var visibleMarkers = new Array();
 		for (var marker in markers) {
 			if (marker.getVisible() === true) {
-				visibleMarkers[] = marker;
+				visibleMarkers.push(marker);
 			}
 		}
 		if (visibleMarkers.length > 1) {
@@ -807,7 +807,7 @@ PointsOfInterestCollection.prototype.cluster = function() {
 				icon: icon,
 				visible: true
 			});
-			this.visibleClusterMarkers[] = clusterMarker;
+			this.visibleClusterMarkers.push(clusterMarker);
 			var content = renderContent(visibleMarkers, location);
 			var clusterInfoWindow = new google.maps.InfoWindow({
 				content: content
@@ -827,7 +827,7 @@ var getIconURL = function(visibleMarkers) {
 	var url = 'resources/clustericon.php?';
 	var params = new Array();
 	for (marker in visibleMarkers) {
-		params[] = 'i[]=' + marker.getIcon();
+		params.push('i[]=' + marker.getIcon());
 	}
 	return url + params.join('&');
 }
@@ -845,7 +845,7 @@ var renderContent = function(visibleMarkers, location) {
 		'<div id="' + id + '-content"></div>';
 	var params = new Array();
 	for (marker in visibleMarkers) {
-		params[] = renderClusterItem(marker.getURI(), location);
+		params.push(renderClusterItem(marker.getURI(), location));
 	}
 	return pre + params.join('') + post;
 }
