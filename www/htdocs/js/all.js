@@ -330,7 +330,7 @@ SearchResults.prototype.updateFunc = function (force, reopen) {
 				matches = response_data[0];
 				labelmatches = response_data[1];
 			}
-			this.processResponse(matches, labelmatches, reopen);
+			searchResults.processResponse(matches, labelmatches, reopen);
 		}
 	};
 };
