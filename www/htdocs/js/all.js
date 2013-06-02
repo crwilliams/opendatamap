@@ -279,223 +279,6 @@ var closeAll = function () {
 	}
 };
 
-// Search functions.
-
-function SearchResults()
-{
-	this.exactMatch = false;
-	this.resultCount = 0;
-	this.selectIndex = -1;
-	this.searchTerm = null;
-	this.t = null;
-}
-
-SearchResults.prototype.setInputBox = function (str, exact) {
-	if (exact === true) {
-		this.exactMatch = true;
-	} else {
-		this.exactMatch = false;
-	}
-	$('#inputbox').get(0).value = str;
-};
-
-SearchResults.prototype.updateFunc = function (force, reopen) {
-	if(force !== true) {
-		force = false;
-	}
-	var enabledCategories = getSelectedCategories();
-	resetSearchIcon();
-	var inputbox = $("#inputbox").get(0);
-	var list = $("#list").get(0);
-
-	var newSearchTerm = inputbox.value;
-	if (this.exactMatch) {
-		newSearchTerm = '^' + newSearchTerm + '$';
-	}
-	if (!force && newSearchTerm === this.searchTerm) {
-		return;
-	}
-	this.searchTerm = newSearchTerm;
-
-	if (xmlhttp !== undefined) {
-		xmlhttp.abort();
-	}
-	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET","matches.php?v=" + version + "&q=" + this.searchTerm + '&ec=' + enabledCategories,true);
-	_gaq.push(['_trackEvent', 'Search', 'Request', this.searchTerm]);
-	xmlhttp.send();
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-			var response_data = JSON.parse(xmlhttp.responseText);
-			var matches = [], labelmatches = [];
-			if (response_data !== undefined) {
-				matches = response_data[0];
-				labelmatches = response_data[1];
-			}
-			searchResults.processResponse(matches, labelmatches, reopen);
-		}
-	};
-};
-
-SearchResults.prototype.processResponse = function (matches, labelmatches, reopen){
-	var matchesd = {};
-	matches.map(function (x) {
-		if (x !== undefined) {
-			matchesd[x] = true;
-		}
-	});
-
-	var allURIs = pointsOfInterestCollection.getAllURIs();
-	for (var i = 0; i < allURIs.length; i++) {
-		var uri = allURIs[i];
-		pointsOfInterestCollection.getMarker(uri).setVisible(matchesd[uri] !== undefined);
-	}
-
-	this.selectIndex = -1;
-	list.innerHTML = "";
-
-	var re = new RegExp('(' + $.trim(this.searchTerm) + ')',"gi");
-	this.resultCount = 0;
-	for (var m in labelmatches) {
-		// if it's the special last element, continue
-		if (m === undefined) {
-			continue;
-		}
-		var dispStr;
-		if (labelmatches[m][0] === undefined) {
-			continue;
-		}
-
-		var dispStr = labelmatches[m][0];
-		if (this.searchTerm !== "") {
-			dispStr = new String(dispStr).replace(re,
-				"<span style='background-color:#FFFF66'>$1</span>");
-		}
-		if (labelmatches[m][2] !== undefined) {
-			var onclick = '';
-			if(labelmatches[m][2] !== null) {
-				onclick = "zoomTo('" + labelmatches[m][2] + "');" +
-					"searchResults.setInputBox('');" +
-					"searchResults.updateFunc(false, '" + labelmatches[m][2] + "');";
-			} else {
-				var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
-				onclick = "searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
-					"searchResults.updateFunc();";
-			}
-			var element = '<li id="li' + this.resultCount + '" onclick="' + onclick + '">';
-			if(labelmatches[m][3] !== undefined) {
-				element += '<img class="icon" src="' + labelmatches[m][3] + '" />';
-			} else {
-				element += '<span style="font-size:0.5em">' + labelmatches[m][1] + ': </span>';
-			}
-			element += dispStr;
-			element += '</li>';
-			list.innerHTML += element;
-		} else {
-			var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
-			var onclick = "searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
-				"searchResults.updateFunc();";
-			list.innerHTML += '<li id="li' + this.resultCount + '" onclick="' + onclick + '">' + dispStr + '</li>';
-		}
-		this.resultCount++;
-	}
-	if(this.resultCount === 0) {
-		list.innerHTML += '<li><i>No results found</i></li>';
-	}
-	cluster(reopen);
-
-	if ($("#spinner").is(":visible")) {
-		$("#spinner").fadeOut();
-	}
-};
-
-/** Handle key presses within the search results. */
-SearchResults.prototype.keypress = function (e) {
-	if (e.keyCode === 40) {
-		return this.moveDown();
-	}
-	else if (e.keyCode === 38) {
-		return this.moveUp();
-	}
-	else if (e.keyCode === 13) {
-		return this.select();
-	}
-	else if (e.keyCode === 27) {
-		return this.blursearch();
-	}
-};
-
-/** Handle moving upwards within the search results. */
-SearchResults.prototype.moveUp = function () {
-	this.removeHighlight();
-	if (this.selectIndex >= 0) {
-		this.selectIndex--;
-	}
-	this.updateHighlight();
-	return false;
-};
-
-/** Handle moving downwards within the search results. */
-SearchResults.prototype.moveDown = function () {
-	this.removeHighlight();
-	if (this.selectIndex < this.resultCount - 1) {
-		this.selectIndex++;
-	}
-	this.updateHighlight();
-	return false;
-};
-
-/** Handle focus on the search results. */
-SearchResults.prototype.enter = function() {
-	this.exactMatch = false;
-	this.updateFunc();
-	this.showList();
-	$('#search').css('z-index', 10);
-};
-
-/** Handle selection within the search results. */
-SearchResults.prototype.select = function () {
-	if (this.selectIndex >= 0) {
-		$('#li' + this.selectIndex).get(0).onclick();
-	}
-	this.blursearch();
-};
-
-/** Handle unfocus on the search results. */
-SearchResults.prototype.blursearch = function () {
-	this.removeHighlight();
-	$('#inputbox').blur();
-};
-
-/** Remove the highlight from the search results. */
-SearchResults.prototype.removeHighlight = function () {
-	if (this.selectIndex >= 0) {
-		$('#li' + this.selectIndex).get(0).style.backgroundColor = 'inherit';
-	}
-};
-
-/** Apply the highlight to the search results. */
-SearchResults.prototype.updateHighlight = function () {
-	if (this.selectIndex >= 0) {
-		$('#li' + this.selectIndex).get(0).style.backgroundColor = '#CCCCFF';
-	}
-};
-
-SearchResults.prototype.showList = function () {
-	this.selectIndex = -1;
-	clearTimeout(this.t);
-	$('#list').get(0).style.display = "block";
-	$('#toggleicons').get(0).style.zIndex = 5;
-};
-
-SearchResults.prototype.hideList = function () {
-	$('#list').get(0).style.display = "none";
-};
-
-SearchResults.prototype.delayHideList = function () {
-	this.t = setTimeout("searchResults.hideList();", 1000);
-};
-
 var fitBounds = function() {
 	if(bb !== undefined) {
 		var llnelat = new Array();
@@ -756,174 +539,6 @@ var initGeoloc = function () {
 	}
 };
 
-function PointsOfInterestCollection() {
-	this.uris = new Array();	
-	this.locations = new Array();
-	this.visibleClusterMarkers = new Array();
-	this.pointsOfInterest = {};
-	this.pointsOfInterestByLocation = {};
-	this.clusters = {};
-}
-
-PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
-	var uri = pointOfInterest.getURI();
-	this.pointsOfInterest[uri] = pointOfInterest;
-	this.uris.push(uri);
-	var ll = pointOfInterest.getPosition().toString();
-	if(this.pointsOfInterestByLocation[ll] === undefined) {
-		this.pointsOfInterestByLocation[ll] = new Array();
-		this.locations.push(ll);
-	}
-	this.pointsOfInterestByLocation[ll].push(pointOfInterest);
-}
-
-PointsOfInterestCollection.prototype.prepareClusters = function() {
-	this.clusters = {};
-	for (var i = 0; i < this.locations.length; i++) {
-		var location = this.locations[i];
-		if (this.pointsOfInterestByLocation[location].length > 1) {
-			this.clusters[location] = this.pointsOfInterestByLocation[location];
-		}
-	}
-}
-
-PointsOfInterestCollection.prototype.cluster = function() {
-	for (var i = 0; i < this.visibleClusterMarkers.length; i++) {
-		this.visibleClusterMarkers[i].setMap(null);
-	}
-	this.visibleClusterMarkers = new Array();
-	for (var location in this.clusters) {
-		var pointsOfInterest = this.clusters[location];
-		var visiblePointsOfInterest = new Array();
-		for (var i = 0; i < pointsOfInterest.length; i++) {
-			var pointOfInterest = pointsOfInterest[i];
-			if (pointOfInterest.getMarker().getVisible() === true) {
-				visiblePointsOfInterest.push(pointOfInterest);
-			}
-		}
-		if (visiblePointsOfInterest.length > 1) {
-			for (var i = 0; i < pointsOfInterest.length; i++) {
-				pointsOfInterest[i].getMarker().setVisible(false);
-			}
-			var icon = getIconURL(visiblePointsOfInterest);
-			var clusterMarker = new google.maps.Marker({
-				position: visiblePointsOfInterest[0].getMarker().getPosition(),
-				title: visiblePointsOfInterest.length + ' items',
-				map: window.map,
-				icon: icon,
-				visible: true
-			});
-			this.visibleClusterMarkers.push(clusterMarker);
-			var content = renderContent(visiblePointsOfInterest, location);
-			var clusterInfoWindow = new google.maps.InfoWindow({
-				content: content
-			});
-			with({location: location}) {
-				google.maps.event.addListener(clusterMarker, 'click', function() {
-					closeAll();
-					_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', location]);
-					clusterInfoWindow.open(window.map, clusterMarker);
-				});
-			}
-			clusterInfoWindows[location] = clusterInfoWindow;
-		}
-	}
-}
-
-var getIconURL = function(visiblePointsOfInterest) {
-	var url = 'resources/clustericon.php?';
-	var params = new Array();
-	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
-		params.push('i[]=' + visiblePointsOfInterest[i].getMarker().getIcon());
-	}
-	return url + params.join('&');
-}
-
-var renderContent = function(visiblePointsOfInterest, location) {
-	var polygonname = polygonnames[location];
-	var clusterTitle = '';
-	if (polygonname !== undefined) {
-		clusterTitle = '<h1>' + polygonname + '</h1><hr />';
-	}
-	var id = location.replace(/[^0-9]/g, '_');
-	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
-	var post = '<div class="listcontent-footer">click icon for more information</div></div>'+
-		'<div id="' + id + '-content"></div>';
-	var params = new Array();
-	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
-		params.push(renderClusterItem(visiblePointsOfInterest[i].getURI(), location));
-	}
-	return pre + params.join('') + post;
-}
-
-PointsOfInterestCollection.prototype.getMarker = function(uri) {
-	return this.pointsOfInterest[uri].getMarker();
-}
-
-PointsOfInterestCollection.prototype.getInfoWindow = function(uri) {
-	return this.pointsOfInterest[uri].getInfoWindow();
-}
-
-PointsOfInterestCollection.prototype.contains = function(uri) {
-	return this.pointsOfInterest[uri] !== undefined;
-}
-
-PointsOfInterestCollection.prototype.getAllURIs = function() {
-	return this.uris;
-}
-
-PointsOfInterestCollection.prototype.closeAllInfoWindows = function() {
-	for (var i = 0; i < this.uris; i++) {
-		this.pointsOfInterest[this.uris[i]].getInfoWindow().close();
-	}
-}
-
-function PointOfInterest(pos, ll, poslabel, icon) {
-	this.pos = pos;
-	this.ll = ll;
-	this.poslabel = poslabel;
-	this.icon = icon;
-	this.marker = null;
-	this.infoWindow = null;
-	
-	this.marker = new google.maps.Marker({
-		position: this.ll,
-		title: this.poslabel.replace('\\\'', '\''),
-		map: window.map,
-		icon: this.icon,
-		visible: false
-	});
-	
-	this.infoWindow = new google.maps.InfoWindow({ content: '<div id="content">' +
-		'<h2 id="title"><img class="icon" style="width:20px;" src="' + this.icon + '" />' + this.poslabel + '</h2>' +
-		'<a class="odl" href="' + this.pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
-	});
-	
-	with ({pointOfInterest: this}) {
-		google.maps.event.addListener(this.marker, 'click', function () {
-			closeAll();
-			pointOfInterest.infoWindow.open(window.map, pointOfInterest.marker);
-			loadWindow(pointOfInterest.getURI());
-		});
-	}
-}
-
-PointOfInterest.prototype.getMarker = function() {
-	return this.marker;
-}
-
-PointOfInterest.prototype.getInfoWindow = function() {
-	return this.infoWindow;
-}
-
-PointOfInterest.prototype.getURI = function() {
-	return this.pos;
-}
-
-PointOfInterest.prototype.getPosition = function() {
-	return this.ll;
-}
-
 var initMarkers = function () {
 	$.get('alldata.php?v='+version, function(data,textstatus,xhr) {
 		data.map(function(markpt) {
@@ -1065,3 +680,388 @@ var initSearch = function () {
 	$('#search-small').index = 2;
 	addControl('search-small', google.maps.ControlPosition.TOP_RIGHT);
 };
+
+// Classes
+
+function SearchResults()
+{
+	this.exactMatch = false;
+	this.resultCount = 0;
+	this.selectIndex = -1;
+	this.searchTerm = null;
+	this.t = null;
+}
+
+SearchResults.prototype.setInputBox = function (str, exact) {
+	if (exact === true) {
+		this.exactMatch = true;
+	} else {
+		this.exactMatch = false;
+	}
+	$('#inputbox').get(0).value = str;
+};
+
+SearchResults.prototype.updateFunc = function (force, reopen) {
+	if(force !== true) {
+		force = false;
+	}
+	var enabledCategories = getSelectedCategories();
+	resetSearchIcon();
+	var inputbox = $("#inputbox").get(0);
+	var list = $("#list").get(0);
+
+	var newSearchTerm = inputbox.value;
+	if (this.exactMatch) {
+		newSearchTerm = '^' + newSearchTerm + '$';
+	}
+	if (!force && newSearchTerm === this.searchTerm) {
+		return;
+	}
+	this.searchTerm = newSearchTerm;
+
+	if (xmlhttp !== undefined) {
+		xmlhttp.abort();
+	}
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET","matches.php?v=" + version + "&q=" + this.searchTerm + '&ec=' + enabledCategories,true);
+	_gaq.push(['_trackEvent', 'Search', 'Request', this.searchTerm]);
+	xmlhttp.send();
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+			var response_data = JSON.parse(xmlhttp.responseText);
+			var matches = [], labelmatches = [];
+			if (response_data !== undefined) {
+				matches = response_data[0];
+				labelmatches = response_data[1];
+			}
+			searchResults.processResponse(matches, labelmatches, reopen);
+		}
+	};
+};
+
+SearchResults.prototype.processResponse = function (matches, labelmatches, reopen){
+	var matchesd = {};
+	matches.map(function (x) {
+		if (x !== undefined) {
+			matchesd[x] = true;
+		}
+	});
+
+	var allURIs = pointsOfInterestCollection.getAllURIs();
+	for (var i = 0; i < allURIs.length; i++) {
+		var uri = allURIs[i];
+		pointsOfInterestCollection.getMarker(uri).setVisible(matchesd[uri] !== undefined);
+	}
+
+	this.selectIndex = -1;
+	list.innerHTML = "";
+
+	var re = new RegExp('(' + $.trim(this.searchTerm) + ')',"gi");
+	this.resultCount = 0;
+	for (var m in labelmatches) {
+		// if it's the special last element, continue
+		if (m === undefined) {
+			continue;
+		}
+		var dispStr;
+		if (labelmatches[m][0] === undefined) {
+			continue;
+		}
+
+		var dispStr = labelmatches[m][0];
+		if (this.searchTerm !== "") {
+			dispStr = new String(dispStr).replace(re,
+				"<span style='background-color:#FFFF66'>$1</span>");
+		}
+		if (labelmatches[m][2] !== undefined) {
+			var onclick = '';
+			if(labelmatches[m][2] !== null) {
+				onclick = "zoomTo('" + labelmatches[m][2] + "');" +
+					"searchResults.setInputBox('');" +
+					"searchResults.updateFunc(false, '" + labelmatches[m][2] + "');";
+			} else {
+				var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
+				onclick = "searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
+					"searchResults.updateFunc();";
+			}
+			var element = '<li id="li' + this.resultCount + '" onclick="' + onclick + '">';
+			if(labelmatches[m][3] !== undefined) {
+				element += '<img class="icon" src="' + labelmatches[m][3] + '" />';
+			} else {
+				element += '<span style="font-size:0.5em">' + labelmatches[m][1] + ': </span>';
+			}
+			element += dispStr;
+			element += '</li>';
+			list.innerHTML += element;
+		} else {
+			var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
+			var onclick = "searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
+				"searchResults.updateFunc();";
+			list.innerHTML += '<li id="li' + this.resultCount + '" onclick="' + onclick + '">' + dispStr + '</li>';
+		}
+		this.resultCount++;
+	}
+	if(this.resultCount === 0) {
+		list.innerHTML += '<li><i>No results found</i></li>';
+	}
+	cluster(reopen);
+
+	if ($("#spinner").is(":visible")) {
+		$("#spinner").fadeOut();
+	}
+};
+
+/** Handle key presses within the search results. */
+SearchResults.prototype.keypress = function (e) {
+	if (e.keyCode === 40) {
+		return this.moveDown();
+	}
+	else if (e.keyCode === 38) {
+		return this.moveUp();
+	}
+	else if (e.keyCode === 13) {
+		return this.select();
+	}
+	else if (e.keyCode === 27) {
+		return this.blursearch();
+	}
+};
+
+/** Handle moving upwards within the search results. */
+SearchResults.prototype.moveUp = function () {
+	this.removeHighlight();
+	if (this.selectIndex >= 0) {
+		this.selectIndex--;
+	}
+	this.updateHighlight();
+	return false;
+};
+
+/** Handle moving downwards within the search results. */
+SearchResults.prototype.moveDown = function () {
+	this.removeHighlight();
+	if (this.selectIndex < this.resultCount - 1) {
+		this.selectIndex++;
+	}
+	this.updateHighlight();
+	return false;
+};
+
+/** Handle focus on the search results. */
+SearchResults.prototype.enter = function() {
+	this.exactMatch = false;
+	this.updateFunc();
+	this.showList();
+	$('#search').css('z-index', 10);
+};
+
+/** Handle selection within the search results. */
+SearchResults.prototype.select = function () {
+	if (this.selectIndex >= 0) {
+		$('#li' + this.selectIndex).get(0).onclick();
+	}
+	this.blursearch();
+};
+
+/** Handle unfocus on the search results. */
+SearchResults.prototype.blursearch = function () {
+	this.removeHighlight();
+	$('#inputbox').blur();
+};
+
+/** Remove the highlight from the search results. */
+SearchResults.prototype.removeHighlight = function () {
+	if (this.selectIndex >= 0) {
+		$('#li' + this.selectIndex).get(0).style.backgroundColor = 'inherit';
+	}
+};
+
+/** Apply the highlight to the search results. */
+SearchResults.prototype.updateHighlight = function () {
+	if (this.selectIndex >= 0) {
+		$('#li' + this.selectIndex).get(0).style.backgroundColor = '#CCCCFF';
+	}
+};
+
+SearchResults.prototype.showList = function () {
+	this.selectIndex = -1;
+	clearTimeout(this.t);
+	$('#list').get(0).style.display = "block";
+	$('#toggleicons').get(0).style.zIndex = 5;
+};
+
+SearchResults.prototype.hideList = function () {
+	$('#list').get(0).style.display = "none";
+};
+
+SearchResults.prototype.delayHideList = function () {
+	this.t = setTimeout("searchResults.hideList();", 1000);
+};
+
+function PointsOfInterestCollection() {
+	this.uris = new Array();	
+	this.locations = new Array();
+	this.visibleClusterMarkers = new Array();
+	this.pointsOfInterest = {};
+	this.pointsOfInterestByLocation = {};
+	this.clusters = {};
+}
+
+PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
+	var uri = pointOfInterest.getURI();
+	this.pointsOfInterest[uri] = pointOfInterest;
+	this.uris.push(uri);
+	var ll = pointOfInterest.getPosition().toString();
+	if(this.pointsOfInterestByLocation[ll] === undefined) {
+		this.pointsOfInterestByLocation[ll] = new Array();
+		this.locations.push(ll);
+	}
+	this.pointsOfInterestByLocation[ll].push(pointOfInterest);
+}
+
+PointsOfInterestCollection.prototype.prepareClusters = function() {
+	this.clusters = {};
+	for (var i = 0; i < this.locations.length; i++) {
+		var location = this.locations[i];
+		if (this.pointsOfInterestByLocation[location].length > 1) {
+			this.clusters[location] = this.pointsOfInterestByLocation[location];
+		}
+	}
+}
+
+PointsOfInterestCollection.prototype.cluster = function() {
+	for (var i = 0; i < this.visibleClusterMarkers.length; i++) {
+		this.visibleClusterMarkers[i].setMap(null);
+	}
+	this.visibleClusterMarkers = new Array();
+	for (var location in this.clusters) {
+		var pointsOfInterest = this.clusters[location];
+		var visiblePointsOfInterest = new Array();
+		for (var i = 0; i < pointsOfInterest.length; i++) {
+			var pointOfInterest = pointsOfInterest[i];
+			if (pointOfInterest.getMarker().getVisible() === true) {
+				visiblePointsOfInterest.push(pointOfInterest);
+			}
+		}
+		if (visiblePointsOfInterest.length > 1) {
+			for (var i = 0; i < pointsOfInterest.length; i++) {
+				pointsOfInterest[i].getMarker().setVisible(false);
+			}
+			var icon = getIconURL(visiblePointsOfInterest);
+			var clusterMarker = new google.maps.Marker({
+				position: visiblePointsOfInterest[0].getMarker().getPosition(),
+				title: visiblePointsOfInterest.length + ' items',
+				map: window.map,
+				icon: icon,
+				visible: true
+			});
+			this.visibleClusterMarkers.push(clusterMarker);
+			var content = renderContent(visiblePointsOfInterest, location);
+			var clusterInfoWindow = new google.maps.InfoWindow({
+				content: content
+			});
+			with({location: location}) {
+				google.maps.event.addListener(clusterMarker, 'click', function() {
+					closeAll();
+					_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', location]);
+					clusterInfoWindow.open(window.map, clusterMarker);
+				});
+			}
+			clusterInfoWindows[location] = clusterInfoWindow;
+		}
+	}
+}
+
+PointsOfInterestCollection.prototype.getMarker = function(uri) {
+	return this.pointsOfInterest[uri].getMarker();
+}
+
+PointsOfInterestCollection.prototype.getInfoWindow = function(uri) {
+	return this.pointsOfInterest[uri].getInfoWindow();
+}
+
+PointsOfInterestCollection.prototype.contains = function(uri) {
+	return this.pointsOfInterest[uri] !== undefined;
+}
+
+PointsOfInterestCollection.prototype.getAllURIs = function() {
+	return this.uris;
+}
+
+PointsOfInterestCollection.prototype.closeAllInfoWindows = function() {
+	for (var i = 0; i < this.uris; i++) {
+		this.pointsOfInterest[this.uris[i]].getInfoWindow().close();
+	}
+}
+
+var getIconURL = function(visiblePointsOfInterest) {
+	var url = 'resources/clustericon.php?';
+	var params = new Array();
+	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
+		params.push('i[]=' + visiblePointsOfInterest[i].getMarker().getIcon());
+	}
+	return url + params.join('&');
+}
+
+var renderContent = function(visiblePointsOfInterest, location) {
+	var polygonname = polygonnames[location];
+	var clusterTitle = '';
+	if (polygonname !== undefined) {
+		clusterTitle = '<h1>' + polygonname + '</h1><hr />';
+	}
+	var id = location.replace(/[^0-9]/g, '_');
+	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
+	var post = '<div class="listcontent-footer">click icon for more information</div></div>'+
+		'<div id="' + id + '-content"></div>';
+	var params = new Array();
+	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
+		params.push(renderClusterItem(visiblePointsOfInterest[i].getURI(), location));
+	}
+	return pre + params.join('') + post;
+}
+
+function PointOfInterest(pos, ll, poslabel, icon) {
+	this.pos = pos;
+	this.ll = ll;
+	this.poslabel = poslabel;
+	this.icon = icon;
+	this.marker = null;
+	this.infoWindow = null;
+	
+	this.marker = new google.maps.Marker({
+		position: this.ll,
+		title: this.poslabel.replace('\\\'', '\''),
+		map: window.map,
+		icon: this.icon,
+		visible: false
+	});
+	
+	this.infoWindow = new google.maps.InfoWindow({ content: '<div id="content">' +
+		'<h2 id="title"><img class="icon" style="width:20px;" src="' + this.icon + '" />' + this.poslabel + '</h2>' +
+		'<a class="odl" href="' + this.pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
+	});
+	
+	with ({pointOfInterest: this}) {
+		google.maps.event.addListener(this.marker, 'click', function () {
+			closeAll();
+			pointOfInterest.infoWindow.open(window.map, pointOfInterest.marker);
+			loadWindow(pointOfInterest.getURI());
+		});
+	}
+}
+
+PointOfInterest.prototype.getMarker = function() {
+	return this.marker;
+}
+
+PointOfInterest.prototype.getInfoWindow = function() {
+	return this.infoWindow;
+}
+
+PointOfInterest.prototype.getURI = function() {
+	return this.pos;
+}
+
+PointOfInterest.prototype.getPosition = function() {
+	return this.ll;
+}
