@@ -959,7 +959,7 @@ PointsOfInterestCollection.prototype.cluster = function() {
 			var clusterInfoWindow = new google.maps.InfoWindow({
 				content: content
 			});
-			with({location: location}) {
+			with({location: location, clusterInfoWindow: clusterInfoWindow, clusterMarker: clusterMarker}) {
 				google.maps.event.addListener(clusterMarker, 'click', function() {
 					closeAll();
 					_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', location]);
