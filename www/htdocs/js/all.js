@@ -3,9 +3,8 @@ google.maps.visualRefresh = true;
 var map;
 var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};
-var markers = {};
-var infowindows = {};
 var searchResults = new SearchResults();
+var pointsOfInterestCollection = new PointsOfInterestCollection();
 var postcodeMarkers = {};
 var postcodeInfowindows = {};
 var polygons = {};
@@ -129,10 +128,13 @@ var zoomTo = function (uri, click, pan) {
 			if (pan) { map.panTo(polygons[uri].getPosition()); }
 			if (click) { google.maps.event.trigger(polygons[uri], 'click'); }
 		}
-	} else if(markers[uri] !== undefined) {
+	} else if(pointsOfInterestCollection.contains(uri)) {
 		_gaq.push(['_trackEvent', 'JumpTo', 'Point', uri]);
-		if (pan) { map.panTo(markers[uri].getPosition()); }
-		if (click) { google.maps.event.trigger(markers[uri], 'click'); }
+		if (pan || click) {
+			marker = pointsOfInterestCollection.getMarker(uri);
+			if (pan) { map.panTo(marker.getPosition()); }
+			if (click) { google.maps.event.trigger(marker, 'click'); }
+		}
 	} else if(uri === 'southampton-overview') {
 		bounds.extend(new google.maps.LatLng(50.9667011,-1.4444580));
 		bounds.extend(new google.maps.LatLng(50.9326431,-1.4438220));
@@ -157,9 +159,10 @@ var renderClusterItem = function (uri, ll) {
 	if (polygonlls[uri] === undefined) {
 		var lltrim = ll.replace(/[^0-9]/g, '_');
 		var onclick = "loadWindow('" + uri + "', $('#" + lltrim + "-content'), $('#" + lltrim + "-listcontent'), '" + ll + "')";
+		var marker = pointsOfInterestCollection.getMarker(uri);
 		return '<div class="clusteritem" onclick="' + onclick + '">' +
-			'<img class="icon" src="' + markers[uri].getIcon() + '" />' +
-			markers[uri].getTitle().replace('\\\'', '\'') + getLiveInfo(uri) + '</div>';
+			'<img class="icon" src="' + marker.getIcon() + '" />' +
+			marker.getTitle().replace('\\\'', '\'') + getLiveInfo(uri) + '</div>';
 	} else {
 		return '';
 	}
@@ -167,103 +170,24 @@ var renderClusterItem = function (uri, ll) {
 
 var cluster = function (reopen) {
 	closeAll();
-	for (var i in clusterMarkers) {
-		var clusterMarker = clusterMarkers[i];
-		if (typeof (clusterMarker) === "object") {
-			clusterMarker.setMap(null);
-		}
-	}
-	clusterMarkers = {};
-	clusterInfoWindows = {};
-	var positions = {};
-	firstAtPos = {};
-	var str = "";
-	var count = 0;
-	var count2 = 0;
-	for (var i in markers) {
-		var marker = markers[i];
-		if (marker.getVisible() === true) {
-			count++;
-			str += marker.getTitle();
-			str += marker.getPosition().toString();
-			var ll = marker.getPosition().toString();
-			if (positions[ll] !== undefined) {
-				positions[ll]++;
-				marker.setVisible(false);
-				if (clusterMarkers[ll] === undefined) {
-					var clusterMarker = new google.maps.Marker({
-						position: marker.getPosition(),
-						title: '2',
-						map: map,
-						visible: true
-					});
-					clusterMarkers[ll] = clusterMarker;
-					var clusterInfoWindow = new google.maps.InfoWindow({
-						content: renderClusterItem(firstAtPos[ll], ll) + renderClusterItem(i, ll)
-					});
-					clusterInfoWindows[ll] = clusterInfoWindow;
-					var firstMarker = markers[firstAtPos[ll]];
-					clusterMarker.setIcon('resources/clustericon.php?' +
-						'i[]=' + firstMarker.getIcon() +
-						'&i[]=' + marker.getIcon());
-					firstMarker.setVisible(false);
-				} else {	
-					var clusterInfoWindow = clusterInfoWindows[ll];
-					var clusterMarker = clusterMarkers[ll];
-					clusterInfoWindow.setContent(clusterInfoWindow.getContent() +
-						renderClusterItem(i, ll));
-					if (marker.getIcon() !== clusterMarker.getIcon())
-					{
-						clusterMarker.setIcon(clusterMarker.getIcon() +
-							'&i[]=' + marker.getIcon());
-					}
-					var oldc = parseInt(clusterMarker.getTitle(), 10);
-					clusterMarker.setTitle('' + (oldc + 1));
-				}
-				count2++;
-			} else {
-				positions[ll] = 1;
-				firstAtPos[ll] = i;
-			}
-		}
-	}
-	for(var i in clusterInfoWindows) {
-		var polygonname = polygonnames[i];
-		var clusterInfoWindow = clusterInfoWindows[i];
-		var clusterTitle = '';
-		if (polygonname !==undefined)
-		{
-			clusterTitle = '<h1>' + polygonname + '</h1><hr />';
-		}
-		var id = i.replace(/[^0-9]/g, '_');
-		clusterInfoWindow.setContent(clusterTitle + '<div id="' + id + '-listcontent">' +
-			clusterInfoWindow.getContent() +
-			'<div class="listcontent-footer">click icon for more information</div></div>'+
-			'<div id="' + id + '-content"></div>');
-	}
-	for(var i in infowindows) {
-		var polygonname = polygonnames[markers[i].getPosition().toString()];
+	pointsOfInterestCollection.cluster();
+	/*
+	for(var uri in pointsOfInterestCollection.getAllURIs()) {
+		var poi = pointsOfInterestCollection.get(uri);
+		var polygonname = polygonnames[poi.getMarker().getPosition().toString()];
 		var content = '';
 		if (polygonname !== undefined)
 		{
 			content += '<h1>' + polygonname + '</h1><hr />';
 		}
-		var infowindow = infowindows[i];
-		if (polygonlls[i] === undefined)
+		var infowindow = poi.getInfoWindow();
+		if (polygonlls[uri] === undefined)
 		{
 			content += infowindow.getContent();
 		}
 		infowindow.setContent(content);
 	}
-	for(var i in clusterMarkers) {
-		var clusterMarker = clusterMarkers[i];
-		clusterMarker.setTitle(clusterMarker.getTitle() + ' items');
-		google.maps.event.addListener(clusterMarker, 'click', function() {
-			closeAll();
-			_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', i]);
-			clusterInfoWindows[i].open(map,clusterMarker);
-		});
-	}
+	*/
 	if(reopen !== undefined) {
 		zoomTo(reopen, true, false);
 	}
@@ -308,14 +232,14 @@ var loadWindow = function (j, dest, hide, reload) {
 		return;
 	}
 	$.get("info.php?v=" + version + "&date=" + selecteddate + "&uri=" + encodeURIComponent(j), function (data) {
-		var ll = markers[j].getPosition().toString();
+		var ll = pointsOfInterestCollection.getMarker(j).getPosition().toString();
 		if (polygonnames[ll] !== undefined) {
 			clusterTitle = '<h1>' + polygonnames[ll] + '</h1><hr />';
 		} else {
 			clusterTitle = '';
 		}
 		if (dest === undefined) {
-			infowindows[j].setContent(clusterTitle + data);
+			pointsOfInterestCollection.getInfoWindow(j).setContent(clusterTitle + data);
 		} else {
 			tempInfowindow = new google.maps.InfoWindow({
 				content: clusterTitle + data +
@@ -339,9 +263,7 @@ var goBack = function (reload) {
 };
 
 var closeAll = function () {
-	for (var i in markers) {
-		infowindows[i].close();
-	}
+	pointsOfInterestCollection.closeAllInfoWindows();
 	for (var i in clusterMarkers) {
 		if (typeof (clusterInfoWindows[i]) === "object") {
 			clusterInfoWindows[i].close();
@@ -421,8 +343,8 @@ SearchResults.prototype.processResponse = function (matches, labelmatches, reope
 		}
 	});
 
-	for (var uri in markers) {
-		markers[uri].setVisible(matchesd[uri] !== undefined);
+	for (var uri in pointsOfInterestCollection.getAllURIs()) {
+		pointsOfInterestCollection.getMarker(uri).setVisible(matchesd[uri] !== undefined);
 	}
 
 	this.selectIndex = -1;
@@ -601,7 +523,6 @@ var cont = function () {
 	if (contcount !== 2) {
 		return;
 	}
-	initMarkerEvents();
 	initGeoloc();
 	initToggle();
 	initBookmarks();
@@ -831,10 +752,168 @@ var initGeoloc = function () {
 	}
 };
 
+function PointsOfInterestCollection() {
+	this.pointsOfInterest = {};
+	this.uris = new Array();
+	this.pointsOfInterestByLocation = new Array();
+	this.locations = new Array();
+	this.clusters = {};
+	this.visibleClusterMarkers = new Array();
+}
+
+PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
+	var uri = pointOfInterest.getURI();
+	this.pointsOfInterest[uri] = pointOfInterest;
+	this.uris[] = uri;
+	var ll = marker.getPosition().toString();
+	if(this.pointsOfInterestByLocation[ll] === undefined) {
+		this.pointsOfInterestByLocation[ll] = new Array();
+		this.locations[] = ll;
+	}
+	this.pointsOfInterestByLocation[ll][] = pointOfInterest;
+}
+
+PointsOfInterestCollection.prototype.prepareClusters = function() {
+	this.clusters = {};
+	for (var location in this.locations) {
+		if (this.pointsOfInterestByLocation[location].length > 1) {
+			this.clusters[location] = this.pointsOfInterestByLocation[location];
+		}
+	}
+}
+
+PointsOfInterestCollection.prototype.cluster = function() {
+	for (var clusterMarker in this.visibleClusterMarkers) {
+		clusterMarker.setMap(null);
+	}
+	this.visibleClusterMarkers = new Array();
+	for (var location in this.clusters) {
+		var markers = this.clusters[location];
+		var visibleMarkers = new Array();
+		for (var marker in markers) {
+			if (marker.getVisible() === true) {
+				visibleMarkers[] = marker;
+			}
+		}
+		if (visibleMarkers.length > 1) {
+			for (var marker in markers) {
+				marker.setVisible(false);
+			}
+			var icon = getIconURL(visibleMarkers);
+			var clusterMarker = new google.maps.Marker({
+				position: visibleMarkers[0].getPosition(),
+				title: visibleMarkers.length + ' items',
+				map: window.map,
+				icon: icon,
+				visible: true
+			});
+			this.visibleClusterMarkers[] = clusterMarker;
+			var content = renderContent(visibleMarkers, location);
+			var clusterInfoWindow = new google.maps.InfoWindow({
+				content: content
+			});
+			with({location: location}) {
+				google.maps.event.addListener(clusterMarker, 'click', function() {
+					closeAll();
+					_gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', location]);
+					clusterInfoWindow.open(window.map, clusterMarker);
+				});
+			}
+		}
+	}
+}
+
+var getIconURL = function(visibleMarkers) {
+	var url = 'resources/clustericon.php?';
+	var params = new Array();
+	for (marker in visibleMarkers) {
+		params[] = 'i[]=' + marker.getIcon();
+	}
+	return url + params.join('&');
+}
+
+var renderContent = function(visibleMarkers, location) {
+	var polygonname = polygonnames[location];
+	var clusterTitle = '';
+	if (polygonname !== undefined)
+	{
+		clusterTitle = '<h1>' + polygonname + '</h1><hr />';
+	}
+	var id = location.replace(/[^0-9]/g, '_');
+	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
+	var post = '<div class="listcontent-footer">click icon for more information</div></div>'+
+		'<div id="' + id + '-content"></div>';
+	var params = new Array();
+	for (marker in visibleMarkers) {
+		params[] = renderClusterItem(marker.getURI(), location);
+	}
+	return pre + params.join('') + post;
+}
+
+PointsOfInterestCollection.prototype.getMarker = function(uri) {
+	return this.pointsOfInterest[uri].getMarker();
+}
+
+PointsOfInterestCollection.prototype.getInfoWindow = function(uri) {
+	return this.pointsOfInterest[uri].getInfoWindow();
+}
+
+PointsOfInterestCollection.prototype.contains = function(uri) {
+	return this.pointsOfInterest[uri] !== undefined;
+}
+
+PointsOfInterestCollection.prototype.getAllURIs = function() {
+	return this.uris;
+}
+
+PointsOfInterestCollection.prototype.closeAllInfoWindows = function() {
+	for (var uri in this.uris) {
+		this.pointsOfInterest[uri].getInfoWindow().close();
+	}
+}
+
+function PointOfInterest(pos, ll, poslabel, icon) {
+	this.pos = pos;
+	this.ll = ll;
+	this.poslabel = poslabel;
+	this.icon = icon;
+	this.marker = null;
+	this.infoWindow = null;
+	
+	this.marker = new google.maps.Marker({
+		position: this.ll,
+		title: this.poslabel.replace('\\\'', '\''),
+		map: window.map,
+		icon: this.icon,
+		visible: false
+	});
+	
+	this.infoWindow = new google.maps.InfoWindow({ content: '<div id="content">' +
+		'<h2 id="title"><img class="icon" style="width:20px;" src="' + this.icon + '" />' + this.poslabel + '</h2>' +
+		'<a class="odl" href="' + this.pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
+	});
+	
+	google.maps.event.addListener(this.marker, 'click', function () {
+		closeAll();
+		this.infoWindow.open(window.map, this.marker);
+		loadWindow(this.pos);
+	});
+}
+
+PointOfInterest.prototype.getMarker = function() {
+	return this.marker;
+}
+
+PointOfInterest.prototype.getInfoWindow = function() {
+	return this.infoWindow;
+}
+
+PointOfInterest.prototype.getURI = function() {
+	return this.pos;
+}
+
 var initMarkers = function () {
 	$.get('alldata.php?v='+version, function(data,textstatus,xhr) {
-		window.markers = {};
-		window.infowindows = {};
 		data.map(function(markpt) {
 			if (markpt.length == 0) {
 				return;
@@ -845,21 +924,12 @@ var initMarkers = function () {
 			var poslabel = markpt[3];
 			var icon = markpt[4];
 			var ll = new google.maps.LatLng(lat, lon);
-			markers[pos] = new google.maps.Marker({
-				position: ll,
-				title: poslabel.replace('\\\'', '\''),
-				map: window.map,
-				icon: icon,
-				visible: false
-			});
-			infowindows[pos] = new google.maps.InfoWindow({ content: '<div id="content">' +
-				'<h2 id="title"><img class="icon" style="width:20px;" src="' + icon + '" />' + poslabel + '</h2>' +
-				'<a class="odl" href="' + pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
-			});
+			pointsOfInterestCollection.add(new PointOfInterest(pos, ll, poslabel, icon));
 			if(bb !== undefined) {
 				bb[Math.floor(Math.random()*100)].extend(ll);
 			}
 		});
+		pointsOfInterestCollection.prepareClusters();
 		cont();
 	},'json');
 	$.get('polygons.php?v=' + version, function(data,textstatus,xhr) {
@@ -954,8 +1024,8 @@ var initMarkers = function () {
 				var requireload = false;
 				if (polygonlls[pos] !== undefined && clusterInfoWindows[polygonlls[pos]] !== undefined) {
 					infowindow = clusterInfoWindows[polygonlls[pos]];
-				} else if (firstAtPos[polygonlls[pos]] && infowindows[firstAtPos[polygonlls[pos]]] !== undefined) {
-					infowindow = infowindows[firstAtPos[polygonlls[pos]]];
+				} else if (firstAtPos[polygonlls[pos]] && pointsOfInterestCollection.contains(firstAtPos[polygonlls[pos]])) {
+					infowindow = pointsOfInterestCollection.getInfoWindow(firstAtPos[polygonlls[pos]]);
 					requireload = firstAtPos[polygonlls[pos]];
 				}
 				if (event !== undefined) {
@@ -975,17 +1045,6 @@ var initMarkers = function () {
 		});
 		cont();
 	},'json');
-};
-
-var initMarkerEvents = function () {
-	for (var i in markers) {
-		var marker = markers[i]
-		google.maps.event.addListener(marker, 'click', function () {
-			closeAll();
-			infowindows[i].open(map, marker);
-			loadWindow(i);
-		});
-	}
 };
 
 var initSearch = function () {
