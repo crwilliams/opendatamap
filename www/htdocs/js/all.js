@@ -170,25 +170,6 @@ var renderClusterItem = function (uri, ll) {
 var cluster = function (reopen) {
 	closeAll();
 	pointsOfInterestCollection.cluster();
-	/*
-	var allURIs = pointsOfInterestCollection.getAllURIs();
-	for (var i = 0; i < allURIs.length; i++) {
-		var uri = allURIs[i];
-		var poi = pointsOfInterestCollection.get(uri);
-		var polygonname = polygonnames[poi.getMarker().getPosition().toString()];
-		var content = '';
-		if (polygonname !== undefined)
-		{
-			content += '<h1>' + polygonname + '</h1><hr />';
-		}
-		var infowindow = poi.getInfoWindow();
-		if (polygonlls[uri] === undefined)
-		{
-			content += infowindow.getContent();
-		}
-		infowindow.setContent(content);
-	}
-	*/
 	if(reopen !== undefined) {
 		zoomTo(reopen, true, false);
 	}
@@ -1015,9 +996,9 @@ var renderContent = function(visiblePointsOfInterest, location) {
 	var clusterTitle = '';
 	if (polygonname !== undefined) {
 		clusterTitle = '<h1>' + polygonname + '</h1>';
-	}
-	if (visiblePointsOfInterest.length > 0) {
-		clusterTitle += '<hr />';
+		if (visiblePointsOfInterest.length > 0) {
+			clusterTitle += '<hr />';
+		}
 	}
 	var id = location.replace(/[^0-9]/g, '_');
 	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
