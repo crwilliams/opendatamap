@@ -946,18 +946,16 @@ PointsOfInterestCollection.prototype.cluster = function() {
 			for (var i = 0; i < pointsOfInterest.length; i++) {
 				pointsOfInterest[i].getMarker().setVisible(false);
 			}
-			var icon = getIconURL(visiblePointsOfInterest);
 			var clusterMarker = new google.maps.Marker({
 				position: visiblePointsOfInterest[0].getMarker().getPosition(),
 				title: visiblePointsOfInterest.length + ' items',
 				map: window.map,
-				icon: icon,
+				icon: getIconURL(visiblePointsOfInterest),
 				visible: true
 			});
 			this.visibleClusterMarkers.push(clusterMarker);
-			var content = renderContent(visiblePointsOfInterest, location);
 			var clusterInfoWindow = new google.maps.InfoWindow({
-				content: content
+				content: renderContent(visiblePointsOfInterest, location)
 			});
 			with({location: location, clusterInfoWindow: clusterInfoWindow, clusterMarker: clusterMarker}) {
 				google.maps.event.addListener(clusterMarker, 'click', function() {
@@ -967,6 +965,12 @@ PointsOfInterestCollection.prototype.cluster = function() {
 				});
 			}
 			clusterInfoWindows[location] = clusterInfoWindow;
+		} else if (visiblePointsOfInterest.length == 1) {
+			clusterInfoWindows[location] = visiblePointsOfInterest[0].getInfoWindow();
+		} else {
+			clusterInfoWindows[location] = new google.maps.InfoWindow({
+				content: renderContent(visiblePointsOfInterest, location)
+			});
 		}
 	}
 }
