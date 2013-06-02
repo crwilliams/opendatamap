@@ -898,11 +898,13 @@ function PointOfInterest(pos, ll, poslabel, icon) {
 		'<a class="odl" href="' + this.pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
 	});
 	
-	google.maps.event.addListener(this.marker, 'click', function () {
-		closeAll();
-		this.infoWindow.open(window.map, this.marker);
-		loadWindow(this.pos);
-	});
+	with ({pointOfInterest: this}) {
+		google.maps.event.addListener(this.marker, 'click', function () {
+			closeAll();
+			pointOfInterest.infoWindow.open(window.map, pointOfInterest.marker);
+			loadWindow(pointOfInterest.getURI());
+		});
+	}
 }
 
 PointOfInterest.prototype.getMarker = function() {
