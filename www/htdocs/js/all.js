@@ -793,28 +793,28 @@ PointsOfInterestCollection.prototype.cluster = function() {
 	}
 	this.visibleClusterMarkers = new Array();
 	for (var location in this.clusters) {
-		var markers = this.clusters[location];
-		var visibleMarkers = new Array();
-		for (var i = 0; i < markers.length; i++) {
-			var marker = markers[i];
-			if (marker.getVisible() === true) {
-				visibleMarkers.push(marker);
+		var pointsOfInterest = this.clusters[location];
+		var visiblePointsOfInterest = new Array();
+		for (var i = 0; i < pointsOfInterest.length; i++) {
+			var pointOfInterest = pointsOfInterest[i];
+			if (pointOfInterest.getMarker().getVisible() === true) {
+				visiblePointsOfInterest.push(pointOfInterest);
 			}
 		}
-		if (visibleMarkers.length > 1) {
-			for (var i = 0; i < markers.length; i++) {
-				markers[i].setVisible(false);
+		if (visiblePointsOfInterest.length > 1) {
+			for (var i = 0; i < pointsOfInterest.length; i++) {
+				pointsOfInterest[i].getMarker().setVisible(false);
 			}
-			var icon = getIconURL(visibleMarkers);
+			var icon = getIconURL(visiblePointsOfInterest);
 			var clusterMarker = new google.maps.Marker({
-				position: visibleMarkers[0].getPosition(),
-				title: visibleMarkers.length + ' items',
+				position: visiblePointsOfInterest[0].getMarker().getPosition(),
+				title: visiblePointsOfInterest.length + ' items',
 				map: window.map,
 				icon: icon,
 				visible: true
 			});
 			this.visibleClusterMarkers.push(clusterMarker);
-			var content = renderContent(visibleMarkers, location);
+			var content = renderContent(visiblePointsOfInterest, location);
 			var clusterInfoWindow = new google.maps.InfoWindow({
 				content: content
 			});
@@ -829,16 +829,16 @@ PointsOfInterestCollection.prototype.cluster = function() {
 	}
 }
 
-var getIconURL = function(visibleMarkers) {
+var getIconURL = function(visiblePointsOfInterest) {
 	var url = 'resources/clustericon.php?';
 	var params = new Array();
-	for (var i = 0; i < visibleMarkers.length; i++) {
-		params.push('i[]=' + visibleMarkers[i].getIcon());
+	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
+		params.push('i[]=' + visiblePointsOfInterest[i].getMarker().getIcon());
 	}
 	return url + params.join('&');
 }
 
-var renderContent = function(visibleMarkers, location) {
+var renderContent = function(visiblePointsOfInterest, location) {
 	var polygonname = polygonnames[location];
 	var clusterTitle = '';
 	if (polygonname !== undefined) {
@@ -849,8 +849,8 @@ var renderContent = function(visibleMarkers, location) {
 	var post = '<div class="listcontent-footer">click icon for more information</div></div>'+
 		'<div id="' + id + '-content"></div>';
 	var params = new Array();
-	for (var i = 0; i < visibleMarkers.length; i++) {
-		params.push(renderClusterItem(visibleMarkers[i].getURI(), location));
+	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
+		params.push(renderClusterItem(visiblePointsOfInterest[i].getURI(), location));
 	}
 	return pre + params.join('') + post;
 }
