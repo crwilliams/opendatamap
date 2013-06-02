@@ -5,6 +5,7 @@ var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};
 var markers = {};
 var infowindows = {};
+var searchResults = new SearchResults();
 var postcodeMarkers = {};
 var postcodeInfowindows = {};
 var polygons = {};
@@ -356,7 +357,7 @@ var closeAll = function () {
 
 // Search functions.
 
-function searchResults()
+function SearchResults()
 {
 	this.exactMatch = false;
 	this.resultCount = 0;
@@ -365,7 +366,7 @@ function searchResults()
 	this.t = null;
 }
 
-searchResults.prototype.setInputBox = function (str, exact) {
+SearchResults.prototype.setInputBox = function (str, exact) {
 	if (exact === true) {
 		this.exactMatch = true;
 	} else {
@@ -374,7 +375,7 @@ searchResults.prototype.setInputBox = function (str, exact) {
 	$('#inputbox').get(0).value = str;
 };
 
-searchResults.prototype.updateFunc = function (force, reopen) {
+SearchResults.prototype.updateFunc = function (force, reopen) {
 	if(force !== true) {
 		force = false;
 	}
@@ -412,7 +413,7 @@ searchResults.prototype.updateFunc = function (force, reopen) {
 	};
 };
 
-searchResults.prototype.processResponse = function (matches, labelmatches, reopen){
+SearchResults.prototype.processResponse = function (matches, labelmatches, reopen){
 	var matchesd = {};
 	matches.map(function (x) {
 		if (x !== undefined) {
@@ -483,7 +484,7 @@ searchResults.prototype.processResponse = function (matches, labelmatches, reope
 };
 
 /** Handle key presses within the search results. */
-searchResults.prototype.keypress = function (e) {
+SearchResults.prototype.keypress = function (e) {
 	if (e.keyCode === 40) {
 		return this.moveDown();
 	}
@@ -499,7 +500,7 @@ searchResults.prototype.keypress = function (e) {
 };
 
 /** Handle moving upwards within the search results. */
-searchResults.prototype.moveUp = function () {
+SearchResults.prototype.moveUp = function () {
 	this.removeHighlight();
 	if (this.selectIndex >= 0) {
 		this.selectIndex--;
@@ -509,7 +510,7 @@ searchResults.prototype.moveUp = function () {
 };
 
 /** Handle moving downwards within the search results. */
-searchResults.prototype.moveDown = function () {
+SearchResults.prototype.moveDown = function () {
 	this.removeHighlight();
 	if (this.selectIndex < this.resultCount - 1) {
 		this.selectIndex++;
@@ -519,7 +520,7 @@ searchResults.prototype.moveDown = function () {
 };
 
 /** Handle focus on the search results. */
-searchResults.prototype.enter = function() {
+SearchResults.prototype.enter = function() {
 	this.exactMatch = false;
 	this.updateFunc();
 	this.showList();
@@ -527,7 +528,7 @@ searchResults.prototype.enter = function() {
 };
 
 /** Handle selection within the search results. */
-searchResults.prototype.select = function () {
+SearchResults.prototype.select = function () {
 	if (this.selectIndex >= 0) {
 		$('#li' + this.selectIndex).get(0).onclick();
 	}
@@ -535,37 +536,37 @@ searchResults.prototype.select = function () {
 };
 
 /** Handle unfocus on the search results. */
-searchResults.prototype.blursearch = function () {
+SearchResults.prototype.blursearch = function () {
 	this.removeHighlight();
 	$('#inputbox').blur();
 };
 
 /** Remove the highlight from the search results. */
-searchResults.prototype.removeHighlight = function () {
+SearchResults.prototype.removeHighlight = function () {
 	if (this.selectIndex >= 0) {
 		$('#li' + this.selectIndex).get(0).style.backgroundColor = 'inherit';
 	}
 };
 
 /** Apply the highlight to the search results. */
-searchResults.prototype.updateHighlight = function () {
+SearchResults.prototype.updateHighlight = function () {
 	if (this.selectIndex >= 0) {
 		$('#li' + this.selectIndex).get(0).style.backgroundColor = '#CCCCFF';
 	}
 };
 
-searchResults.prototype.showList = function () {
+SearchResults.prototype.showList = function () {
 	this.selectIndex = -1;
 	clearTimeout(this.t);
 	$('#list').get(0).style.display = "block";
 	$('#toggleicons').get(0).style.zIndex = 5;
 };
 
-searchResults.prototype.hideList = function () {
+SearchResults.prototype.hideList = function () {
 	$('#list').get(0).style.display = "none";
 };
 
-searchResults.prototype.delayHideList = function () {
+SearchResults.prototype.delayHideList = function () {
 	this.t = setTimeout("searchResults.hideList();", 1000);
 };
 
