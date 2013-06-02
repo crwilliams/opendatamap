@@ -9,7 +9,6 @@ var postcodeMarkers = {};
 var postcodeInfowindows = {};
 var polygons = {};
 var polygoninfowindows = {};
-var clusterMarkers = {};
 var clusterInfoWindows = {};
 var hashfields = {};
 var firstAtPos = {};
@@ -266,12 +265,12 @@ var goBack = function (reload) {
 
 var closeAll = function () {
 	pointsOfInterestCollection.closeAllInfoWindows();
-	for (var i in clusterMarkers) {
+	for (var i in clusterInfoWindows) {
 		if (typeof (clusterInfoWindows[i]) === "object") {
 			clusterInfoWindows[i].close();
 		}
 	}
-	for (var i in polygons) {
+	for (var i in polygoninfowindows) {
 		polygoninfowindows[i].close();
 	}
 	if (tempInfowindow !== undefined) {
