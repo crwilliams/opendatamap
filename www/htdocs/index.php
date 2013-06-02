@@ -160,8 +160,8 @@ foreach($config['categories'] as $catid => $catname)
 			<img src='img/right.png' id='iconcollapse' onclick='$("#toggleicons").addClass("offset")' title='Collapse' />
 		</div>
 		<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
-			<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="searchResults_enter();" onBlur="delayHide('list', 1000);">
-				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="searchResults_setInputBox('', false); searchResults_updateFunc();" alt="Clear search" title="Clear search" />
+			<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="searchResults.enter();" onBlur="searchResults.delayHideList();">
+				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="searchResults.setInputBox('', false); searchResults.updateFunc();" alt="Clear search" title="Clear search" />
 			</input>
 			<ul style='display:none' id="list"></ul>
 		</form>
