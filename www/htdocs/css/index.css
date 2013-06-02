@@ -209,6 +209,9 @@ ul.offers{
 	padding:0;
 	margin:0
 }
+.sharing{
+	clear:both;
+}
 h2 {
 	font-size:100%;
 	margin:0px;
