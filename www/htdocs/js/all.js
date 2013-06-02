@@ -825,6 +825,7 @@ PointsOfInterestCollection.prototype.cluster = function() {
 					clusterInfoWindow.open(window.map, clusterMarker);
 				});
 			}
+			clusterInfoWindows[location] = clusterInfoWindow;
 		}
 	}
 }
