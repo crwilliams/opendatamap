@@ -246,22 +246,26 @@ var loadWindow = function (j, dest, hide, reload) {
 				content: clusterTitle + data +
 					'<a href="#" class="back" onclick="return goBack(\'' + reload + '\')\">Back to list</a>'
 			});
-			if (clusterInfoWindows[reload].get('anchor') !== undefined) {
-				tempInfowindow.open(map, clusterInfoWindows[reload].get('anchor'));
-			} else {
-				tempInfowindow.setPosition(clusterInfoWindows[reload].getPosition());
-				tempInfowindow.open(map);
-			}
-			clusterInfoWindows[reload].close();
+			switchInfoWindows(clusterInfoWindows[reload], tempInfowindow);
 		}
 	});
 };
 
 var goBack = function (reload) {
-	tempInfowindow.close();
-	clusterInfoWindows[reload].open(map);
+	switchInfoWindows(tempInfowindow, clusterInfoWindows[reload]);
 	return false;
 };
+
+var switchInfoWindows = function(from, to) {
+	var anchor = from.get('anchor');
+	if (anchor !== undefined) {
+		to.open(map, anchor);
+	} else {
+		to.setPosition(from.getPosition());
+		to.open(map);
+	}
+	from.close();
+}
 
 var closeAll = function () {
 	pointsOfInterestCollection.closeAllInfoWindows();
