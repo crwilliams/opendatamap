@@ -30,6 +30,25 @@ class SouthamptonDataSource extends DataSource
 		return array($pos, $label, $type, $url, $icon);
 	}
 
+	static function getExtraInfo($update)
+	{
+		$extra = array();
+		$seats = self::_getSeats();
+		foreach($seats as $uri => $data)
+		{
+			$extra[] = array('id' => $uri, 'extra' => '(currently '.$data['freeseats'].' available seats)');
+		}
+		if(!$update)
+		{			
+			$q = 'SELECT uri AS id, extra FROM points WHERE extra IS NOT NULL';
+			foreach(self::_query($q) as $row)
+			{
+				$extra[] = $row;
+			}
+		}
+		return $extra;
+	}
+
 	static function getDataSets()
 	{
 		$uri = "http://opendatamap.ecs.soton.ac.uk";
@@ -275,7 +294,7 @@ class SouthamptonDataSource extends DataSource
 		echo "<h3> Served by: (click to show on map) </h3>";
 		echo "<ul class='offers'>"; 
 		foreach($allbus as $code) {
-			echo "<li ".self::routestyle($code['code'])."onclick=\"searchResults_setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."', true); searchResults_updateFunc();\">".$code['code']."</li>";
+			echo "<li ".self::routestyle($code['code'])."onclick=\"window.searchResults.setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."', true); window.searchResults.updateFunc();\">".$code['code']."</li>";
 		}
 		echo "</ul>";
 		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
@@ -499,7 +518,7 @@ class SouthamptonDataSource extends DataSource
 			echo "<h3> Offers: (click to show on map) </h3>";
 			echo "<ul class='offers'>"; 
 			foreach($allpos as $point) {
-				echo "<li onclick=\"searchResults_setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."', true); searchResults_updateFunc();\">".$point['label']."</li>";
+				echo "<li onclick=\"window.searchResults.setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $point['label'])."', true); window.searchResults.updateFunc();\">".$point['label']."</li>";
 			}
 			echo "</ul>";
 		}

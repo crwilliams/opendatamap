@@ -134,8 +134,9 @@ else
 		</div>
 <?php } ?>
 		<div id="map_canvas" style='<?php echo $config['map style'] ?><?php if(!has('-title')) { echo " top:2em;"; } ?>'></div>
-		<img id="geobutton" <?php show('geobutton') ?> src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
-		<div class="toggleicons" id="toggleicons" <?php show('toggleicons') ?>>
+		<div id="positioned-by-gmaps" style='display:none'>
+			<img id="geobutton" <?php show('geobutton') ?> src='img/geoloc.png' onclick="geoloc()" alt="Geo-locate me!" title="Geo-locate me!" />
+			<div class="toggleicons" id="toggleicons" <?php show('toggleicons') ?>>
 <?
 foreach($config['categories'] as $catid => $catname)
 {
@@ -149,22 +150,23 @@ foreach($config['categories'] as $catid => $catname)
 		$imgpath = 'img/icon/'.$catid;
 	}
 ?>
-			<div title='<?= tidyCatName($catname) ?>' class='togglebutton' style='background-image:url(<?= $imgpath ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')">
-				<span class='label'><?= str_replace(' and ', ' <span style=\'font-size:0.8em\'>&amp;</span> ', $catname) ?></span>
-				<input class='togglebox' style='cursor:pointer' type='checkbox' name='<?= tidyCatName($catname) ?>' id='<?= $catid ?>' onclick="toggle('<?= $catid ?>');" <?= isset($config['selected'][$catid]) ? 'checked=\'checked\'' : '' ?>/>
-			</div>
+				<div title='<?= tidyCatName($catname) ?>' class='togglebutton' style='background-image:url(<?= $imgpath ?>/ntw.blank.png)' onclick="toggle('<?= $catid ?>')">
+					<span class='label'><?= str_replace(' and ', ' <span style=\'font-size:0.8em\'>&amp;</span> ', $catname) ?></span>
+					<input class='togglebox' style='cursor:pointer' type='checkbox' name='<?= tidyCatName($catname) ?>' id='<?= $catid ?>' onclick="toggle('<?= $catid ?>');" <?= isset($config['selected'][$catid]) ? 'checked=\'checked\'' : '' ?>/>
+				</div>
 <?
 }
 ?>
-			<img src='img/left.png' id='iconexpand' onclick='$("#toggleicons").removeClass("offset")' title='Expand' />
-			<img src='img/right.png' id='iconcollapse' onclick='$("#toggleicons").addClass("offset")' title='Collapse' />
+				<img src='img/left.png' id='iconexpand' onclick='$("#toggleicons").removeClass("offset")' title='Expand' />
+				<img src='img/right.png' id='iconcollapse' onclick='$("#toggleicons").addClass("offset")' title='Collapse' />
+			</div>
+			<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
+				<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="window.searchResults.enter();" onBlur="window.searchResults.delayHideList();">
+					<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="window.searchResults.setInputBox('', false); window.searchResults.updateFunc();" alt="Clear search" title="Clear search" />
+				</input>
+				<ul style='display:none' id="list"></ul>
+			</form>	
 		</div>
-		<form id='search' <?php show('search') ?>action="" onsubmit='return false'>
-			<input id="inputbox" style='width:206px' value='<?php echo $q ?>' onFocus="searchResults_enter();" onBlur="delayHide('list', 1000);">
-				<img id="clear" src='http://www.picol.org/images/icons/files/png/16/search_16.png' onclick="searchResults_setInputBox('', false); searchResults_updateFunc();" alt="Clear search" title="Clear search" />
-			</input>
-			<ul style='display:none' id="list"></ul>
-		</form>
 <?php if(has('bookmarks')) { ?>
 		<div id="bookmarks" style='display:none'>
 			<?php include 'bookmarks.php' ?>

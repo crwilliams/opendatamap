@@ -3,6 +3,14 @@ if(isset($include) && !$include && substr($_SERVER['REQUEST_URI'], -4, 4) == '.p
 	header('Location: credits');
 include_once "config.php";
 
+function creditLine($line)
+{
+	echo '<div draggable="false" style="-webkit-user-select: none; display: inline-block; position: relative; bottom: 2px; right: -3px;" class="gm-style-cc">';
+	echo '<div style="opacity: 0.7; width: 100%; height: 12px; position: absolute;"><div style="width: 1px;"></div><div style="background-color: rgb(245, 245, 245); width: auto; height: 100%; margin-left: 1px;"></div></div>';
+	echo '<div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right; top:1px"><span style="">'.$line.'</span></div>';
+	echo '</div>';
+}
+
 /*
 $creators = sparql_get($endpoint, "
 SELECT DISTINCT ?name ?uri {
@@ -32,15 +40,14 @@ $suggestionlinks[]=  "<a href='http://id.ecs.soton.ac.uk/person/9455'>David Tarr
 
 if($include)
 {
-	echo "Application created by ";
-	echo implode(", ", $creatorlinks);
-	echo " and <a href='".$_GET['v']."/credits' title='Full Application Credits'>others</a>";
-	//echo ", ".implode(", ", $addcreatorlinks);
-	echo "<br/>using the following datasets: ";
-	echo implode(", ", $datasetlinks);
-	//echo "<br/><a href='credits'>Full Application Credits</a>";
+	creditLine("Application created by ".implode(", ", $creatorlinks)." and <a href='".$_GET['v']."/credits' title='Full Application Credits'>others</a>");
+	echo "<br />";
+	creditLine("using the following datasets: ".implode(", ", $datasetlinks));
 	foreach($datasetextras as $datasetextra)
-		echo "<br/>".$datasetextra;
+	{
+		echo "<br />";
+		creditLine($datasetextra);
+	}
 }
 else
 {
