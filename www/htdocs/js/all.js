@@ -988,8 +988,8 @@ PointsOfInterestCollection.prototype.getAllURIs = function() {
 }
 
 PointsOfInterestCollection.prototype.closeAllInfoWindows = function() {
-	for (var i = 0; i < this.uris; i++) {
-		this.pointsOfInterest[this.uris[i]].getInfoWindow().close();
+	for (var pointOfInterest in this.pointsOfInterest) {
+		pointOfInterest.getInfoWindow().close();
 	}
 }
 
