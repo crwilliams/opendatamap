@@ -765,7 +765,7 @@ PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
 	var uri = pointOfInterest.getURI();
 	this.pointsOfInterest[uri] = pointOfInterest;
 	this.uris.push(uri);
-	var ll = marker.getPosition().toString();
+	var ll = pointOfInterest.getPosition().toString();
 	if(this.pointsOfInterestByLocation[ll] === undefined) {
 		this.pointsOfInterestByLocation[ll] = new Array();
 		this.locations.push(ll);
@@ -910,6 +910,10 @@ PointOfInterest.prototype.getInfoWindow = function() {
 
 PointOfInterest.prototype.getURI = function() {
 	return this.pos;
+}
+
+PointOfInterest.prototype.getPosition = function() {
+	return this.ll;
 }
 
 var initMarkers = function () {
