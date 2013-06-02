@@ -1010,7 +1010,10 @@ var renderContent = function(visiblePointsOfInterest, location) {
 	var polygonname = polygonnames[location];
 	var clusterTitle = '';
 	if (polygonname !== undefined) {
-		clusterTitle = '<h1>' + polygonname + '</h1><hr />';
+		clusterTitle = '<h1>' + polygonname + '</h1>';
+	}
+	if (visiblePointsOfInterest.length > 0) {
+		clusterTitle += '<hr />';
 	}
 	var id = location.replace(/[^0-9]/g, '_');
 	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
