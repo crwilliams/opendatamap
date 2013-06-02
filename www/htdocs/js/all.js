@@ -172,7 +172,9 @@ var cluster = function (reopen) {
 	closeAll();
 	pointsOfInterestCollection.cluster();
 	/*
-	for(var uri in pointsOfInterestCollection.getAllURIs()) {
+	var allURIs = pointsOfInterestCollection.getAllURIs();
+	for (var i = 0; i < allURIs.length; i++) {
+		var uri = allURIs[i];
 		var poi = pointsOfInterestCollection.get(uri);
 		var polygonname = polygonnames[poi.getMarker().getPosition().toString()];
 		var content = '';
@@ -343,7 +345,9 @@ SearchResults.prototype.processResponse = function (matches, labelmatches, reope
 		}
 	});
 
-	for (var uri in pointsOfInterestCollection.getAllURIs()) {
+	var allURIs = pointsOfInterestCollection.getAllURIs();
+	for (var i = 0; i < allURIs.length; i++) {
+		var uri = allURIs[i];
 		pointsOfInterestCollection.getMarker(uri).setVisible(matchesd[uri] !== undefined);
 	}
 
