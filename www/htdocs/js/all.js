@@ -3,7 +3,7 @@ google.maps.visualRefresh = true;
 var map;
 var version;
 var mcOptions = {gridSize: 50, maxZoom: 15};
-var searchResults = new SearchResults();
+window.searchResults = new SearchResults();
 var pointsOfInterestCollection = new PointsOfInterestCollection();
 var postcodeMarkers = {};
 var postcodeInfowindows = {};
@@ -72,7 +72,7 @@ var changeSubject = function () {
 	$('#selectedsubject').css('color', 'inherit');
 	$('#selectedsubject').click(null);
 	refreshSubjectChoice();
-	searchResults.updateFunc();
+	window.searchResults.updateFunc();
 	updateHash('subject', '');
 };
 
@@ -300,8 +300,8 @@ var cont = function () {
 	initCredits();
 	initSearch();
 
-	$('#inputbox').keydown(searchResults.keypress);
-	$('#inputbox').keyup(searchResults.updateFunc);
+	$('#inputbox').keydown(window.searchResults.keypress);
+	$('#inputbox').keyup(window.searchResults.updateFunc);
 	var hashstring = location.hash.replace( /^#/, '' );
 	location.hash = location.hash.replace(/\/.*/, '');
 	hashstring = hashstring.split('/');
@@ -312,11 +312,11 @@ var cont = function () {
 		hashstring = '';
 	}
 	if(uri) {
-		searchResults.updateFunc(false, uri);
+		window.searchResults.updateFunc(false, uri);
 	} else if(clickuri) {
-		searchResults.updateFunc(false, clickuri);
+		window.searchResults.updateFunc(false, clickuri);
 	} else {
-		searchResults.updateFunc(false, undefined);
+		window.searchResults.updateFunc(false, undefined);
 	}
 	fitBounds();
 	if (uri !== '')
@@ -414,7 +414,7 @@ var hashChange = function () {
 		hashvals += hashfields.day;
 	}
 	$('#inputbox').val(hashvals);
-	searchResults.updateFunc();
+	window.searchResults.updateFunc();
 };
 
 // Category functions.
@@ -428,7 +428,7 @@ var toggle = function (category) {
 		cEl.checked = true;
 		_gaq.push(['_trackEvent', 'Categories', 'Toggle', category, 1]);
 	}
-	searchResults.updateFunc(true);
+	window.searchResults.updateFunc(true);
 };
 
 var getSelectedCategories = function () {
@@ -718,7 +718,7 @@ SearchResults.prototype.updateFunc = function (force, reopen) {
 				matches = response_data[0];
 				labelmatches = response_data[1];
 			}
-			searchResults.processResponse(matches, labelmatches, reopen);
+			window.searchResults.processResponse(matches, labelmatches, reopen);
 		}
 	};
 };
@@ -761,12 +761,12 @@ SearchResults.prototype.processResponse = function (matches, labelmatches, reope
 			var onclick = '';
 			if(labelmatches[m][2] !== null) {
 				onclick = "zoomTo('" + labelmatches[m][2] + "');" +
-					"searchResults.setInputBox('');" +
-					"searchResults.updateFunc(false, '" + labelmatches[m][2] + "');";
+					"window.searchResults.setInputBox('');" +
+					"window.searchResults.updateFunc(false, '" + labelmatches[m][2] + "');";
 			} else {
 				var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
-				onclick = "searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
-					"searchResults.updateFunc();";
+				onclick = "window.searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
+					"window.searchResults.updateFunc();";
 			}
 			var element = '<li id="li' + this.resultCount + '" onclick="' + onclick + '">';
 			if(labelmatches[m][3] !== undefined) {
@@ -779,8 +779,8 @@ SearchResults.prototype.processResponse = function (matches, labelmatches, reope
 			list.innerHTML += element;
 		} else {
 			var escapeLabelmatch = labelmatches[m][0].replace('(', '\\\\(').replace(')', '\\\\)');
-			var onclick = "searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
-				"searchResults.updateFunc();";
+			var onclick = "window.searchResults.setInputBox('" + escapeLabelmatch + "', true);" +
+				"window.searchResults.updateFunc();";
 			list.innerHTML += '<li id="li' + this.resultCount + '" onclick="' + onclick + '">' + dispStr + '</li>';
 		}
 		this.resultCount++;
@@ -879,7 +879,7 @@ SearchResults.prototype.hideList = function () {
 };
 
 SearchResults.prototype.delayHideList = function () {
-	this.t = setTimeout("searchResults.hideList();", 1000);
+	this.t = setTimeout("window.searchResults.hideList();", 1000);
 };
 
 function PointsOfInterestCollection() {
