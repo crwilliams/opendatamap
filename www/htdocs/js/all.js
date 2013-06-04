@@ -1013,25 +1013,25 @@ var renderContent = function(visiblePointsOfInterest, location) {
 	return pre + params.join('') + post;
 }
 
-function PointOfInterest(pos, ll, poslabel, icon) {
-	this.pos = pos;
-	this.ll = ll;
-	this.poslabel = poslabel;
+function PointOfInterest(uri, position, label, icon) {
+	this.uri = uri;
+	this.position = position;
+	this.label = label;
 	this.icon = icon;
 	this.marker = null;
 	this.infoWindow = null;
 	
 	this.marker = new google.maps.Marker({
-		position: this.ll,
-		title: this.poslabel.replace('\\\'', '\''),
+		position: this.position,
+		title: this.label.replace('\\\'', '\''),
 		map: window.map,
 		icon: this.icon,
 		visible: false
 	});
 	
 	this.infoWindow = new google.maps.InfoWindow({ content: '<div id="content">' +
-		'<h2 id="title"><img class="icon" style="width:20px;" src="' + this.icon + '" />' + this.poslabel + '</h2>' +
-		'<a class="odl" href="' + this.pos + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
+		'<h2 id="title"><img class="icon" style="width:20px;" src="' + this.icon + '" />' + this.label + '</h2>' +
+		'<a class="odl" href="' + this.uri + '">Visit page</a><div id="bodyContent">Loading...</div></div>'
 	});
 	
 	with ({pointOfInterest: this}) {
@@ -1043,18 +1043,22 @@ function PointOfInterest(pos, ll, poslabel, icon) {
 	}
 }
 
+/** Get the Marker associated with the point of interest. */
 PointOfInterest.prototype.getMarker = function() {
 	return this.marker;
 }
 
+/** Get the InfoWindow associated with the point of interest. */
 PointOfInterest.prototype.getInfoWindow = function() {
 	return this.infoWindow;
 }
 
+/** Get the URI of the point of interest. */
 PointOfInterest.prototype.getURI = function() {
-	return this.pos;
+	return this.uri;
 }
 
+/** Get the position of the point of interest. */
 PointOfInterest.prototype.getPosition = function() {
-	return this.ll;
+	return this.position;
 }
