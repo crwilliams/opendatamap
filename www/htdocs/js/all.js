@@ -29,7 +29,7 @@ var contcount = 0;
 
 var bb;
 
-function compare(a,b){
+function compare(a,b) {
 	return b-a;
 }
 
@@ -444,6 +444,16 @@ var getSelectedCategories = function () {
 
 // Initilaization functions.
 
+/**
+* @param lat - The initial latitude.
+* @param long - The initial longitude.
+* @param zoom - The initial zoom level.
+* @param puri - The URI of the point of interest to zoom to and click on.
+* @param pzoomuri - The URI of the point of interest to zoom to.
+* @param pclickuri - The URI of the point of interest to click on.
+* @param pversion - The version of the application.
+* @param defaultMap - The initial may style.
+ */
 var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
 	zoomuri = pzoomuri;
 	clickuri = pclickuri;
@@ -667,6 +677,10 @@ var initSearch = function () {
 
 // Classes
 
+/**
+ * Represents the search tool.
+ * @constructor
+ */
 function SearchResults()
 {
 	this.exactMatch = false;
@@ -676,7 +690,11 @@ function SearchResults()
 	this.t = null;
 }
 
-/** Set the value in the search box. */
+/**
+ * Set the value in the search box.
+ * @param {string} str - The string to enter in the search box.
+ * @param {bool} exact - Whether or not the search requires an exact match.
+ */
 SearchResults.prototype.setInputBox = function (str, exact) {
 	if (exact === true) {
 		this.exactMatch = true;
@@ -686,6 +704,11 @@ SearchResults.prototype.setInputBox = function (str, exact) {
 	$('#inputbox').get(0).value = str;
 };
 
+/**
+ * Update search results.
+ * @param {bool} force - Whether or not to force an update.
+ * @param reopen - The URI of the point of interest which requires its InfoWindow to be reopened (if any).
+ */
 SearchResults.prototype.updateFunc = function (force, reopen) {
 	if(force !== true) {
 		force = false;
@@ -724,6 +747,12 @@ SearchResults.prototype.updateFunc = function (force, reopen) {
 	};
 };
 
+/**
+ * Process the search response.
+ * @param matches - The set of matches.
+ * @param labelmatches - The set of matched labels.
+ * @param reopen - The URI of the point of interest which requires its InfoWindow to be reopened (if any).
+ */
 SearchResults.prototype.processResponse = function (matches, labelmatches, reopen){
 	var matchesd = {};
 	matches.map(function (x) {
@@ -796,7 +825,10 @@ SearchResults.prototype.processResponse = function (matches, labelmatches, reope
 	}
 };
 
-/** Handle key presses within the search results. */
+/**
+ * Handle key presses within the search results.
+ * @param e - The event.
+ */
 SearchResults.prototype.keypress = function (e) {
 	if (e.keyCode === 40) {
 		return this.moveDown();
@@ -886,6 +918,10 @@ SearchResults.prototype.delayHideList = function () {
 	this.t = setTimeout("window.searchResults.hideList();", 1000);
 };
 
+/**
+ * Represents a collection of points of interest.
+ * @constructor
+ */
 function PointsOfInterestCollection() {
 	this.uris = new Array();	
 	this.locations = new Array();
@@ -895,6 +931,10 @@ function PointsOfInterestCollection() {
 	this.clusters = {};
 }
 
+/**
+ * Add a point of interest to the collection.
+ * @param {PointOfInterest} pointOfInterest - The PointOfInterest to add.
+ */
 PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
 	var uri = pointOfInterest.getURI();
 	this.pointsOfInterest[uri] = pointOfInterest;
@@ -907,6 +947,7 @@ PointsOfInterestCollection.prototype.add = function(pointOfInterest) {
 	this.pointsOfInterestByLocation[ll].push(pointOfInterest);
 }
 
+/** Prepare the set of cluster locations. */
 PointsOfInterestCollection.prototype.prepareClusters = function() {
 	this.clusters = {};
 	for (var i = 0; i < this.locations.length; i++) {
@@ -917,6 +958,7 @@ PointsOfInterestCollection.prototype.prepareClusters = function() {
 	}
 }
 
+/** Perform the clustering of the markers. */
 PointsOfInterestCollection.prototype.cluster = function() {
 	for (var i = 0; i < this.visibleClusterMarkers.length; i++) {
 		this.visibleClusterMarkers[i].setMap(null);
@@ -964,43 +1006,66 @@ PointsOfInterestCollection.prototype.cluster = function() {
 	}
 }
 
+/**
+ * Get the Marker associated with the point of interest with the given URI.
+ * @param uri - The URI of the point of interest.
+ */
 PointsOfInterestCollection.prototype.getMarker = function(uri) {
 	return this.pointsOfInterest[uri].getMarker();
 }
 
+/**
+ * Get the InfoWindow associated with the point of interest with the given URI.
+ * @param uri - The URI of the point of interest.
+ */
 PointsOfInterestCollection.prototype.getInfoWindow = function(uri) {
 	return this.pointsOfInterest[uri].getInfoWindow();
 }
 
+/**
+ * Check whether the collection contains a point of interest with the given URI.
+ * @param uri - The URI of the point of interest.
+ */
 PointsOfInterestCollection.prototype.contains = function(uri) {
 	return this.pointsOfInterest[uri] !== undefined;
 }
 
+/** Get all of the URIs of the points of interest in the collection. */
 PointsOfInterestCollection.prototype.getAllURIs = function() {
 	return this.uris;
 }
 
+/** Close all of the InfoWindows associated with the points of interest in the collection. */
 PointsOfInterestCollection.prototype.closeAllInfoWindows = function() {
 	for (var uri in this.pointsOfInterest) {
 		this.pointsOfInterest[uri].getInfoWindow().close();
 	}
 }
 
-var getIconURL = function(visiblePointsOfInterest) {
+/**
+ * Get the icon URL for a set of points of interest
+ * @param pointsOfInterest - The set of points of interest.
+ */
+var getIconURL = function(pointsOfInterest) {
 	var url = 'resources/clustericon.php?';
 	var params = new Array();
-	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
-		params.push('i[]=' + visiblePointsOfInterest[i].getMarker().getIcon());
+	for (var i = 0; i < pointsOfInterest.length; i++) {
+		params.push('i[]=' + pointsOfInterest[i].getMarker().getIcon());
 	}
 	return url + params.join('&');
 }
 
-var renderContent = function(visiblePointsOfInterest, location) {
+/**
+ * Render the content for a cluster InfoWindow.
+ * @param pointsOfInterest - The set of points of interest.
+ * @param location - The location of the cluster.
+ */
+var renderContent = function(pointsOfInterest, location) {
 	var polygonname = polygonnames[location];
 	var clusterTitle = '';
 	if (polygonname !== undefined) {
 		clusterTitle = '<h1>' + polygonname + '</h1>';
-		if (visiblePointsOfInterest.length > 0) {
+		if (pointsOfInterest.length > 0) {
 			clusterTitle += '<hr />';
 		}
 	}
@@ -1008,15 +1073,23 @@ var renderContent = function(visiblePointsOfInterest, location) {
 	var pre = clusterTitle + '<div id="' + id + '-listcontent">';
 	var post = '</div><div id="' + id + '-content"></div>';
 	var params = new Array();
-	for (var i = 0; i < visiblePointsOfInterest.length; i++) {
-		params.push(renderClusterItem(visiblePointsOfInterest[i].getURI(), location));
+	for (var i = 0; i < pointsOfInterest.length; i++) {
+		params.push(renderClusterItem(pointsOfInterest[i].getURI(), location));
 	}
-	if (visiblePointsOfInterest.length > 0) {
+	if (pointsOfInterest.length > 0) {
 		post = '<div class="listcontent-footer">click icon for more information</div>' + post;
 	}
 	return pre + params.join('') + post;
 }
 
+/**
+ * Represents a point of interest.
+ * @constructor
+ * @param uri - The URI of the point of interest.
+ * @param position - The position of the point of interest.
+ * @param label - The label of the point of interest.
+ * @param icon - The URL of the icon of the point of interest.
+ */
 function PointOfInterest(uri, position, label, icon) {
 	this.uri = uri;
 	this.position = position;
