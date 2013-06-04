@@ -676,6 +676,7 @@ function SearchResults()
 	this.t = null;
 }
 
+/** Set the value in the search box. */
 SearchResults.prototype.setInputBox = function (str, exact) {
 	if (exact === true) {
 		this.exactMatch = true;
@@ -867,6 +868,7 @@ SearchResults.prototype.updateHighlight = function () {
 	}
 };
 
+/** Show the search results list. */
 SearchResults.prototype.showList = function () {
 	this.selectIndex = -1;
 	clearTimeout(this.t);
@@ -874,10 +876,12 @@ SearchResults.prototype.showList = function () {
 	$('#toggleicons').get(0).style.zIndex = 5;
 };
 
+/** Hide the search results list. */
 SearchResults.prototype.hideList = function () {
 	$('#list').get(0).style.display = "none";
 };
 
+/** Hide the search results list after a 1 second delay. */
 SearchResults.prototype.delayHideList = function () {
 	this.t = setTimeout("window.searchResults.hideList();", 1000);
 };
