@@ -9,7 +9,6 @@ var postcodeMarkers = {};
 var postcodeInfowindows = {};
 var polygons = {};
 var polygoninfowindows = {};
-var clusterInfoWindows = {};
 var hashfields = {};
 var firstAtPos = {};
 var tempInfowindow = undefined;
@@ -227,13 +226,13 @@ var loadWindow = function (j, dest, hide, reload) {
 				content: clusterTitle + data +
 					'<a href="#" class="back" onclick="return goBack(\'' + reload + '\')\">Back to list</a>'
 			});
-			switchInfoWindows(clusterInfoWindows[reload], tempInfowindow);
+			switchInfoWindows(pointsOfInterestCollection.getClusterInfoWindow(reload), tempInfowindow);
 		}
 	});
 };
 
 var goBack = function (reload) {
-	switchInfoWindows(tempInfowindow, clusterInfoWindows[reload]);
+	switchInfoWindows(tempInfowindow, pointsOfInterestCollection.getClusterInfoWindow(reload));
 	return false;
 };
 
@@ -250,11 +249,6 @@ var switchInfoWindows = function(from, to) {
 
 var closeAll = function () {
 	pointsOfInterestCollection.closeAllInfoWindows();
-	for (var i in clusterInfoWindows) {
-		if (typeof (clusterInfoWindows[i]) === "object") {
-			clusterInfoWindows[i].close();
-		}
-	}
 	for (var i in polygoninfowindows) {
 		polygoninfowindows[i].close();
 	}
@@ -643,8 +637,8 @@ var initMarkers = function () {
 				_gaq.push(['_trackEvent', 'InfoWindow', polygonType, pos]);
 				var infowindow = polygoninfowindows[pos];
 				var requireload = false;
-				if (polygonlls[pos] !== undefined && clusterInfoWindows[polygonlls[pos]] !== undefined) {
-					infowindow = clusterInfoWindows[polygonlls[pos]];
+				if (polygonlls[pos] !== undefined && pointsOfInterestCollection.getClusterInfoWindow(polygonlls[pos]) !== undefined) {
+					infowindow = pointsOfInterestCollection.getClusterInfoWindow(polygonlls[pos]);
 				} else if (firstAtPos[polygonlls[pos]] && pointsOfInterestCollection.contains(firstAtPos[polygonlls[pos]])) {
 					infowindow = pointsOfInterestCollection.getInfoWindow(firstAtPos[polygonlls[pos]]);
 					requireload = firstAtPos[polygonlls[pos]];
@@ -929,6 +923,7 @@ function PointsOfInterestCollection() {
 	this.pointsOfInterest = {};
 	this.pointsOfInterestByLocation = {};
 	this.clusters = {};
+	this.clusterInfoWindows = {}
 }
 
 /**
@@ -995,11 +990,11 @@ PointsOfInterestCollection.prototype.cluster = function() {
 					clusterInfoWindow.open(window.map, clusterMarker);
 				});
 			}
-			clusterInfoWindows[location] = clusterInfoWindow;
+			this.clusterInfoWindows[location] = clusterInfoWindow;
 		} else if (visiblePointsOfInterest.length == 1) {
-			clusterInfoWindows[location] = visiblePointsOfInterest[0].getInfoWindow();
+			this.clusterInfoWindows[location] = visiblePointsOfInterest[0].getInfoWindow();
 		} else {
-			clusterInfoWindows[location] = new google.maps.InfoWindow({
+			this.clusterInfoWindows[location] = new google.maps.InfoWindow({
 				content: renderContent(visiblePointsOfInterest, location)
 			});
 		}
@@ -1040,6 +1035,20 @@ PointsOfInterestCollection.prototype.closeAllInfoWindows = function() {
 	for (var uri in this.pointsOfInterest) {
 		this.pointsOfInterest[uri].getInfoWindow().close();
 	}
+	
+	for (var i in this.clusterInfoWindows) {
+		if (typeof (this.clusterInfoWindows[i]) === "object") {
+			this.clusterInfoWindows[i].close();
+		}
+	}
+}
+
+/**
+ * Get the ClusterInfoWindow associated with a position.
+ * @param {string} position - The position of the Cluster.
+ */
+PointsOfInterestCollection.prototype.getClusterInfoWindow = function(position) {
+	return this.clusterInfoWindows[position];
 }
 
 /**
