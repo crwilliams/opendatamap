@@ -300,8 +300,8 @@ var cont = function () {
 	initCredits();
 	initSearch();
 
-	$('#inputbox').keydown(window.searchResults.keypress);
-	$('#inputbox').keyup(window.searchResults.updateFunc);
+	$('#inputbox').keydown(function(evt) { window.searchResults.keypress(evt); });
+	$('#inputbox').keyup(function() { window.searchResults.updateFunc(); });
 	var hashstring = location.hash.replace( /^#/, '' );
 	location.hash = location.hash.replace(/\/.*/, '');
 	hashstring = hashstring.split('/');
