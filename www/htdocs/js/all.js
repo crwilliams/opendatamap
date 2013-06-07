@@ -284,7 +284,7 @@ var closeAll = function () {
             polygoninfowindows[i].close();
         }
     }
-    if (tempInfowindow !== undefined) {
+    if (tempInfowindow !== null) {
         tempInfowindow.close();
     }
 };
