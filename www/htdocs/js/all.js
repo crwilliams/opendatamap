@@ -1,9 +1,6 @@
 /*jslint nomen: true*/
 /*jslint browser: true */
 /*jslint devel: true */
-var google = null;
-var _gaq = null;
-var $ = null;
 
 var xmlhttp = null;
 
