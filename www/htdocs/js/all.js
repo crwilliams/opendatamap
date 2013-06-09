@@ -94,10 +94,10 @@ function PointOfInterest(uri, position, label, icon) {
     google.maps.event.addListener(this.marker, 'click', this.getPointOfInterestClickHandler(this));
 }
 
-function compare(a, b) {
+var compare = function (a, b) {
     "use strict";
     return b - a;
-}
+};
 
 var getHash = function (key) {
     "use strict";
@@ -106,8 +106,6 @@ var getHash = function (key) {
     }
     return '';
 };
-
-//Misc functions.
 
 var removePostcodeMarker = function (postcode) {
     "use strict";
@@ -186,7 +184,7 @@ var renderClusterItem = function (uri, ll) {
     "use strict";
     var lltrim, onclick, marker;
     if (polygonlls[uri] === undefined) {
-        lltrim = ll.replace(/[^0-9]/g, '_');
+        lltrim = ll.replace(/\D/g, '_');
         onclick = "loadWindow('" + uri + "', $('#" + lltrim + "-content'), '" + ll + "')";
         marker = pointsOfInterestCollection.getMarker(uri);
         return '<div class="clusteritem" onclick="' + onclick + '">' +
@@ -407,7 +405,7 @@ var hashChange = function () {
         }
     }
 
-    if (document.title.replace(/ \| .*/, '') !== 'University of Southampton Open Day Map') {
+    if (document.title.split(' | ')[0] !== 'University of Southampton Open Day Map') {
         return;
     }
     $('#day a').each(function (i, v) {
@@ -420,7 +418,7 @@ var hashChange = function () {
         var d = v.id.substring(5, 15);
         $('#link_' + d).removeClass('selected');
     });
-    document.title = document.title.replace(/ \| .*/, '');
+    document.title = document.title.split(' | ')[0];
 
     d = getHash('day');
     if (d === '') {
@@ -536,7 +534,7 @@ var cont = function () {
     $('#inputbox').keydown(function (evt) { searchResults.keypress(evt); });
     $('#inputbox').keyup(function () { searchResults.updateFunc(); });
     var hashstring = location.hash.replace(/^#/, '');
-    location.hash = location.hash.replace(/\/.*/, '');
+    location.hash = location.hash.split('/')[0];
     hashstring = hashstring.split('/');
     if (hashstring.length > 1) {
         hashstring = hashstring[1];
@@ -1020,7 +1018,7 @@ var renderContent = function (pointsOfInterest, location) {
     "use strict";
     var polygonname = polygonnames[location],
         clusterTitle = '',
-        id = location.replace(/[^0-9]/g, '_'),
+        id = location.replace(/\D/g, '_'),
         pre,
         post,
         params = [],
@@ -1145,6 +1143,7 @@ PointsOfInterestCollection.prototype.cluster = function () {
     }
 };
 
+/** Get a cluster marker click handler. */
 PointsOfInterestCollection.prototype.getClusterMarkerClickHandler = function (location, clusterInfoWindow, clusterMarker) {
     "use strict";
     return function () {
@@ -1214,6 +1213,7 @@ PointsOfInterestCollection.prototype.getClusterInfoWindow = function (position) 
     return this.clusterInfoWindows[position];
 };
 
+/** Get a point of interest click handler. */
 PointOfInterest.prototype.getPointOfInterestClickHandler = function (pointOfInterest) {
     "use strict";
     return function () {
