@@ -64,7 +64,7 @@ a {
 	padding-right:3px;
 	bottom: 0px;
 	right:0px;
-	font-size: 0.9em;
+	font-size: 11px;
 	color: rgb(68, 68, 68);
 }
 #credits-small {
@@ -257,7 +257,7 @@ div.listcontent-footer {
 	margin-right:5px;
 }
 
-.togglebutton {
+.toggleicons .togglebutton {
 	cursor:pointer;
 	color:white;
 	background-size:100% 100%;
@@ -267,10 +267,13 @@ div.listcontent-footer {
 	height:18px;
 	position:relative;
 	text-align:right;
-	font-size:1.4em;
 }
 
-.togglebutton input {
+.toggleicons .togglebutton span.label {
+    font-size:1.4em;
+}
+
+.toggleicons .togglebutton input {
 	margin:2px;
 }
 
