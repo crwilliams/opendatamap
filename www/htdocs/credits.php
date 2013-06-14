@@ -6,8 +6,8 @@ include_once "config.php";
 function creditLine($line)
 {
 	echo '<div draggable="false" style="-webkit-user-select: none; display: inline-block" class="gm-style-cc">';
-	echo '<div style="opacity: 0.7; width: 100%; height: 1em; position: absolute;"><div style="width: 1px;"></div><div style="background-color: rgb(245, 245, 245); width: auto; height: 100%; margin-left: 1px;"></div></div>';
-	echo '<div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right;"><span style="">'.$line.'</span></div>';
+	echo '<div style="opacity: 0.7; width: 100%; height: 12px; position: absolute;"><div style="width: 1px;"></div><div style="background-color: rgb(245, 245, 245); width: auto; height: 100%; margin-left: 1px;"></div></div>';
+	echo '<div style="position: relative; padding-right: 6px; padding-left: 6px; font-family: Roboto, Arial, sans-serif; font-size: 10px; color: rgb(68, 68, 68); white-space: nowrap; direction: ltr; text-align: right; top:1px"><span style="">'.$line.'</span></div>';
 	echo '</div>';
 }
 
