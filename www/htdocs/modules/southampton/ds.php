@@ -36,14 +36,14 @@ class SouthamptonDataSource extends DataSource
 		$seats = self::_getSeats();
 		foreach($seats as $uri => $data)
 		{
-			$extra[$uri] = $data['free'];
+			$extra[] = array('id' => $uri, 'extra' => $data['free']);
 		}
 		if(!$update)
 		{			
-			$q = 'SELECT uri AS id, extra FROM points WHERE extra != ""';
+			$q = 'SELECT uri AS id, extra FROM points WHERE extra IS NOT NULL';
 			foreach(self::_query($q) as $row)
 			{
-				$extra[$row['id']] = $row['extra'];
+				$extra[] = $row;
 			}
 		}
 		return $extra;
