@@ -85,6 +85,15 @@ a {
 #search-small {
 	display:none;
 }
+li.selected {
+    background-color:#CCCCFF
+}
+span.search-highlight {
+    background-color:#FFFF66;
+}
+li.selected span.search-highlight {
+    background-color:#DDDD99;
+}
 @media handheld
 {
 	#credits-small {

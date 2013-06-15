@@ -864,7 +864,7 @@ SearchResults.prototype.processResponse = function (matches, labelmatches, reope
             dispStr = labelmatches[i][0];
             if (this.searchTerm !== "") {
                 dispStr = String(dispStr).replace(re,
-                    "<span style='background-color:#FFFF66'>$1</span>");
+                    "<span class='search-highlight'>$1</span>");
             }
             onclick = '';
             escapeLabelmatch = labelmatches[i][0].replace('(', '\\\\(').replace(')', '\\\\)');
@@ -975,7 +975,7 @@ SearchResults.prototype.blursearch = function () {
 SearchResults.prototype.removeHighlight = function () {
     "use strict";
     if (this.selectIndex >= 0) {
-        $('#li' + this.selectIndex).get(0).style.backgroundColor = 'inherit';
+        $('#li' + this.selectIndex).removeClass('selected');
     }
 };
 
@@ -983,7 +983,7 @@ SearchResults.prototype.removeHighlight = function () {
 SearchResults.prototype.updateHighlight = function () {
     "use strict";
     if (this.selectIndex >= 0) {
-        $('#li' + this.selectIndex).get(0).style.backgroundColor = '#CCCCFF';
+        $('#li' + this.selectIndex).addClass('selected');
     }
 };
 
