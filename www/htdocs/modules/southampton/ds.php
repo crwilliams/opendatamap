@@ -36,7 +36,7 @@ class SouthamptonDataSource extends DataSource
 		$seats = self::_getSeats();
 		foreach($seats as $uri => $data)
 		{
-			$extra[] = array('id' => $uri, 'extra' => $data['freeseats']);
+			$extra[] = array('id' => $uri, 'extra' => '(currently '.$data['freeseats'].' available seats)');
 		}
 		if(!$update)
 		{			

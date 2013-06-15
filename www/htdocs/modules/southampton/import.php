@@ -478,7 +478,7 @@ class SouthamptonDataSource
 				{
 					return false;
 				}
-				return $ts->format('c') . ' - ' . $te->format('c');
+				return $ts->format('Y/m/d H:i') . ' - ' . $te->format('Y/m/d H:i');
 			}
 			else
 			{
@@ -486,7 +486,7 @@ class SouthamptonDataSource
 				{
 					return false;
 				}
-				return $ts->format('c');
+				return $ts->format('Y/m/d H:i');
 			}
 		}
 		catch(Exception $ex)
