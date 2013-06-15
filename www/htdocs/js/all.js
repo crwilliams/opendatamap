@@ -1006,7 +1006,7 @@ SearchResults.prototype.hideList = function () {
 /** Hide the search results list after a 1 second delay. */
 SearchResults.prototype.delayHideList = function () {
     "use strict";
-    this.t = setTimeout(searchResults.hideList(), 1000);
+    this.t = setTimeout(searchResults.hideList, 1000);
 };
 
 /**
