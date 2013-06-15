@@ -8,10 +8,10 @@ runQuery($dbh->prepare('TRUNCATE matches'));
 runQuery($dbh->prepare('TRUNCATE places'));
 runQuery($dbh->prepare('TRUNCATE points'));
 
-$stmt = $dbh->prepare('INSERT INTO points (uri, lat, lng, label, icon, category) VALUES (?, ?, ?, ?, ?, ?)');
+$stmt = $dbh->prepare('INSERT INTO points (uri, lat, lng, label, icon, category, extra) VALUES (?, ?, ?, ?, ?, ?, ?)');
 foreach(SouthamptonDataSource::getAll() as $d)
-{	
-	runQuery($stmt, array($d['id'], $d['lat'], $d['lng'], $d['label'], $d['icon'], getCategory($d['icon'])));
+{
+	runQuery($stmt, array($d['id'], $d['lat'], $d['lng'], $d['label'], $d['icon'], getCategory($d['icon']), $d['extra']));
 }
 
 $stmt = $dbh->prepare('INSERT INTO matches (uri, poslabel, label, icon, type, category) VALUES (?, ?, ?, ?, ?, ?)');

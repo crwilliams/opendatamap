@@ -407,7 +407,7 @@ class SouthamptonDataSource
 			if(!$dates) continue;
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
-			//$point['label'] .= ' ' . $dates;
+			$point['extra'] = $dates;
 			$point['type'] = 'event';
 			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Media/calendar-3.png";
 			$points[] = $point;
