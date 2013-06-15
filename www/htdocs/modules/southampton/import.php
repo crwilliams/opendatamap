@@ -407,7 +407,7 @@ class SouthamptonDataSource
 			if(!$dates) continue;
 			$point['label'] = str_replace('\'', '\\\'', $point['label']);
 			$point['label'] = str_replace("\\", "\\\\", $point['label']);
-			$point['extra'] = $dates;
+			$point['extra'] = '('.$dates.')';
 			$point['type'] = 'event';
 			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/img/icon/Media/calendar-3.png";
 			$points[] = $point;
@@ -478,7 +478,14 @@ class SouthamptonDataSource
 				{
 					return false;
 				}
-				return $ts->format('Y/m/d H:i') . ' - ' . $te->format('Y/m/d H:i');
+				if($ts->format('m/d') == $te->format('m/d'))
+				{
+					return $ts->format('jS M H:i') . ' - ' . $te->format('H:i');
+				}
+				else
+				{
+					return $ts->format('jS M H:i') . ' - ' . $te->format('js M H:i');
+				}
 			}
 			else
 			{
@@ -486,7 +493,7 @@ class SouthamptonDataSource
 				{
 					return false;
 				}
-				return $ts->format('Y/m/d H:i');
+				return $ts->format('js M H:i');
 			}
 		}
 		catch(Exception $ex)
