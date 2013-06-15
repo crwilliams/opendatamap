@@ -484,7 +484,7 @@ class SouthamptonDataSource
 				}
 				else
 				{
-					return $ts->format('jS M H:i') . ' - ' . $te->format('js M H:i');
+					return $ts->format('jS M H:i') . ' - ' . $te->format('jS M H:i');
 				}
 			}
 			else
@@ -493,7 +493,7 @@ class SouthamptonDataSource
 				{
 					return false;
 				}
-				return $ts->format('js M H:i');
+				return $ts->format('jS M H:i');
 			}
 		}
 		catch(Exception $ex)
