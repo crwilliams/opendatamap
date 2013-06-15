@@ -44,6 +44,8 @@ function PointsOfInterestCollection() {
     this.pointsOfInterestByLocation = {};
     this.clusters = {};
     this.clusterInfoWindows = {};
+    this.extraInfo = {};
+    this.dynamicInfo = {};
 }
 
 var pointsOfInterestCollection = new PointsOfInterestCollection();
@@ -175,21 +177,17 @@ var zoomTo = function (uri, click, pan) {
     }
 };
 
-var getLiveInfo = function () {
-    "use strict";
-    return '';//" <span class='live'>[" + i + "]</span>";
-};
-
 var renderClusterItem = function (uri, ll) {
     "use strict";
-    var lltrim, onclick, marker;
+    var lltrim, onclick, marker, extraInfo;
     if (polygonlls[uri] === undefined) {
         lltrim = ll.replace(/\D/g, '_');
         onclick = "loadWindow('" + uri + "', $('#" + lltrim + "-content'), '" + ll + "')";
         marker = pointsOfInterestCollection.getMarker(uri);
+        extraInfo = pointsOfInterestCollection.getExtraInfo(uri);
         return '<div class="clusteritem" onclick="' + onclick + '">' +
             '<img class="icon" src="' + marker.getIcon() + '" />' +
-            marker.getTitle().replace('\\\'', '\'') + getLiveInfo(uri) + '</div>';
+            marker.getTitle().replace('\\\'', '\'') + extraInfo + '</div>';
     }
     return '';
 };
@@ -698,6 +696,7 @@ var initMarkers = function () {
         });
         cont();
     }, 'json');
+    pointsOfInterestCollection.prepareExtraInfo();
 };
 
 /**
@@ -1172,6 +1171,23 @@ PointsOfInterestCollection.prototype.getInfoWindow = function (uri) {
 };
 
 /**
+ * Get the extra info associated with the point of interest with the given URI.
+ * @param uri - The URI of the point of interest.
+ */
+PointsOfInterestCollection.prototype.getExtraInfo = function (uri) {
+    "use strict";
+    var extraInfo = '';
+    if (this.extraInfo[uri] !== undefined) {
+        if (this.dynamicInfo[uri] !== undefined) {
+            extraInfo = '<span class="extra" id="extra_' + this.dynamicInfo[uri] + '">' + this.extraInfo[uri] + '</span>';
+        } else {
+            extraInfo = '<span class="extra">' + this.extraInfo[uri] + '</span>';
+        }
+    }
+    return extraInfo;
+};
+
+/**
  * Check whether the collection contains a point of interest with the given URI.
  * @param uri - The URI of the point of interest.
  */
@@ -1213,6 +1229,87 @@ PointsOfInterestCollection.prototype.getClusterInfoWindow = function (position) 
     return this.clusterInfoWindows[position];
 };
 
+/**
+ * Process the extra info.
+ */
+PointsOfInterestCollection.prototype.processExtraInfo = function (response_data) {
+    "use strict";
+    var i,
+        item;
+    if (response_data !== undefined) {
+        for (i = 0; i < response_data.length; i += 1) {
+            item = response_data[i];
+            this.extraInfo[item[0]] = item[1];
+            if (item[2] !== '') {
+                this.dynamicInfo[item[0]] = item[2];
+            }
+        }
+    }
+};
+
+/**
+ * Process the extra info update.
+ */
+PointsOfInterestCollection.prototype.processExtraInfoUpdate = function (response_data) {
+    "use strict";
+    var i,
+        uri,
+        item,
+        update = {},
+        hash,
+        newvalue,
+        el;
+    if (response_data !== undefined) {
+        for (i = 0; i < response_data.length; i += 1) {
+            item = response_data[i];
+            update[item[0]] = item[1];
+        }
+        for (uri in this.dynamicInfo) {
+            if (this.dynamicInfo.hasOwnProperty(uri)) {
+                hash = this.dynamicInfo[uri];
+                newvalue = update[hash];
+                this.extraInfo[uri] = newvalue;
+                el = $('#extra_' + hash);
+                if (el !== undefined) {
+                    el.innerText = newvalue;
+                }
+            }
+        }
+    }
+};
+
+/**
+ * Prepare the extra info.
+ */
+PointsOfInterestCollection.prototype.prepareExtraInfo = function () {
+    "use strict";
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "extrainfo.php?v=" + version, true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            var response_data = JSON.parse(xmlhttp.responseText);
+            pointsOfInterestCollection.processExtraInfo(response_data);
+        }
+    };
+};
+
+/**
+ * Update the extra info.
+ */
+PointsOfInterestCollection.prototype.updateExtraInfo = function () {
+    "use strict";
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", "extrainfo.php?v=" + version + '&update=true', true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            var response_data = JSON.parse(xmlhttp.responseText);
+            pointsOfInterestCollection.processExtraInfoUpdate(response_data);
+        }
+    };
+};
+
 /** Get a point of interest click handler. */
 PointOfInterest.prototype.getPointOfInterestClickHandler = function (pointOfInterest) {
     "use strict";
@@ -1233,6 +1330,12 @@ PointOfInterest.prototype.getMarker = function () {
 PointOfInterest.prototype.getInfoWindow = function () {
     "use strict";
     return this.infoWindow;
+};
+
+/** Get extra info associated with the point of interest. */
+PointOfInterest.prototype.getExtraInfo = function () {
+    "use strict";
+    return this.extraInfo;
 };
 
 /** Get the URI of the point of interest. */

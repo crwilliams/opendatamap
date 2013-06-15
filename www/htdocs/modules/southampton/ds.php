@@ -30,6 +30,25 @@ class SouthamptonDataSource extends DataSource
 		return array($pos, $label, $type, $url, $icon);
 	}
 
+	static function getExtraInfo($update)
+	{
+		$extra = array();
+		$seats = self::_getSeats();
+		foreach($seats as $uri => $data)
+		{
+			$extra[$uri] = $data['free'];
+		}
+		if(!$update)
+		{			
+			$q = 'SELECT uri AS id, extra FROM points WHERE extra != ""';
+			foreach(self::_query($q) as $row)
+			{
+				$extra[$row['id']] = $row['extra'];
+			}
+		}
+		return $extra;
+	}
+
 	static function getDataSets()
 	{
 		$uri = "http://opendatamap.ecs.soton.ac.uk";
