@@ -187,7 +187,7 @@ var renderClusterItem = function (uri, ll) {
         extraInfo = pointsOfInterestCollection.getExtraInfo(uri);
         return '<div class="clusteritem" onclick="' + onclick + '">' +
             '<img class="icon" src="' + marker.getIcon() + '" />' +
-            marker.getTitle().replace('\\\'', '\'') + extraInfo + '</div>';
+            marker.getTitle().replace('\\\'', '\'') + ' ' + extraInfo + '</div>';
     }
     return '';
 };
@@ -1271,7 +1271,7 @@ PointsOfInterestCollection.prototype.processExtraInfoUpdate = function (response
                 this.extraInfo[uri] = newvalue;
                 el = $('#extra_' + hash);
                 if (el !== undefined) {
-                    el.innerText = newvalue;
+                    el.text(newvalue);
                 }
             }
         }
