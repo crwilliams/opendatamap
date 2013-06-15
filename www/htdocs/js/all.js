@@ -1149,6 +1149,7 @@ PointsOfInterestCollection.prototype.getClusterMarkerClickHandler = function (lo
         closeAll();
         _gaq.push(['_trackEvent', 'InfoWindow', 'Cluster', location]);
         clusterInfoWindow.open(map, clusterMarker);
+        pointsOfInterestCollection.updateExtraInfo();
     };
 };
 
@@ -1245,6 +1246,7 @@ PointsOfInterestCollection.prototype.processExtraInfo = function (response_data)
             }
         }
     }
+    setInterval(this.updateExtraInfo, 60000);
 };
 
 /**
