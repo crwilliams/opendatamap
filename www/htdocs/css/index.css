@@ -159,6 +159,9 @@ form ul {
 	text-indent:-30px;
 	font-size:1.2em;
 }
+#list li span {
+	font-size:1.2em;
+}
 .location {
 	line-height:1.2em;
 	padding-left:0px;
