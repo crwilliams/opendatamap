@@ -20,6 +20,7 @@ $scotland = array(
 'Comhairle_nan_Eilean_Siar_Western_Isles',
 'Dundee_City',
 'East_Ayrshire',
+'East_Dunbartonshire',
 'East_Lothian',
 'East_Renfrewshire',
 'Edinburgh_City_of',
