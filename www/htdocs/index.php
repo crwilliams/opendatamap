@@ -47,7 +47,7 @@ if(isset($_GET['notitle']))
 		<link rel="shortcut icon" href="img/opendatamap.png" />
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
-		<link rel="stylesheet" href="css/index.css" type="text/css">
+		<link rel="stylesheet" href="css/index.css?<?= filemtime('css/index.css') ?>" type="text/css">
 <?php if(file_exists('modules/'.$version.'/style.css')) { ?>
 		<link rel="stylesheet" href="modules/<?php echo $version ?>/style.css" type="text/css">
 <?php } ?>
@@ -55,7 +55,7 @@ if(isset($_GET['notitle']))
 		<script type="text/javascript" src="js/fixie.js"></script>
 		<script type="text/javascript" src="js/jquery-1.6.1.min.js"></script>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="js/all.js"></script>
+		<script type="text/javascript" src="js/all.js?<?= filemtime('js/all.js') ?>"></script>
 <?php
 if(isset($uri) && $uri != "")
 {
