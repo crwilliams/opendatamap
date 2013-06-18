@@ -6,7 +6,7 @@ class FoodDataSource extends DataSource
 		global $config;
 		if(preg_match('/^[A-Za-z_-]+$/', $config['datafile']))
 		{
-			return simplexml_load_file('modules/food/resources/'.$lang.'/'.$config['datafile'].'.xml');
+			return simplexml_load_file('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/food/resources/'.$lang.'/'.$config['datafile'].'.xml');
 		}
 	}
 

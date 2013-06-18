@@ -297,7 +297,14 @@ class SouthamptonDataSource extends DataSource
 			echo "<li ".self::routestyle($code['code'])."onclick=\"window.searchResults.setInputBox('".str_replace(array("(", ")"), array("\(", "\)"), $code['code'])."', true); window.searchResults.updateFunc();\">".$code['code']."</li>";
 		}
 		echo "</ul>";
-		echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
+		$live = sparql_get(self::$endpoint, "
+		SELECT ?live WHERE {
+		  <$uri> <http://id.southampton.ac.uk/ns/liveBusTimes> ?live .
+		} LIMIT 1
+		");
+		echo "<table class='live-bus-info' id='bus_".$live[0]['live']."'>";
+		echo "</table>";
+		//echo "<iframe style='border:none' src='bus.php?uri=".$uri."' />";
 		return true;
 	}
 
