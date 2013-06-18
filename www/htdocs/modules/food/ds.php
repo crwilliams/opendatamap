@@ -55,7 +55,7 @@ class FoodDataSource extends DataSource
 		global $config;
 		if(isset($config['datafile']))
 		{
-			$lastmodified = ' (last updated '.date('Y/m/d H:i', filemtime('modules/food/resources/en-gb/'.$config['datafile'].'.xml')).')';
+			$lastmodified = ' (last updated '.date('Y/m/d H:i', filemtime('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/food/resources/en-gb/'.$config['datafile'].'.xml')).')';
 		}
 		else
 		{

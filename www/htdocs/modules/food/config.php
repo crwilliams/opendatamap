@@ -41,9 +41,9 @@ $scotland = array(
 'West_Dunbartonshire',
 );
 
-foreach(glob('modules/food/resources/*/*.xml') as $v)
+foreach(glob('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/food/resources/*/*.xml') as $v)
 {
-	$v = str_replace(array('modules/food/resources/', '.xml'), '', $v);
+	$v = str_replace(array('/home/opendatamap/opendatamap.ecs.soton.ac.uk/www/htdocs/modules/food/resources/', '.xml'), '', $v);
 	list($lang, $v) = explode('/', $v, 2);
 	$config['versions'][$v]['langs'][] = $lang;
 	if(in_array($v, $scotland))
