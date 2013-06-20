@@ -12,6 +12,9 @@ $config['versions']['embed']['Site title'] = "embed";
 $config['versions']['embed']['enabled'] = array('-title');
 $config['versions']['embed']['hidden'] = true;
 
+$config['versions']['notitle']['enabled'] = array('search', 'geobutton', 'toggleicons', '-title');
+$config['versions']['notitle']['hidden'] = true;
+
 $config['versions']['catering']['Site title'] = "Catering map";
 $config['versions']['catering']['enabled'] = array('search', 'geobutton', '-title');
 $config['versions']['catering']['datasource'] = array('southampton', 'postcode');
