@@ -430,13 +430,13 @@ class SouthamptonDataSource extends DataSource
 		PREFIX oo: <http://purl.org/openorg/>
 
 		SELECT DISTINCT ?label WHERE {
-			<$uri> spacerel:within ?s .
-			?s a <http://vocab.deri.ie/rooms#Room> .
-			?s oo:hasFeature ?f .
-			?f a ?ft .
-			?ft rdfs:label ?label .
- 			FILTER ( REGEX(?label, '^(WORKSTATION|SOFTWARE) -') )
-		} ORDER BY ?poslabel
+			<$uri> spacerel:within ?room .
+			?room a <http://vocab.deri.ie/rooms#Room> .
+			?printer spacerel:within ?room .
+			?printer a <http://www.productontology.org/id/Multifunction_printer> .
+			?service gr:availableAtOrFrom ?printer .
+			?service rdfs:label ?label .
+		} ORDER BY ?label
 			");
 			$seats = self::_getSeats($uri);
 			echo "<h3> Workstations Available: </h3>";
