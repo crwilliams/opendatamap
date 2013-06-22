@@ -1039,19 +1039,26 @@ var renderContent = function (pointsOfInterest, location) {
     return pre + params.join('') + post;
 };
 
+var shorten = function (iconURL) {
+    return iconURL.replace(
+        /http:\/\/data.southampton.ac.uk\/map-icons\/(.*)\.png/, 'soton:$1').replace(
+        /http:\/\/opendatamap.ecs.soton.ac.uk\/resources\/workstationicon.php\?pos=http:\/\/id.southampton.ac.uk\/point-of-service\/(.*)/, 'ws:$1'
+        );
+}
+
 /**
  * Get the icon URL for a set of points of interest
  * @param pointsOfInterest - The set of points of interest.
  */
 var getIconURL = function (pointsOfInterest) {
     "use strict";
-    var url = 'resources/clustericon.php?',
+    var url = 'resources/clustericon/',
         params = [],
         i;
     for (i = 0; i < pointsOfInterest.length; i += 1) {
-        params.push('i[]=' + pointsOfInterest[i].getMarker().getIcon());
+        params.push(shorten(pointsOfInterest[i].getMarker().getIcon()));
     }
-    return url + params.join('&');
+    return url + params.join('_');
 };
 
 /**

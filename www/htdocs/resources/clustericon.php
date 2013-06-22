@@ -59,7 +59,27 @@ function catsort($a, $b)
 		}
 	}
 }
-$hash = md5($_SERVER['QUERY_STRING']);
+if(isset($_GET['icons']))
+{
+	$_GET['i'] = array();
+	$icons = explode('_', $_GET['icons']);
+	foreach($icons as $icon)
+	{
+		if(substr($icon, 0, 6) == 'soton:')
+		{
+			$_GET['i'][] = 'http://data.southampton.ac.uk/map-icons'.substr($icon, 6).'.png';
+		}
+		else if(substr($icon, 0, 3) == 'ws:')
+		{
+			$_GET['i'][] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=http://id.southampton.ac.uk/point-of-service/'.substr($icon, 3);
+		}
+		else
+		{
+			$_GET['i'][] = $icon;
+		}
+	}
+}
+$hash = md5(implode('_', $_GET['i']));
 $filename = 'cache/ci_'.$hash.'.png';
 $cachable = true;
 if(!file_exists($filename))
