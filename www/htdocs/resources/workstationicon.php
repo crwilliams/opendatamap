@@ -1,9 +1,27 @@
 <?php
 set_include_path('../');
 require 'config.php';
-if(substr($_GET['pos'], 0, 3) == 'ws:')
+if(is_array($_GET['pos']))
 {
-	$_GET['pos'] = 'http://id.southampton.ac.uk/point-of-service/'.substr($_GET['pos'], 3);
+	foreach($_GET['pos'] as $p)
+	{
+		if(substr($p, 0, 3) == 'ws:')
+		{
+			$newp[] = 'http://id.southampton.ac.uk/point-of-service/'.substr($p, 3);
+		}
+		else
+		{
+			$newp[] = $p;
+		}
+	}
+	$_GET['pos'] = $newp;
+}
+else
+{	
+	if(substr($_GET['pos'], 0, 3) == 'ws:')
+	{	
+		$_GET['pos'] = 'http://id.southampton.ac.uk/point-of-service/'.substr($_GET['pos'], 3);
+	}
 }
 $hash = md5($_GET['pos']);
 $filename = 'cache/wi_'.$hash.'.png';

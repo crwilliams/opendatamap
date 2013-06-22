@@ -71,7 +71,7 @@ if(isset($_GET['icons']))
 		}
 		else if(substr($icon, 0, 3) == 'ws:')
 		{
-			$_GET['i'][] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=http://id.southampton.ac.uk/point-of-service/'.substr($icon, 3);
+			$_GET['i'][] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/ws:'.substr($icon, 3);
 		}
 		else
 		{
@@ -139,9 +139,9 @@ if(!file_exists($filename))
 	imagealphablending($oimg, true);
 	for($i=$count-1; $i>=0; $i--)
 	{
-		if($i == 0 && preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php|', $imgs[$i]))
+		if($i == 0 && preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/|', $imgs[$i]))
 		{
-			$imgs[$i] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?';
+			$imgs[$i] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/';
 			foreach($workstations as $pos)
 			{
 				$qstr[] = "pos[]=".$pos;
