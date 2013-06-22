@@ -62,7 +62,7 @@ function catsort($a, $b)
 if(isset($_GET['icons']))
 {
 	$_GET['i'] = array();
-	$icons = explode('_', $_GET['icons']);
+	$icons = explode('|', $_GET['icons']);
 	foreach($icons as $icon)
 	{
 		if(substr($icon, 0, 6) == 'soton:')

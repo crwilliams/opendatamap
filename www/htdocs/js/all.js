@@ -1058,7 +1058,7 @@ var getIconURL = function (pointsOfInterest) {
     for (i = 0; i < pointsOfInterest.length; i += 1) {
         params.push(shorten(pointsOfInterest[i].getMarker().getIcon()));
     }
-    return url + params.join('_');
+    return url + params.join('|');
 };
 
 /**
