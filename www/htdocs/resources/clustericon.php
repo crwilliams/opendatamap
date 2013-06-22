@@ -97,10 +97,10 @@ if(!file_exists($filename))
 		{
 			$cat = 'Special';
 		}
-		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php|', $img))
+		else if(preg_match('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/|', $img))
 		{
 			$cat = 'Special';
-			$workstations[] = preg_replace('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php\?pos=|', '', $img);
+			$workstations[] = preg_replace('|^http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/|', '', $img);
 			$cachable = false;
 		}
 		else
