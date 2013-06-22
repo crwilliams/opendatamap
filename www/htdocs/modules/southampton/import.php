@@ -253,7 +253,8 @@ class SouthamptonDataSource
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=".$point['pos'];
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/".str_replace(
+				'http://id.southampton.ac.uk/point-of-service/', 'ws:', $point['pos']);
 			$point['type'] = 'workstation';
 			$points[] = $point;
 		}

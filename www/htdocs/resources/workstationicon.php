@@ -1,7 +1,11 @@
 <?php
 set_include_path('../');
 require 'config.php';
-$hash = md5($_SERVER['QUERY_STRING']);
+if(substr($_GET['pos'], 0, 3) == 'ws:')
+{
+	$_GET['pos'] = 'http://id.southampton.ac.uk/point-of-service/'.substr($_GET['pos'], 3);
+}
+$hash = md5($_GET['pos']);
 $filename = 'cache/wi_'.$hash.'.png';
 if(true || !file_exists($filename))
 {
