@@ -158,12 +158,13 @@ if(!file_exists($filename))
 	if(!$cachable)
 	{
 		header('Content-type: image/png');
+		header('Cache-Control: max-age=60');
 		imagepng($oimg);
 		die();
 	}
 	imagepng($oimg, $filename);
 }
 header('Content-type: image/png');
-header('Cache-Control: max-age=3600');
+header('Cache-Control: max-age=86400');
 fpassthru(fopen($filename, 'r'));
 ?>
