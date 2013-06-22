@@ -46,8 +46,8 @@ runQuery($dbh->prepare('DELETE FROM matches WHERE uri LIKE "http://id.southampto
 runQuery($dbh->prepare('UPDATE points SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" WHERE icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"'));
 runQuery($dbh->prepare('UPDATE matches SET icon = "http://data.southampton.ac.uk/map-icons/Stores/conveniencestore.png" WHERE icon = "http://data.southampton.ac.uk/map-icons/Stores/convenience.png"'));
 runQuery($dbh->prepare('UPDATE matches SET type = "workstation" WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
-runQuery($dbh->prepare('UPDATE points SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
-runQuery($dbh->prepare('UPDATE matches SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
+runQuery($dbh->prepare('UPDATE points SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
+runQuery($dbh->prepare('UPDATE matches SET icon = CONCAT("http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/", uri) WHERE icon = "http://data.southampton.ac.uk/map-icons/Education/computers.png"'));
 runQuery($dbh->prepare('UPDATE matches SET icon = "http://opendatamap.ecs.soton.ac.uk/resources/busicon/" WHERE icon = "http://google-maps-icons.googlecode.com/files/bus.png"'));
 //runQuery('COMMIT TRANSACTION');
 
@@ -66,7 +66,7 @@ function getCategory($icon)
 	{
 		return 'Transportation';
 	}
-	elseif(substr($category[4], 0, 20) == 'workstationicon.php?')
+	elseif(substr($category[4], 0, 15) == 'workstationicon')
 	{
 		return 'Education';
 	}
