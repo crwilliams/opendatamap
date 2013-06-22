@@ -71,7 +71,7 @@ else
 		generateIcon($_GET['n'], "../img/icon/blank_000000.png", $filename);
 	}
 	header('Content-type: image/png');
-	header('Cache-Control: max-age=86400');
+	header('Cache-Control: max-age=604800');
 	fpassthru(fopen($filename, 'r'));
 }
 
