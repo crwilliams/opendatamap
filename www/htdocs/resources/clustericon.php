@@ -67,7 +67,7 @@ if(isset($_GET['icons']))
 	{
 		if(substr($icon, 0, 6) == 'soton:')
 		{
-			$_GET['i'][] = 'http://data.southampton.ac.uk/map-icons'.substr($icon, 6).'.png';
+			$_GET['i'][] = 'http://data.southampton.ac.uk/map-icons/'.substr($icon, 6).'.png';
 		}
 		else if(substr($icon, 0, 3) == 'ws:')
 		{
