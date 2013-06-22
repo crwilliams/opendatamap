@@ -133,7 +133,7 @@ if(!file_exists($filename))
 	$offsetx = 3;
 	$offsety = 3;
 	$count = min($limit, count($imgs));
-	$oimg = imagecreatetruecolor(32 + $offsetx*count($imgs), 37-$offsety + $offsety*$count);
+	$oimg = imagecreatetruecolor(32 + $offsetx*$count, 37-$offsety + $offsety*$count);
 	imagealphablending($oimg,false);
 	imagefilledrectangle($oimg, 0, 0, imagesx($oimg), imagesy($oimg), imagecolorallocatealpha($oimg, 255, 255, 255, 127));
 	imagealphablending($oimg, true);
