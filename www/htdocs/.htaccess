@@ -17,6 +17,7 @@ RewriteRule ^thumbnails/([A-Z]+)/([A-Za-z_-]+)/$ /resources/thumbnail.php?type=$
 RewriteRule ^resources/busicon/([A-Z0-9+]*)$ /resources/busicon.php?r=$1
 RewriteRule ^resources/numbericon/([A-Z0-9-]*)$ /resources/numbericon.php?n=$1
 RewriteRule ^resources/clustericon/(.*)$ /resources/clustericon.php?icons=$1
+RewriteRule ^resources/workstationicon/(.*)$ /resources/workstationicon.php?pos=$1
 
 RewriteRule ^([A-Za-z_-]+)/$ /$1 [R,L]
 RewriteRule ^([A-Za-z_-]+)$ index.php?v=$1&%{QUERY_STRING}

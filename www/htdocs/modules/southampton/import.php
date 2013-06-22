@@ -99,7 +99,8 @@ class SouthamptonDataSource
 			}
 			if($point['icon'] == self::$iconpath.'Education/computers.png')
 			{
-				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=".$point['id'];
+				$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon".str_replace(
+					'http://id.southampton.ac.uk/point-of-service/', 'ws:', $point['id']);
 			}
 			$points[] = $point;
 		}
@@ -222,7 +223,8 @@ class SouthamptonDataSource
 		$points = array();
 		foreach($tpoints as $point)
 		{
-			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon.php?pos=".$point['id'];
+			$point['icon'] = "http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/".str_replace(
+				'http://id.southampton.ac.uk/point-of-service/', 'ws:', $point['id']);;
 			$points[] = $point;
 		}
 		return $points;
