@@ -73,9 +73,9 @@ if(isset($_GET['icons']))
 		{
 			$_GET['i'][] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/ws:'.substr($icon, 3);
 		}
-		else
+		else if(substr($icon, 0, 6) == 'http:/' && $icon[6] != '/')
 		{
-			$_GET['i'][] = $icon;
+			$_GET['i'][] = 'http://'.substr($icon, 6);
 		}
 	}
 }
