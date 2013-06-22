@@ -1046,7 +1046,7 @@ var renderContent = function (pointsOfInterest, location) {
 var shorten = function (iconURL) {
     return iconURL.replace(
         /http:\/\/data.southampton.ac.uk\/map-icons\/(.*)\.png/, 'soton:$1').replace(
-        /http:\/\/opendatamap.ecs.soton.ac.uk\/resources\/workstationicon.php\?pos=http:\/\/id.southampton.ac.uk\/point-of-service\/(.*)/, 'ws:$1'
+        /http:\/\/opendatamap.ecs.soton.ac.uk\/resources\/workstationicon\/(.*)/, '$1'
         );
 };
 
