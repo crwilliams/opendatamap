@@ -144,9 +144,9 @@ if(!file_exists($filename))
 			$imgs[$i] = 'http://opendatamap.ecs.soton.ac.uk/resources/workstationicon/';
 			foreach($workstations as $pos)
 			{
-				$qstr[] = "pos[]=".$pos;
+				$qstr[] = $pos;
 			}
-			$imgs[$i] .= implode('&', $qstr);
+			$imgs[$i] .= implode('|', $qstr);
 		}
 		$img = simagecreatefrompng($imgs[$i]);
 		//if($i != $count-1)

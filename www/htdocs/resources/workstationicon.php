@@ -1,9 +1,9 @@
 <?php
 set_include_path('../');
 require 'config.php';
-if(is_array($_GET['pos']))
+if(isset($_GET['poss']))
 {
-	foreach($_GET['pos'] as $p)
+	foreach(explode('|', $_GET['poss']) as $p)
 	{
 		if(substr($p, 0, 3) == 'ws:')
 		{
@@ -15,13 +15,6 @@ if(is_array($_GET['pos']))
 		}
 	}
 	$_GET['pos'] = $newp;
-}
-else
-{	
-	if(substr($_GET['pos'], 0, 3) == 'ws:')
-	{	
-		$_GET['pos'] = 'http://id.southampton.ac.uk/point-of-service/'.substr($_GET['pos'], 3);
-	}
 }
 $hash = md5($_GET['pos']);
 $filename = 'cache/wi_'.$hash.'.png';
