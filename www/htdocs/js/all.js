@@ -567,14 +567,14 @@ var initMarkers = function () {
                 return;
             }
             var pos = markpt[0],
-                lat = markpt[1],
-                lon = markpt[2],
+                latitude = markpt[1],
+                longitude = markpt[2],
                 poslabel = markpt[3],
                 icon = markpt[4],
-                ll = new google.maps.LatLng(lat, lon);
-            pointsOfInterestCollection.add(new PointOfInterest(pos, ll, poslabel, icon));
+                latlng = new google.maps.LatLng(latitude, longitude);
+            pointsOfInterestCollection.add(new PointOfInterest(pos, latlng, poslabel, icon));
             if (bb !== undefined) {
-                bb[Math.floor(Math.random() * 100)].extend(ll);
+                bb[Math.floor(Math.random() * 100)].extend(latlng);
             }
         });
         pointsOfInterestCollection.prepareClusters();
@@ -700,8 +700,8 @@ var initMarkers = function () {
 };
 
 /**
-* @param lat - The initial latitude.
-* @param long - The initial longitude.
+* @param latitude - The initial latitude.
+* @param longitude - The initial longitude.
 * @param zoom - The initial zoom level.
 * @param puri - The URI of the point of interest to zoom to and click on.
 * @param pzoomuri - The URI of the point of interest to zoom to.
@@ -709,7 +709,7 @@ var initMarkers = function () {
 * @param pversion - The version of the application.
 * @param defaultMap - The initial may style.
  */
-var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
+var initialize = function (latitude, longitude, zoom, puri, pzoomuri, pclickuri, pversion, defaultMap) {
     "use strict";
     var i;
     zoomuri = pzoomuri;
@@ -724,7 +724,7 @@ var initialize = function (lat, long, zoom, puri, pzoomuri, pclickuri, pversion,
     }
     map = new google.maps.Map($('#map_canvas').get(0), {
         zoom: Math.abs(zoom),
-        center: new google.maps.LatLng(lat, long),
+        center: new google.maps.LatLng(latitude, longitude),
         mapTypeControlOptions: {
             mapTypeIds: ['Map2', google.maps.MapTypeId.SATELLITE],
             style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
