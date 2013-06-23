@@ -433,7 +433,7 @@ class SouthamptonDataSource extends DataSource
 					$end = $line['et'];
 					$starttime = strtotime($start);
 					$endtime = strtotime($end);
-					if(date('Y/m/d', $starttime) == date('Y/m/d', $endtime) ) && date('Y/m/d', $starttime) == date('Y/m/d'))
+					if(date('Y/m/d', $starttime) == date('Y/m/d', $endtime) && date('Y/m/d', $starttime) == date('Y/m/d'))
 					{
 						echo "<h3>Daily Menu for ".date('l jS F', $starttime)."<br />available ".date('H:i', $starttime).' - '.date('H:i', $endtime)."</h3>";
 						$showmenu = true;
