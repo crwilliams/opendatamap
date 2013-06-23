@@ -401,6 +401,59 @@ class SouthamptonDataSource extends DataSource
 		{
 			echo "<a href='".$rating[0]['page']."'><img style='float:right' src='img/fhrs/small/72ppi/".strtolower($rating[0]['ratingKey']).".jpg' alt='Food hygiene rating: ".$rating[0]['ratingValue']."' title='Food hygiene rating: ".$rating[0]['ratingValue']."' /></a>";
 		}
+		
+		$specialmenu = sparql_get(self::$endpoint, "
+		PREFIX soton: <http://id.southampton.ac.uk/ns/>
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+		PREFIX gr: <http://purl.org/goodrelations/v1#>
+		
+		SELECT DISTINCT ?st ?et ?l ?ffl WHERE {
+			?s soton:hasFoodFeature <http://id.southampton.ac.uk/food-feature/Special> .
+			?s soton:hasFoodFeature ?ff .
+			?ff rdfs:label ?ffl .
+			?s rdfs:label ?l .
+			?s1 gr:includes ?s .
+			?s1 gr:availableAtOrFrom <$uri> .
+			?s1 <http://open.vocab.org/terms/rank> ?r .
+			?s1 gr:availabilityStarts ?st .
+			?s1 gr:availabilityEnds ?et .
+		} ORDER BY ?st ?et ?r ?ffl
+		");
+		if(count($specialmenu) > 0)
+		{
+			$start = null;
+			$end = null;
+			$item = null;
+			$showmenu = false;
+			foreach($specialmenu as $line)
+			{
+				if($line['st'] != $start || $line['et'] != $end)
+				{
+					$start = $line['st'];
+					$end = $line['et'];
+					$starttime = strtotime($start);
+					$endtime = strtotime($end);
+					if(date('Y/m/d', $starttime) == date('Y/m/d', $endtime) ) && date('Y/m/d', $starttime) == date('Y/m/d'))
+					{
+						echo "<h3>Daily Menu for ".date('l jS F', $starttime)."<br />available ".date('H:i', $starttime).' - '.date('H:i', $endtime)."</h3>";
+						$showmenu = true;
+					}
+					else
+					{
+						$showmenu = false;
+					}
+				}
+				if($line['l'] != $item)
+				{
+					$item = $line['l'];
+					if($showmenu) echo "<br />".$item;
+				}
+				if($line['ffl'] != 'Special')
+				{
+					if($showmenu) echo ' <span style="font-size:0.8em">('.$line['ffl'].')</span>';
+				}
+			}
+		}
 
 		$allpos = sparql_get(self::$endpoint, "
 		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
