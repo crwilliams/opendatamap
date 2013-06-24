@@ -250,9 +250,9 @@ class DataSource{
 							{
 								if($dot == '00:00-00:00')
 									$dot = '24 hour';
-								if($day == date('l', $now))
+								if($day == date('l', $now) && !in_array($dot, $todayopening))
 								{
-									$todayopening[] = "<li>$dot</li>";
+									$todayopening[] = $dot;
 								}
 							}
 						}
@@ -267,7 +267,7 @@ class DataSource{
 				echo "<ul style='padding-top:8px;'>";
 				foreach($todayopening as $opening)
 				{
-					echo $opening;
+					echo "<li>".$opening."</li>";
 				}
 				echo "</ul>";
 				echo "</div>";
