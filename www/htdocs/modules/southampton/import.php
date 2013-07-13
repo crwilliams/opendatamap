@@ -2,6 +2,8 @@
 include_once "inc/sparqllib.php";
 include_once "inc/icons.php";
 
+class SparqlException extends Exception {}
+
 class SouthamptonDataSource
 {
 	static $endpoint = 'http://sparql.data.southampton.ac.uk';
@@ -50,6 +52,10 @@ class SouthamptonDataSource
 		  OPTIONAL { ?uri <http://purl.org/dc/terms/license> ?l . }
 		} ORDER BY ?name
 		");
+		if(count($ds) == 0)
+		{
+			throw new SparqlException("No datasets found for URI: ".$uri);
+		}
 		$ds[] = array('name' => 'Ordnance Survey Linked Data', 'uri' => 'http://data.ordnancesurvey.co.uk', 'l' => 'http://reference.data.gov.uk/id/open-government-licence');
 		return $ds;
 	}
@@ -88,6 +94,10 @@ class SouthamptonDataSource
 		  FILTER ( BOUND(?lng) && BOUND(?lat) )
 		} ORDER BY ?label
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No points of service found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -128,6 +138,10 @@ class SouthamptonDataSource
 		  ?pos <http://purl.org/openorg/mapIcon> ?icon .
 		} ORDER BY ?poslabel
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No point of service offerings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -154,6 +168,10 @@ class SouthamptonDataSource
 		  ?id geo:long ?lng .
 		} GROUP BY ?id ?label ?lat ?lng ORDER BY ?label
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No bus stops found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -176,6 +194,10 @@ class SouthamptonDataSource
 		  FILTER ( REGEX( ?label, '^U', 'i') )
 		} ORDER BY ?poslabel
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No bus stop offerings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -220,6 +242,10 @@ class SouthamptonDataSource
 		           }
 		} ORDER BY ?label
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No workstation rooms found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -252,6 +278,10 @@ class SouthamptonDataSource
 		  ?service rdfs:label ?label .
 		} ORDER BY ?poslabel
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No workstation room offerings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -277,6 +307,10 @@ class SouthamptonDataSource
 		  }
 		}
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No isolutions wifi points found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -295,6 +329,10 @@ class SouthamptonDataSource
 		  }
 		}
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No isolutions wifi point offerings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -337,6 +375,10 @@ class SouthamptonDataSource
 		  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
 		} ORDER BY ?label
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No showers found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -355,6 +397,10 @@ class SouthamptonDataSource
 		  ?f <http://www.w3.org/2000/01/rdf-schema#label> ?poslabel .
 		} ORDER BY ?poslabel
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No shower offerings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -403,6 +449,10 @@ class SouthamptonDataSource
 		         )
 		} ORDER BY ?label
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No events found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -454,6 +504,10 @@ class SouthamptonDataSource
 		         )
 		} ORDER BY ?poslabel
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No event offerings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -521,6 +575,10 @@ class SouthamptonDataSource
 		  OPTIONAL { ?uri <http://www.w3.org/2004/02/skos/core#notation> ?num . }
 		} ORDER BY ?num
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No buildings found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
@@ -539,6 +597,10 @@ class SouthamptonDataSource
 		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 		} ORDER BY ?uri
 		");
+		if(count($tpoints) == 0)
+		{
+			throw new SparqlException("No sites found.");
+		}
 		$points = array();
 		foreach($tpoints as $point)
 		{
