@@ -78,13 +78,17 @@ class SouthamptonDataSource
 		  ?id a gr:LocationOfSalesOrServiceProvisioning .
 		  ?id rdfs:label ?label .
 		  OPTIONAL { ?id spacerel:within ?b .
-		             ?b geo:lat ?lat . 
-		             ?b geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?b geo:lat ?lat .
+		               ?b geo:long ?lng .
+		             }
 		             ?b a <http://vocab.deri.ie/rooms#Building> .
 		           }
 		  OPTIONAL { ?id spacerel:within ?s .
-		             ?s geo:lat ?lat . 
-		             ?s geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?s geo:lat ?lat .
+		               ?s geo:long ?lng .
+		             }
 		             ?s a org:Site .
 		           }
 		  OPTIONAL { ?id geo:lat ?lat .
@@ -228,18 +232,23 @@ class SouthamptonDataSource
 		  ?id soton:workstationFreeSeats ?freeseats .
 		  ?id oo:mapIcon ?icon .
 		  OPTIONAL { ?id spacerel:within ?b .
-		             ?b geo:lat ?lat . 
-		             ?b geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?b geo:lat ?lat .
+		               ?b geo:long ?lng .
+		             }
 		             ?b a <http://vocab.deri.ie/rooms#Building> .
 		           }
 		  OPTIONAL { ?id spacerel:within ?s .
-		             ?s geo:lat ?lat . 
-		             ?s geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?s geo:lat ?lat .
+		               ?s geo:long ?lng .
+		             }
 		             ?s a org:Site .
 		           }
 		  OPTIONAL { ?id geo:lat ?lat .
 		             ?id geo:long ?lng .
 		           }
+		  FILTER ( BOUND(?lng) && BOUND(?lat) )
 		} ORDER BY ?label
 		");
 		if(count($tpoints) == 0)
@@ -360,19 +369,24 @@ class SouthamptonDataSource
 		  ?f a <http://id.southampton.ac.uk/location-feature/Shower> .
 		  ?f rdfs:label ?label .
 		  OPTIONAL { ?id spacerel:within ?b .
-		             ?b geo:lat ?lat . 
-		             ?b geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?b geo:lat ?lat .
+		               ?b geo:long ?lng .
+		             }
 		             ?b a <http://vocab.deri.ie/rooms#Building> .
 		           }
 		  OPTIONAL { ?id spacerel:within ?s .
-		             ?s geo:lat ?lat . 
-		             ?s geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?s geo:lat ?lat .
+		               ?s geo:long ?lng .
+		             }
 		             ?s a org:Site .
 		           }
 		  OPTIONAL { ?id geo:lat ?lat .
 		             ?id geo:long ?lng .
 		           }
 		  OPTIONAL { ?id <http://purl.org/openorg/mapIcon> ?icon . }
+		  FILTER ( BOUND(?lng) && BOUND(?lat) )
 		} ORDER BY ?label
 		");
 		if(count($tpoints) == 0)
@@ -431,13 +445,17 @@ class SouthamptonDataSource
                   ?id <http://purl.org/NET/c4dm/event.owl#place> ?p .
                   ?id rdfs:label ?label .
 		  OPTIONAL { ?p spacerel:within ?b .
-		             ?b geo:lat ?lat . 
-		             ?b geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?b geo:lat ?lat .
+		               ?b geo:long ?lng .
+		             }
 		             ?b a <http://vocab.deri.ie/rooms#Building> .
 		           }
 		  OPTIONAL { ?p spacerel:within ?s .
-		             ?s geo:lat ?lat . 
-		             ?s geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?s geo:lat ?lat .
+		               ?s geo:long ?lng .
+		             }
 		             ?s a org:Site .
 		           }
 		  OPTIONAL { ?p geo:lat ?lat .
@@ -486,13 +504,17 @@ class SouthamptonDataSource
 		  ?pos rdfs:label ?poslabel .
                   ?pos <http://purl.org/NET/c4dm/event.owl#place> ?p .
 		  OPTIONAL { ?p spacerel:within ?b .
-		             ?b geo:lat ?lat . 
-		             ?b geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?b geo:lat ?lat .
+		               ?b geo:long ?lng .
+		             }
 		             ?b a <http://vocab.deri.ie/rooms#Building> .
 		           }
 		  OPTIONAL { ?p spacerel:within ?s .
-		             ?s geo:lat ?lat . 
-		             ?s geo:long ?lng .
+		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		               ?s geo:lat ?lat .
+		               ?s geo:long ?lng .
+		             }
 		             ?s a org:Site .
 		           }
 		  OPTIONAL { ?p geo:lat ?lat .
@@ -566,11 +588,14 @@ class SouthamptonDataSource
 	private static function _getAllBuildings()
 	{
 		$tpoints = sparql_get(self::$endpoint, "
+		PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 		SELECT DISTINCT ?uri ?name ?outline ?lat ?lng ?hfeature ?lfeature ?num WHERE {
 		  ?uri a <http://id.southampton.ac.uk/ns/UoSBuilding> .
 		  OPTIONAL { ?uri <http://purl.org/dc/terms/spatial> ?outline . }
-		  ?uri <http://www.w3.org/2003/01/geo/wgs84_pos#lat> ?lat .
-		  ?uri <http://www.w3.org/2003/01/geo/wgs84_pos#long> ?lng .
+		  GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		    ?uri geo:lat ?lat .
+		    ?uri geo:long ?lng .
+		  }
 		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 		  OPTIONAL { ?uri <http://www.w3.org/2004/02/skos/core#notation> ?num . }
 		} ORDER BY ?num
