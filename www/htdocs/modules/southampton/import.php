@@ -13,7 +13,7 @@ class SouthamptonDataSource
 	{
 		$points = array();
 		foreach(self::_getAllPointsOfService()		as $point) $points[] = $point;
-		foreach(self::_getAllBusStops()	 		as $point) $points[] = $point;
+		foreach(self::_getAllBusStops()			as $point) $points[] = $point;
 		foreach(self::_getAllWorkstationRooms()		as $point) $points[] = $point;
 		foreach(self::_getAllISolutionsWifiPoints()	as $point) $points[] = $point;
 		foreach(self::_getAllShowers()			as $point) $points[] = $point;
@@ -25,7 +25,7 @@ class SouthamptonDataSource
 	{
 		$points = array();
 		foreach(self::_getAllPointOfServiceOfferings()		as $point) $points[] = $point;
-		foreach(self::_getAllBusStopOfferings()	 		as $point) $points[] = $point;
+		foreach(self::_getAllBusStopOfferings()			as $point) $points[] = $point;
 		foreach(self::_getAllWorkstationRoomOfferings()		as $point) $points[] = $point;
 		foreach(self::_getAllISolutionsWifiPointOfferings()	as $point) $points[] = $point;
 		foreach(self::_getAllShowerOfferings()			as $point) $points[] = $point;
@@ -437,13 +437,13 @@ class SouthamptonDataSource
 		
 		SELECT DISTINCT ?id ?lat ?lng ?label ?ts ?te WHERE {
 		  GRAPH ?g {
-                    ?id a <http://purl.org/NET/c4dm/event.owl#Event> .
+		    ?id a <http://purl.org/NET/c4dm/event.owl#Event> .
 		  }
 		  ?id <http://purl.org/NET/c4dm/event.owl#time> ?t .
 		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
 		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
-                  ?id <http://purl.org/NET/c4dm/event.owl#place> ?p .
-                  ?id rdfs:label ?label .
+		  ?id <http://purl.org/NET/c4dm/event.owl#place> ?p .
+		  ?id rdfs:label ?label .
 		  OPTIONAL { ?p spacerel:within ?b .
 		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
 		               ?b geo:lat ?lat .
@@ -502,7 +502,7 @@ class SouthamptonDataSource
 		  ?t <http://purl.org/NET/c4dm/timeline.owl#start> ?ts .
 		  OPTIONAL { ?t <http://purl.org/NET/c4dm/timeline.owl#end> ?te . }
 		  ?pos rdfs:label ?poslabel .
-                  ?pos <http://purl.org/NET/c4dm/event.owl#place> ?p .
+		  ?pos <http://purl.org/NET/c4dm/event.owl#place> ?p .
 		  OPTIONAL { ?p spacerel:within ?b .
 		             GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
 		               ?b geo:lat ?lat .
