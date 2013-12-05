@@ -100,6 +100,7 @@ php process.php Education nursery.png
 php process.php Education ophthalmologist.png
 php process.php Education playground.png
 php process.php Education pleasurepier.png
+php process.php Education printer-2.png #extracategory
 php process.php Education sauna.png
 php process.php Education school.png
 php process.php Education scoutgroup.png
@@ -110,6 +111,7 @@ php process.php Education summercamp.png
 php process.php Education therapy.png
 php process.php Education toilets.png
 php process.php Education toilets_disability.png #extra
+php process.php Education tools.png #extracategory
 php process.php Education toys.png
 php process.php Education university.png
 php process.php Education veterinary.png
