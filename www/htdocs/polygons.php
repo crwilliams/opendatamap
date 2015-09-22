@@ -50,8 +50,11 @@ foreach($config['datasource'] as $ds)
 			foreach($building['outline'] as $polygon)
 			{
 				echo '[';
-				echo str_replace(' ', ',', $polygon);
+				echo str_replace(' ', ',', str_replace(array('(', ')'), '', $polygon));
 				echo '],';
+				if($polygon[strlen($polygon)-1] == ')') {
+					echo '"",';
+				}
 			}
 			echo '[]]';
 		}

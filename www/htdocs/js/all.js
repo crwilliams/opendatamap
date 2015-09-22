@@ -601,6 +601,7 @@ var initMarkers = function () {
                 points = markpt[3],
                 color = markpt[4],
                 ll = new google.maps.LatLng(markpt[5][1], markpt[5][0]).toString(),
+                tpath = [],
                 paths = [],
                 polygonType = 'Building',
                 fillColor = '#694B28',
@@ -613,9 +614,15 @@ var initMarkers = function () {
             polygonnames[ll] = poslabel;
             polygonlls[pos] = ll;
             for (i = 0; i < points.length - 1; i += 1) {
-                paths.push(new google.maps.LatLng(points[i][1], points[i][0]));
+                if (points[i] == '') {
+                    paths.push(tpath);
+                    tpath = [];
+                } else {
+                    tpath.push(new google.maps.LatLng(points[i][1], points[i][0]));
+                }
             }
-            if (paths.length === 0) {
+            paths.push(tpath);
+            if (paths[0].length === 0) {
                 if (polygons[pos] === undefined) {
                     polygons[pos] = [];
                 }
@@ -656,7 +663,7 @@ var initMarkers = function () {
             polygoninfowindows[pos] = new google.maps.InfoWindow({ content:
                 '<div id="content"><h2 id="title">' + poslabel + '</h2></div>'});
 
-            if (paths.length === 0) {
+            if (paths[0].length === 0) {
                 listener = polygons[pos];
                 position = listener.getPosition();
             } else {
