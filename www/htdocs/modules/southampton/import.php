@@ -592,10 +592,12 @@ class SouthamptonDataSource
 		SELECT DISTINCT ?uri ?name ?outline ?lat ?lng ?hfeature ?lfeature ?num WHERE {
 		  ?uri a <http://id.southampton.ac.uk/ns/UoSBuilding> .
 		  OPTIONAL { ?uri <http://purl.org/dc/terms/spatial> ?outline . }
-		  GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
-		    ?uri geo:lat ?lat .
-		    ?uri geo:long ?lng .
-		  }
+                  OPTIONAL {
+		    GRAPH <http://id.southampton.ac.uk/dataset/places/latest> {
+		      ?uri geo:lat ?lat .
+		      ?uri geo:long ?lng .
+		    }
+                  }
 		  ?uri <http://www.w3.org/2000/01/rdf-schema#label> ?name .
 		  OPTIONAL { ?uri <http://www.w3.org/2004/02/skos/core#notation> ?num . }
 		} ORDER BY ?num
